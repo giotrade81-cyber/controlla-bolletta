@@ -1,0 +1,48 @@
+{
+  "scaricatoIl": "2026-08-19",
+  "fonte": "https://www.ilportaleofferte.it/portaleOfferte/resources/opendata/csv",
+  "commodity": {
+    "elettrico": {
+      "indirizzo": "https://www.ilportaleofferte.it/portaleOfferte/resources/opendata/csv/offerteML/2026_8/PO_Offerte_E_MLIBERO_20260819.xml",
+      "dataFile": "2026-08-19",
+      "lette": 3593,
+      "nonDomestiche": 1685,
+      "distillate": 1908,
+      "scartate": 0,
+      "variabiliSenzaSpread": 350,
+      "fisseSenzaPrezzi": 20,
+      "quoteFisseNonLeggibili": 0,
+      "conComponentiNonRappresentate": 162,
+      "motiviScarto": {},
+      "byteJson": 742333
+    },
+    "gas": {
+      "indirizzo": "https://www.ilportaleofferte.it/portaleOfferte/resources/opendata/csv/offerteML/2026_8/PO_Offerte_G_MLIBERO_20260819.xml",
+      "dataFile": "2026-08-19",
+      "lette": 2695,
+      "nonDomestiche": 1176,
+      "distillate": 1519,
+      "scartate": 0,
+      "variabiliSenzaSpread": 269,
+      "fisseSenzaPrezzi": 12,
+      "quoteFisseNonLeggibili": 0,
+      "conComponentiNonRappresentate": 100,
+      "motiviScarto": {},
+      "byteJson": 574093
+    }
+  },
+  "parametri": {
+    "elettrico": {
+      "indirizzo": "https://www.ilportaleofferte.it/portaleOfferte/resources/opendata/csv/parametriML/2026_8/PO_Parametri_Mercato_Libero_E_20260819.csv",
+      "dataFile": "2026-08-19",
+      "file": "parametri-elettrico.csv",
+      "byte": 9889
+    },
+    "gas": {
+      "indirizzo": "https://www.ilportaleofferte.it/portaleOfferte/resources/opendata/csv/parametriML/2026_8/PO_Parametri_Mercato_Libero_G_20260819.csv",
+      "dataFile": "2026-08-19",
+      "file": "parametri-gas.csv",
+      "byte": 6639
+    }
+  }
+}
