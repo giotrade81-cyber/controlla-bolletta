@@ -812,7 +812,7 @@ ${ks}`}const Ln={"06655971007":{nome:"Enel Energia S.p.A.",url:"https://www.enel
           Fai leggere il PDF a <strong>ChatGPT / Gemini / Claude</strong> con le nostre istruzioni pronte: l'IA estrarrà tutti i dati e le 16 pagine di dettaglio in 5 secondi!
         </p>
         <div class="comandi">
-          <a href="#assistente-ia" class="bottone-cta" style="text-decoration: none; display: inline-block; font-size: 0.9rem; padding: 0.5rem 1rem;">🤖 Usa l'Assistente Virtuale (ChatGPT / Gemini)</a>
+          <button type="button" id="vai-a-modulo-assistente" class="primario" style="font-size: 0.9rem; padding: 0.55rem 1.15rem; cursor: pointer;">🤖 Usa l'Assistente Virtuale (ChatGPT / Gemini)</button>
           <button type="button" id="completa-a-mano" style="font-size: 0.85rem;">Oppure completa a mano nel modulo</button>
         </div>
       </div>
@@ -841,7 +841,7 @@ ${ks}`}const Ln={"06655971007":{nome:"Enel Energia S.p.A.",url:"https://www.enel
         di prova, ti resta da riempire ciò che è elencato qui sopra.</p>
         <div class="comandi"><button type="button" id="completa-a-mano">Completa
         a mano nel riquadro di prova</button></div>
-      </div>`}}e.innerHTML=Sc(t)+n,C("completa-a-mano")?.addEventListener("click",()=>{Ec(t.bolletta)}),C("vai-al-confronto")?.addEventListener("click",()=>{document.getElementById("confronto")?.scrollIntoView({behavior:"smooth",block:"start"}),Xo()})}async function Qn(t){const e=C("esito-lettura"),i=C("nome-file");i&&(i.textContent=t.name),e&&(e.innerHTML='<p class="attendere">Sto leggendo il PDF — resta sul tuo dispositivo…</p>');try{const n=await t.arrayBuffer();let o;try{o=await na(()=>import("./pdf-CYrYa6np.js"),[],import.meta.url)}catch(s){console.warn("Aggiornamento del sito rilevato durante l’import di PDF.js: ricarico la pagina...",s),window.location.reload();return}const{estraiDocumento:a}=o,r=await a(n);Ic(xl(r))}catch(n){e&&(e.innerHTML=`<div class="errore-lettura">
+      </div>`}}e.innerHTML=Sc(t)+n,C("vai-a-modulo-assistente")?.addEventListener("click",o=>{o.preventDefault();const a=document.getElementById("assistente-ia");a&&(a.scrollIntoView({behavior:"smooth",block:"center"}),a.classList.add("evidenzia-pulse"),setTimeout(()=>a.classList.remove("evidenzia-pulse"),2500)),document.getElementById("copia")?.focus()}),C("completa-a-mano")?.addEventListener("click",()=>{Ec(t.bolletta)}),C("vai-al-confronto")?.addEventListener("click",()=>{document.getElementById("confronto")?.scrollIntoView({behavior:"smooth",block:"start"}),Xo()})}async function Qn(t){const e=C("esito-lettura"),i=C("nome-file");i&&(i.textContent=t.name),e&&(e.innerHTML='<p class="attendere">Sto leggendo il PDF — resta sul tuo dispositivo…</p>');try{const n=await t.arrayBuffer();let o;try{o=await na(()=>import("./pdf-D4aEzkOR.js"),[],import.meta.url)}catch(s){console.warn("Aggiornamento del sito rilevato durante l’import di PDF.js: ricarico la pagina...",s),window.location.reload();return}const{estraiDocumento:a}=o,r=await a(n);Ic(xl(r))}catch(n){e&&(e.innerHTML=`<div class="errore-lettura">
         <strong>Non sono riuscito ad aprire questo PDF.</strong>
         <ul><li>${y(n instanceof Error?n.message:String(n))}</li>
         <li>Se il file è protetto da password o è una scansione, usa il secondo
