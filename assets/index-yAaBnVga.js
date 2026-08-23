@@ -251,9 +251,9 @@ ${Ns}`}const fi={"06655971007":"Enel Energia S.p.A.","15844561009":"Enel Energia
   </section>`}function tc(){return""}function ic(){return`
   <section id="assistente-ia" style="margin-top: 2rem;">
     <div class="contenitore">
-      <h2>Usa il tuo Assistente Virtuale (ChatGPT, Claude, Copilot)</h2>
+      <h2>Usa il tuo Assistente Virtuale (ChatGPT, Claude, Copilot, Gemini)</h2>
       <p class="introduce">
-        Se preferisci far leggere la bolletta al tuo assistente IA preferito (come ChatGPT, Claude o Copilot), segui questi 2 semplici passaggi:
+        Se preferisci far leggere la bolletta al tuo assistente IA preferito (come ChatGPT, Claude, Copilot o Gemini), segui questi 2 semplici passaggi:
       </p>
 
       <div class="passo-assistente-card" style="margin-bottom: 1.5rem; padding: 1.25rem; border: 1px solid var(--bordo); border-radius: var(--raggio); background: var(--carta-alta);">
@@ -267,11 +267,6 @@ ${Ns}`}const fi={"06655971007":"Enel Energia S.p.A.","15844561009":"Enel Energia
           <button id="copia" class="primario" type="button" style="padding: 0.65rem 1.25rem; font-weight: 600;">📋 Copia Istruzioni per l'Assistente</button>
           <span id="esito-copia" style="font-size: 0.875rem; color: var(--ok); font-weight: 600;"></span>
         </div>
-
-        <details style="margin-top: 1rem; font-size: 0.85rem; color: var(--inchiostro-tenue);">
-          <summary style="cursor: pointer; font-weight: 600; color: var(--inchiostro);">👁️ Visualizza / Modifica il testo del prompt</summary>
-          <div class="blocco" id="blocco" style="margin-top: 0.75rem; max-height: 220px; overflow-y: auto; font-family: monospace; font-size: 0.8rem; padding: 0.75rem; background: var(--sfondo); border: 1px solid var(--bordo); border-radius: 6px;"></div>
-        </details>
       </div>
 
       <div class="passo-assistente-card" style="padding: 1.25rem; border: 2px solid #2563eb; border-radius: var(--raggio); background: #f8fafc;">
@@ -279,10 +274,10 @@ ${Ns}`}const fi={"06655971007":"Enel Energia S.p.A.","15844561009":"Enel Energia
           2️⃣ Incolla la risposta del tuo Assistente Virtuale
         </h3>
         <p style="font-size: 0.9rem; color: var(--inchiostro-tenue); margin: 0.4rem 0 0.75rem 0;">
-          Incolla qui sotto la risposta o il codice JSON restituito da ChatGPT / Claude / Copilot. L'applicazione compilerà istantaneamente tutti i dati della tua fornitura nel simulatore:
+          Incolla qui sotto la risposta restituita da ChatGPT / Claude / Copilot / Gemini. L'applicazione compilerà istantaneamente tutti i dati della tua fornitura nel simulatore:
         </p>
 
-        <textarea id="risposta-assistente" rows="6" placeholder="Incolla qui la risposta del tuo assistente virtuale..." style="width: 100%; box-sizing: border-box; padding: 0.75rem; font-family: monospace; font-size: 0.85rem; border: 1px solid var(--bordo); border-radius: 6px; background: #fff;"></textarea>
+        <textarea id="risposta-assistente" rows="6" placeholder="Incolla qui la risposta restituita da ChatGPT / Claude / Copilot / Gemini..." style="width: 100%; box-sizing: border-box; padding: 0.75rem; font-family: monospace; font-size: 0.85rem; border: 1px solid var(--bordo); border-radius: 6px; background: #fff;"></textarea>
 
         <div class="comandi" style="margin-top: 0.75rem; display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
           <button id="btn-carica-risposta" class="primario" type="button" style="padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 700; background: #15803d; color: #fff; border: none; border-radius: var(--raggio); cursor: pointer;">
@@ -788,7 +783,7 @@ ${Ns}`}const fi={"06655971007":"Enel Energia S.p.A.","15844561009":"Enel Energia
         di prova, ti resta da riempire ciò che è elencato qui sopra.</p>
         <div class="comandi"><button type="button" id="completa-a-mano">Completa
         a mano nel riquadro di prova</button></div>
-      </div>`}}e.innerHTML=yc(t)+n,N("completa-a-mano")?.addEventListener("click",()=>{wc(t.bolletta)}),N("vai-al-confronto")?.addEventListener("click",()=>{document.getElementById("confronto")?.scrollIntoView({behavior:"smooth",block:"start"}),Jo()})}async function Hn(t){const e=N("esito-lettura"),i=N("nome-file");i&&(i.textContent=t.name),e&&(e.innerHTML='<p class="attendere">Sto leggendo il PDF — resta sul tuo dispositivo…</p>');try{const n=await t.arrayBuffer();let o;try{o=await ta(()=>import("./pdf-BVsU25lQ.js"),[],import.meta.url)}catch(s){console.warn("Aggiornamento del sito rilevato durante l’import di PDF.js: ricarico la pagina...",s),window.location.reload();return}const{estraiDocumento:a}=o,r=await a(n);Ac(Rl(r))}catch(n){e&&(e.innerHTML=`<div class="errore-lettura">
+      </div>`}}e.innerHTML=yc(t)+n,N("completa-a-mano")?.addEventListener("click",()=>{wc(t.bolletta)}),N("vai-al-confronto")?.addEventListener("click",()=>{document.getElementById("confronto")?.scrollIntoView({behavior:"smooth",block:"start"}),Jo()})}async function Hn(t){const e=N("esito-lettura"),i=N("nome-file");i&&(i.textContent=t.name),e&&(e.innerHTML='<p class="attendere">Sto leggendo il PDF — resta sul tuo dispositivo…</p>');try{const n=await t.arrayBuffer();let o;try{o=await ta(()=>import("./pdf-DrL1TVWP.js"),[],import.meta.url)}catch(s){console.warn("Aggiornamento del sito rilevato durante l’import di PDF.js: ricarico la pagina...",s),window.location.reload();return}const{estraiDocumento:a}=o,r=await a(n);Ac(Rl(r))}catch(n){e&&(e.innerHTML=`<div class="errore-lettura">
         <strong>Non sono riuscito ad aprire questo PDF.</strong>
         <ul><li>${w(n instanceof Error?n.message:String(n))}</li>
         <li>Se il file è protetto da password o è una scansione, usa il secondo
