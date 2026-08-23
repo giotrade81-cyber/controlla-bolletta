@@ -166,7 +166,7 @@ ${Is}`}const _o=new A("0.02"),Cn=new A("1"),Os=6,bo=new A("0.01"),Ts=new A("0.00
         </div>
         ${Bl("att")}
         ${$o("att","Quota fissa","La cifra fissa che paghi comunque, anche a consumo zero: «quota fissa» o «commercializzazione» nel Box dell'offerta.")}
-        ${ze("att-consumo","Consumo annuo","Quanta energia usi in un anno: in bolletta è il «consumo annuo». Se hai caricato la bolletta l'ho stimato io dai giorni fatturati.","kWh/anno","unita-consumo")}
+        ${ze("att-consumo","Consumo annuo","Quanta energia o gas usi in un anno. Se la tua fornitura è attiva da più di 1 anno, il dato in bolletta è reale (lo storico degli ultimi 12 mesi). Se invece l'hai attivata da meno di 1 anno, è una stima calcolata dai giorni fatturati e puoi modificarlo a mano.","kWh/anno","unita-consumo")}
       </form>
       <div class="comandi" style="margin-top:1rem">
         <button id="avvia-confronto" class="primario" type="button">Confronta col catalogo</button>
@@ -757,7 +757,7 @@ ${Is}`}const _o=new A("0.02"),Cn=new A("1"),Os=6,bo=new A("0.01"),Ts=new A("0.00
         di prova, ti resta da riempire ciò che è elencato qui sopra.</p>
         <div class="comandi"><button type="button" id="completa-a-mano">Completa
         a mano nel riquadro di prova</button></div>
-      </div>`}}e.innerHTML=hc(t)+n,C("completa-a-mano")?.addEventListener("click",()=>{gc(t.bolletta)}),C("vai-al-confronto")?.addEventListener("click",()=>{document.getElementById("confronto")?.scrollIntoView({behavior:"smooth",block:"start"}),Bo()})}async function qn(t){const e=C("esito-lettura"),i=C("nome-file");i&&(i.textContent=t.name),e&&(e.innerHTML='<p class="attendere">Sto leggendo il PDF — resta sul tuo dispositivo…</p>');try{const n=await t.arrayBuffer();let o;try{o=await Jo(()=>import("./pdf-QgQOZ0TZ.js"),[],import.meta.url)}catch(s){console.warn("Aggiornamento del sito rilevato durante l’import di PDF.js: ricarico la pagina...",s),window.location.reload();return}const{estraiDocumento:a}=o,r=await a(n);vc(Ol(r))}catch(n){e&&(e.innerHTML=`<div class="errore-lettura">
+      </div>`}}e.innerHTML=hc(t)+n,C("completa-a-mano")?.addEventListener("click",()=>{gc(t.bolletta)}),C("vai-al-confronto")?.addEventListener("click",()=>{document.getElementById("confronto")?.scrollIntoView({behavior:"smooth",block:"start"}),Bo()})}async function qn(t){const e=C("esito-lettura"),i=C("nome-file");i&&(i.textContent=t.name),e&&(e.innerHTML='<p class="attendere">Sto leggendo il PDF — resta sul tuo dispositivo…</p>');try{const n=await t.arrayBuffer();let o;try{o=await Jo(()=>import("./pdf-BbQ2EgWn.js"),[],import.meta.url)}catch(s){console.warn("Aggiornamento del sito rilevato durante l’import di PDF.js: ricarico la pagina...",s),window.location.reload();return}const{estraiDocumento:a}=o,r=await a(n);vc(Ol(r))}catch(n){e&&(e.innerHTML=`<div class="errore-lettura">
         <strong>Non sono riuscito ad aprire questo PDF.</strong>
         <ul><li>${I(n instanceof Error?n.message:String(n))}</li>
         <li>Se il file è protetto da password o è una scansione, usa il secondo
