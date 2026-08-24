@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Memorie — AppUnic</title>
+    <meta name="description" content="Il tuo diario personale zero-server. Salva luoghi visitati, ristoranti, amicizie recenti e farmaci abituali in totale privacy." />
+    <link rel="canonical" href="https://www.appunic.com/" />
+    <style>
+      :root {
+        --carta: #FBF7EF;
+        --inchiostro: #1A1714;
+        --mandarino: #FF6A2B;
+        --mandarino-scuro: #E24E12;
+        --basilico: #1F7A4D;
+        --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      }
+      body {
+        margin: 0;
+        font-family: var(--sans);
+        background: linear-gradient(135deg, var(--carta) 0%, #fff0e6 100%);
+        color: var(--inchiostro);
+        min-height: 100vh;
+      }
+      nav.appunic-nav {
+        background: var(--inchiostro);
+        color: white;
+        padding: 10px 24px;
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        font-family: sans-serif;
+      }
+      .brand {
+        font-weight: 800;
+        font-size: 1.1rem;
+        letter-spacing: 1px;
+        color: white;
+        text-decoration: none;
+      }
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 4rem 2rem;
+      }
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .subtitle {
+        font-size: 1.2rem;
+        opacity: 0.8;
+        margin-bottom: 3rem;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(26, 23, 20, 0.08);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        position: relative;
+        overflow: hidden;
+      }
+      .card-coming-soon {
+        position: absolute;
+        top: 15px;
+        right: -30px;
+        background: var(--mandarino);
+        color: white;
+        font-size: 0.7rem;
+        font-weight: bold;
+        padding: 4px 30px;
+        transform: rotate(45deg);
+        letter-spacing: 1px;
+      }
+      .card h2 {
+        font-size: 1.4rem;
+        margin-top: 0;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .card p {
+        opacity: 0.8;
+        line-height: 1.5;
+        font-size: 0.95rem;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigazione Globale AppUnic -->
+    <nav class="appunic-nav">
+      <a href="./index.html" class="brand">AppUnic</a>
+      <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+        <a href="./bollette.html" style="color: white; text-decoration: none; font-weight: bold; opacity: 0.9;">Bollette</a>
+        <a href="./spesasmart.html" style="color: white; text-decoration: none; font-weight: bold; opacity: 0.9;">SpesaSmart</a>
+        <a href="./organizzazione.html" style="color: white; text-decoration: none; font-weight: bold; opacity: 0.9;">Organizzazione</a>
+        <a href="./memorie.html" style="color: white; text-decoration: none; font-weight: bold; opacity: 0.9;">Memorie</a>
+        <a href="#" style="color: white; text-decoration: none; font-weight: bold; opacity: 0.4; cursor: not-allowed;">Fisco</a>
+        <a href="#" style="color: white; text-decoration: none; font-weight: bold; opacity: 0.4; cursor: not-allowed;">Salute</a>
+      </div>
+      <a href="./area-personale.html" style="margin-left: auto; color: white; text-decoration: none; padding: 5px 10px; font-weight: bold; background: rgba(255, 255, 255, 0.2); border-radius: 8px;">Area Personale</a>
+    </nav>
+
+    <div class="container">
+      <h1>Memorie 🧠</h1>
+      <p class="subtitle">Il tuo diario digitale Zero-Server. Archivia ciò che conta senza condividerlo col mondo.</p>
+      
+      <div class="grid">
+        <div class="card" style="border-top: 4px solid #3b82f6;">
+          <div class="card-coming-soon">IN ARRIVO</div>
+          <h2>🌍 Luoghi Visitati</h2>
+          <p>Città, musei, hotel o semplici paesaggi che ti hanno colpito. Annota i ricordi legati a un posto speciale.</p>
+        </div>
+        
+        <div class="card" style="border-top: 4px solid #ef4444;">
+          <div class="card-coming-soon">IN ARRIVO</div>
+          <h2>🍝 Ristoranti</h2>
+          <p>Cosa hai mangiato, com'era il servizio e con chi eri. Non dimenticare mai più quel ristorantino perfetto.</p>
+        </div>
+        
+        <div class="card" style="border-top: 4px solid #f59e0b;">
+          <div class="card-coming-soon">IN ARRIVO</div>
+          <h2>👥 Amicizie Recenti</h2>
+          <p>Persone incontrate, interessi in comune, compleanni o dettagli da ricordare per coltivare nuove relazioni.</p>
+        </div>
+        
+        <div class="card" style="border-top: 4px solid var(--basilico);">
+          <div class="card-coming-soon">IN ARRIVO</div>
+          <h2>💊 Farmaci Abituali</h2>
+          <p>Tieni traccia di terapie, dosaggi e prescrizioni in un luogo sicuro. Essenziale per la tua salute.</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
