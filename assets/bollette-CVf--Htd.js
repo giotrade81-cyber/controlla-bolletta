@@ -555,7 +555,6 @@ Formato JSON atteso:
   <div id="vetrina">
   <header class="apertura">
     <div class="contenitore">
-      <p class="occhiello">Luce e gas</p>
       <h1>Controlla i conti della tua bolletta, e scopri se stai pagando troppo</h1>
       <p class="sommario">
         Venti verifiche aritmetiche sul documento che hai in mano. Se un numero è
@@ -898,7 +897,7 @@ Formato JSON atteso:
         di prova, ti resta da riempire ciò che è elencato qui sopra.</p>
         <div class="comandi"><button type="button" id="completa-a-mano">Completa
         a mano nel riquadro di prova</button></div>
-      </div>`}}e.innerHTML=Cc(t)+n,N("vai-a-modulo-assistente")?.addEventListener("click",o=>{o.preventDefault();const a=document.getElementById("assistente-ia");a&&(a.scrollIntoView({behavior:"smooth",block:"center"}),a.classList.add("evidenzia-pulse"),setTimeout(()=>a.classList.remove("evidenzia-pulse"),2500)),document.getElementById("copia")?.focus()}),N("completa-a-mano")?.addEventListener("click",()=>{Nc(t.bolletta)}),N("vai-al-confronto")?.addEventListener("click",()=>{document.getElementById("confronto")?.scrollIntoView({behavior:"smooth",block:"start"}),Ko()})}async function Qn(t){const e=N("esito-lettura"),i=N("nome-file");i&&(i.textContent=t.name),e&&(e.innerHTML='<p class="attendere">Sto leggendo il PDF — resta sul tuo dispositivo…</p>');try{const n=await t.arrayBuffer();let o;try{o=await na(()=>import("./pdf-CrYmw2C_.js"),[],import.meta.url)}catch(s){console.warn("Aggiornamento del sito rilevato durante l’import di PDF.js: ricarico la pagina...",s),window.location.reload();return}const{estraiDocumento:a}=o,r=await a(n);kc(Rl(r))}catch(n){e&&(e.innerHTML=`<div class="errore-lettura">
+      </div>`}}e.innerHTML=Cc(t)+n,N("vai-a-modulo-assistente")?.addEventListener("click",o=>{o.preventDefault();const a=document.getElementById("assistente-ia");a&&(a.scrollIntoView({behavior:"smooth",block:"center"}),a.classList.add("evidenzia-pulse"),setTimeout(()=>a.classList.remove("evidenzia-pulse"),2500)),document.getElementById("copia")?.focus()}),N("completa-a-mano")?.addEventListener("click",()=>{Nc(t.bolletta)}),N("vai-al-confronto")?.addEventListener("click",()=>{document.getElementById("confronto")?.scrollIntoView({behavior:"smooth",block:"start"}),Ko()})}async function Qn(t){const e=N("esito-lettura"),i=N("nome-file");i&&(i.textContent=t.name),e&&(e.innerHTML='<p class="attendere">Sto leggendo il PDF — resta sul tuo dispositivo…</p>');try{const n=await t.arrayBuffer();let o;try{o=await na(()=>import("./pdf-5Uaya6HC.js"),[],import.meta.url)}catch(s){console.warn("Aggiornamento del sito rilevato durante l’import di PDF.js: ricarico la pagina...",s),window.location.reload();return}const{estraiDocumento:a}=o,r=await a(n);kc(Rl(r))}catch(n){e&&(e.innerHTML=`<div class="errore-lettura">
         <strong>Non sono riuscito ad aprire questo PDF.</strong>
         <ul><li>${w(n instanceof Error?n.message:String(n))}</li>
         <li>Se il file è protetto da password o è una scansione, usa il secondo
