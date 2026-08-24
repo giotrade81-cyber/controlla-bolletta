@@ -1,4 +1,4 @@
-import{V as c}from"./VoiceAssistant-CLir7gxR.js";const a="http://localhost:3000/api";let n=null;function m(){console.log("🛒 Inizializzazione SpesaSmart..."),n=document.getElementById("app-spesasmart"),n||(n=document.createElement("div"),n.id="app-spesasmart",document.body.appendChild(n));const t=document.getElementById("vetrina-spesasmart");t&&(t.style.display="none"),p(),d()}function p(){n&&(n.innerHTML=`
+import{V as c}from"./VoiceAssistant-C1KsU7RI.js";const a="http://localhost:3000/api";let n=null;function m(){console.log("🛒 Inizializzazione SpesaSmart..."),n=document.getElementById("app-spesasmart"),n||(n=document.createElement("div"),n.id="app-spesasmart",document.body.appendChild(n));const t=document.getElementById("vetrina-spesasmart");t&&(t.style.display="none"),p(),d()}function p(){n&&(n.innerHTML=`
     <div style="max-width: 900px; margin: 0 auto; padding: 2rem; position: relative;">
       <!-- Sfondo decorativo sfocato -->
       <div style="position: absolute; top: -100px; left: -100px; width: 300px; height: 300px; background: var(--mandarino); filter: blur(120px); opacity: 0.15; z-index: -1;"></div>
