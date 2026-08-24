@@ -574,6 +574,7 @@
   // hero receipt animation on load
   window.addEventListener('load', function(){
     document.getElementById('stage').classList.add('animate');
+    renderShoppingList();
   });
 
   // scroll reveal
@@ -594,6 +595,63 @@
     msg.style.color = 'var(--basilico)';
     msg.textContent = 'Anteprima del sito — qui partirebbe l\'SMS con il codice a ' + tel + '.';
   });
+
+  // SHOPPING LIST LOGIC
+  function renderShoppingList() {
+    let widget = document.getElementById('shopping-widget');
+    if (!widget) {
+      widget = document.createElement('div');
+      widget.id = 'shopping-widget';
+      widget.style.position = 'fixed';
+      widget.style.bottom = '20px';
+      widget.style.left = '20px';
+      widget.style.width = '300px';
+      widget.style.maxHeight = '400px';
+      widget.style.overflowY = 'auto';
+      widget.style.background = 'rgba(255, 255, 255, 0.85)';
+      widget.style.backdropFilter = 'blur(16px)';
+      widget.style.WebkitBackdropFilter = 'blur(16px)';
+      widget.style.border = '1px solid rgba(255, 255, 255, 0.6)';
+      widget.style.borderRadius = '16px';
+      widget.style.boxShadow = '0 10px 40px rgba(0, 0, 0, 0.1)';
+      widget.style.padding = '20px';
+      widget.style.zIndex = '900';
+      document.body.appendChild(widget);
+    }
+
+    const shopStr = localStorage.getItem('APPUNIC_SHOPPING') || '[]';
+    const shoppingList = JSON.parse(shopStr);
+
+    if (shoppingList.length === 0) {
+      widget.style.display = 'none';
+      return;
+    }
+    widget.style.display = 'block';
+
+    let html = '<h3 style="margin-top:0; font-size:1.1rem; border-bottom:1px solid #ccc; padding-bottom:10px;">🛒 Lista della Spesa</h3><ul style="list-style:none; padding:0; margin:0;">';
+    
+    shoppingList.forEach((item) => {
+      html += `
+        <li style="padding: 8px 0; border-bottom: 1px dashed #e4daca; display: flex; justify-content: space-between;">
+          <span style="${item.comprato ? 'text-decoration: line-through; color: #aaa;' : 'color: var(--inchiostro);'}">${item.nome}</span>
+          <button onclick="toggleShopping('${item.id}')" style="background:none; border:none; color:var(--basilico); cursor:pointer;">${item.comprato ? 'Ripristina' : 'Fatto'}</button>
+        </li>
+      `;
+    });
+    html += '</ul>';
+    widget.innerHTML = html;
+  }
+
+  window.toggleShopping = function(id) {
+    const shopStr = localStorage.getItem('APPUNIC_SHOPPING') || '[]';
+    const shoppingList = JSON.parse(shopStr);
+    const item = shoppingList.find(i => String(i.id) === String(id));
+    if (item) {
+      item.comprato = !item.comprato;
+      localStorage.setItem('APPUNIC_SHOPPING', JSON.stringify(shoppingList));
+      renderShoppingList();
+    }
+  };
 </script>
 </body>
 </html>
