@@ -29,6 +29,9 @@ Formato JSON atteso:
       <p style="margin-bottom: 1.5rem;">
         <strong>Le API di Gemini ("Cervello Avanzato")</strong>: Questo è il motore intelligente. È lui che legge il testo lunghissimo che hai dettato, capisce che "giorno 20 settembre 2026 alle ore 17:00" è una data e un orario, separa il titolo ("bagno al cane") e salva la data nel calendario.
       </p>
+      <p style="margin-bottom: 1.5rem; font-weight: bold; color: var(--mandarino-scuro);">
+        Vuoi che inseriamo subito la chiave Gemini per farti testare la differenza e farti vedere come la magia avviene in automatico?
+      </p>
     `,n.style.fontSize="0.90rem",n.style.color="var(--inchiostro)",n.style.lineHeight="1.5";const o=document.createElement("div");o.style.background="rgba(255, 106, 43, 0.05)",o.style.border="1px solid rgba(255, 106, 43, 0.2)",o.style.padding="1rem",o.style.borderRadius="12px",o.style.marginBottom="1.5rem",o.innerHTML=`
       <h4 style="margin: 0 0 10px 0; color: var(--mandarino-scuro);">Come fare in 2 minuti:</h4>
       <ol style="margin: 0; padding-left: 1.2rem; font-size: 0.9rem; color: var(--inchiostro);">
