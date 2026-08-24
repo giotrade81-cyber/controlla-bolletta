@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpesaSmart — Ogni scontrino ti dice dove conviene fare la spesa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --carta:#FBF7EF;
+    --carta-2:#F3ECDD;
+    --inchiostro:#1A1714;
+    --mandarino:#FF6A2B;
+    --mandarino-scuro:#E24E12;
+    --basilico:#1F7A4D;
+    --foglia:#E2F1E6;
+    --grigio:#8A8178;
+    --linea:#E4DACA;
+    --ombra:rgba(26,23,20,.08);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Hanken Grotesk",sans-serif;
+    background:var(--carta);
+    color:var(--inchiostro);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* Navigazione Globale AppUnic */
+  .appunic-nav {
+    background: var(--inchiostro, #1A1714);
+    color: white;
+    padding: 10px 24px;
+    display: flex;
+    gap: 20px;
+    font-family: sans-serif;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  .appunic-nav a {
+    color: white;
+    text-decoration: none;
+    padding: 5px 10px;
+  }
+  .appunic-nav .active {
+    background: rgba(255,255,255,0.2);
+    border-radius: 4px;
+  }
+  .appunic-nav .inactive {
+    opacity: 0.7;
+  }
+
+  /* subtle paper grain */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.4;
+    background-image:radial-gradient(var(--linea) .5px,transparent .5px);
+    background-size:22px 22px;
+  }
+
+  h1,h2,h3,.display{font-family:"Bricolage Grotesque",sans-serif;line-height:1.02;letter-spacing:-.02em;}
+  .mono{font-family:"Space Mono",monospace;}
+
+  .wrap{max-width:1160px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
+
+  .eyebrow{
+    font-family:"Space Mono",monospace;font-size:.72rem;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--grigio);display:inline-flex;align-items:center;gap:.6em;
+  }
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--mandarino);}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky;top:0;z-index:50;background:rgba(251,247,239,.82);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--linea);
+  }
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:68px;}
+  .logo{display:flex;align-items:center;gap:10px;font-family:"Bricolage Grotesque";font-weight:800;font-size:1.25rem;letter-spacing:-.03em;}
+  .logo-mark{
+    width:30px;height:30px;border-radius:8px;background:var(--mandarino);position:relative;flex:none;
+    box-shadow:0 3px 0 var(--mandarino-scuro);
+  }
+  .logo-mark::after{
+    content:"";position:absolute;inset:0;margin:auto;width:13px;height:13px;
+    border:2.5px solid var(--carta);border-top:none;border-right:none;transform:rotate(-45deg) translate(1px,-2px);
+  }
+  .nav-links{display:flex;align-items:center;gap:30px;}
+  .nav-links a{color:var(--inchiostro);text-decoration:none;font-weight:500;font-size:.96rem;opacity:.75;transition:opacity .2s;}
+  .nav-links a:hover{opacity:1;}
+  .btn{
+    font-family:"Hanken Grotesk";font-weight:700;font-size:.96rem;cursor:pointer;border:none;
+    padding:11px 22px;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-primary{background:var(--mandarino);color:#fff;box-shadow:0 4px 0 var(--mandarino-scuro);}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 0 var(--mandarino-scuro);}
+  .btn-primary:active{transform:translateY(2px);box-shadow:0 2px 0 var(--mandarino-scuro);}
+  .btn-ghost{background:transparent;color:var(--inchiostro);border:1.5px solid var(--inchiostro);}
+  .btn-ghost:hover{background:var(--inchiostro);color:var(--carta);}
+  .nav-cta-mobile{display:none;}
+
+  /* ---------- HERO ---------- */
+  .hero{padding:70px 0 40px;}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;}
+  .hero h1{font-size:clamp(2.4rem,5.2vw,4.1rem);font-weight:800;margin:22px 0 22px;}
+  .hero h1 .ink{color:var(--mandarino);position:relative;white-space:nowrap;}
+  .hero p.lead{font-size:1.2rem;color:#4a443d;max-width:30em;margin-bottom:32px;}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
+  .hero-note{font-size:.9rem;color:var(--grigio);margin-top:22px;display:flex;align-items:center;gap:8px;}
+  .hero-note svg{flex:none;}
+
+  /* receipt */
+  .receipt-stage{position:relative;display:flex;justify-content:center;}
+  .receipt{
+    background:#fff;width:340px;max-width:100%;position:relative;
+    padding:26px 26px 30px;box-shadow:0 24px 50px -18px rgba(26,23,20,.35);
+    font-family:"Space Mono",monospace;font-size:.82rem;color:var(--inchiostro);
+  }
+  /* zig-zag torn edges */
+  .receipt::before,.receipt::after{
+    content:"";position:absolute;left:0;right:0;height:10px;
+    background:linear-gradient(-45deg,#fff 6px,transparent 0),linear-gradient(45deg,#fff 6px,transparent 0);
+    background-size:12px 12px;background-position:0 0;
+  }
+  .receipt::before{top:-9px;transform:rotate(180deg);}
+  .receipt::after{bottom:-9px;}
+  .r-head{text-align:center;border-bottom:1.5px dashed var(--linea);padding-bottom:12px;margin-bottom:12px;}
+  .r-logo{font-family:"Bricolage Grotesque";font-weight:800;font-size:1.5rem;letter-spacing:-.04em;}
+  .r-sub{font-size:.68rem;letter-spacing:.12em;color:var(--grigio);margin-top:3px;}
+  .r-row{display:flex;justify-content:space-between;gap:10px;padding:4px 0;opacity:0;}
+  .r-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .r-dots{flex:1;border-bottom:1.5px dotted var(--linea);margin:0 6px;transform:translateY(-4px);}
+  .r-price{white-space:nowrap;font-weight:700;}
+  .r-total{display:flex;justify-content:space-between;border-top:1.5px dashed var(--linea);margin-top:12px;padding-top:12px;font-weight:700;font-size:1rem;}
+  .r-barcode{margin-top:16px;height:34px;background:repeating-linear-gradient(90deg,var(--inchiostro) 0 2px,transparent 2px 4px,var(--inchiostro) 4px 5px,transparent 5px 9px);opacity:.85;}
+  .r-foot{text-align:center;font-size:.62rem;color:var(--grigio);letter-spacing:.1em;margin-top:10px;}
+
+  /* scan line */
+  .scanline{position:absolute;left:-6px;right:-6px;height:36px;pointer-events:none;
+    background:linear-gradient(180deg,transparent,rgba(255,106,43,.28),transparent);
+    box-shadow:0 0 12px rgba(255,106,43,.5);border-top:1px solid var(--mandarino);border-bottom:1px solid var(--mandarino);opacity:0;}
+
+  /* understood chip that floats out */
+  .parsed{
+    position:absolute;right:-26px;bottom:38px;background:var(--inchiostro);color:#fff;
+    border-radius:12px;padding:12px 15px;width:210px;box-shadow:0 16px 30px -10px rgba(26,23,20,.5);
+    opacity:0;transform:translateX(12px);
+  }
+  .parsed .p-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;}
+  .parsed .p-name{font-family:"Bricolage Grotesque";font-weight:700;font-size:.98rem;}
+  .parsed .p-cat{font-family:"Space Mono";font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;background:rgba(255,255,255,.14);padding:2px 7px;border-radius:20px;color:#fff;}
+  .parsed .p-prices{display:flex;align-items:baseline;gap:10px;}
+  .parsed .p-full{font-family:"Space Mono";font-size:.95rem;font-weight:700;}
+  .parsed .p-tag{font-size:.68rem;color:#8fd6ab;font-weight:600;}
+
+  @keyframes printIn{to{opacity:1;}}
+  @keyframes sweep{
+    0%{top:6px;opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{top:calc(100% - 42px);opacity:0;}
+  }
+  @keyframes floatIn{to{opacity:1;transform:translateX(0);}}
+
+  .animate .r-row{animation:printIn .4s ease forwards;}
+  .animate .r-row:nth-child(1){animation-delay:.35s}
+  .animate .r-row:nth-child(2){animation-delay:.5s}
+  .animate .r-row:nth-child(3){animation-delay:.65s}
+  .animate .r-row:nth-child(4){animation-delay:.8s}
+  .animate .r-row:nth-child(5){animation-delay:.95s}
+  .animate .scanline{animation:sweep 2.4s ease-in-out 1.2s;}
+  .animate .parsed{animation:floatIn .5s ease 2.1s forwards;}
+
+  /* ---------- strip divider ---------- */
+  .ticker{background:var(--inchiostro);color:var(--carta);overflow:hidden;padding:13px 0;margin-top:30px;}
+  .ticker-in{display:flex;gap:44px;white-space:nowrap;font-family:"Space Mono";font-size:.82rem;letter-spacing:.05em;animation:scroll 26s linear infinite;}
+  .ticker-in span{display:inline-flex;align-items:center;gap:44px;}
+  .ticker b{color:var(--mandarino);}
+  @keyframes scroll{to{transform:translateX(-50%);}}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:88px 0;}
+  .sec-head{max-width:38em;margin-bottom:52px;}
+  .sec-head h2{font-size:clamp(1.9rem,3.6vw,2.9rem);font-weight:800;margin:16px 0;}
+  .sec-head p{font-size:1.12rem;color:#4a443d;}
+
+  /* how it works */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1.5px solid var(--inchiostro);background:#fff;}
+  .step{padding:34px 30px;border-right:1.5px solid var(--inchiostro);position:relative;}
+  .step:last-child{border-right:none;}
+  .step-n{font-family:"Space Mono";font-size:.78rem;font-weight:700;color:var(--mandarino);letter-spacing:.1em;}
+  .step h3{font-size:1.4rem;font-weight:700;margin:16px 0 10px;}
+  .step p{color:#4a443d;font-size:1rem;}
+  .step-ico{width:44px;height:44px;margin-bottom:6px;color:var(--inchiostro);}
+
+  /* transparency band */
+  .trust{background:var(--basilico);color:#fff;}
+  .trust .wrap{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;}
+  .trust .eyebrow{color:#bfe6cd;}
+  .trust .eyebrow::before{background:#fff;}
+  .trust h2{font-size:clamp(1.8rem,3.3vw,2.6rem);font-weight:800;margin:16px 0 20px;color:#fff;}
+  .trust p{color:#dcefe2;font-size:1.1rem;margin-bottom:14px;}
+  .trust .demo{background:#fff;color:var(--inchiostro);border-radius:14px;padding:24px;box-shadow:0 20px 40px -14px rgba(0,0,0,.35);}
+  .demo-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--linea);}
+  .demo-row:last-of-type{border-bottom:none;}
+  .demo-name{font-weight:600;}
+  .demo-name small{display:block;font-family:"Space Mono";font-size:.62rem;letter-spacing:.08em;color:var(--grigio);text-transform:uppercase;margin-top:2px;}
+  .demo-prices{text-align:right;font-family:"Space Mono";}
+  .price-full{font-weight:700;font-size:1.05rem;}
+  .price-paid{color:var(--grigio);text-decoration:line-through;font-size:.82rem;}
+  .badge-promo{display:inline-block;background:var(--foglia);color:var(--basilico);font-family:"Space Mono";font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:8px;letter-spacing:.05em;}
+  .demo-caption{margin-top:18px;padding-top:16px;border-top:1.5px dashed var(--linea);font-size:.86rem;color:#4a443d;display:flex;gap:10px;}
+  .demo-caption svg{flex:none;color:var(--basilico);}
+
+  /* dashboard preview */
+  .dash{display:grid;grid-template-columns:.85fr 1.15fr;gap:24px;}
+  .card{background:#fff;border:1.5px solid var(--linea);border-radius:16px;padding:24px;}
+  .card-lbl{font-family:"Space Mono";font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grigio);}
+  .big-num{font-family:"Bricolage Grotesque";font-weight:800;font-size:2.6rem;letter-spacing:-.03em;margin:6px 0 2px;}
+  .trend{font-size:.86rem;color:var(--basilico);font-weight:600;}
+  .cat-bars{margin-top:22px;display:flex;flex-direction:column;gap:13px;}
+  .cat{}
+  .cat-top{display:flex;justify-content:space-between;font-size:.9rem;margin-bottom:5px;}
+  .cat-top b{font-weight:600;}
+  .cat-top span{font-family:"Space Mono";color:var(--grigio);font-size:.82rem;}
+  .bar{height:9px;background:var(--carta-2);border-radius:20px;overflow:hidden;}
+  .bar i{display:block;height:100%;border-radius:20px;background:var(--mandarino);}
+  .bar.g i{background:var(--basilico);}
+
+  .search-card{display:flex;flex-direction:column;}
+  .search-box{display:flex;align-items:center;gap:10px;border:1.5px solid var(--inchiostro);border-radius:11px;padding:11px 15px;font-family:"Space Mono";font-size:.95rem;background:var(--carta);}
+  .search-box .cur{color:var(--mandarino);font-weight:700;animation:blink 1.1s steps(1) infinite;}
+  @keyframes blink{50%{opacity:0;}}
+  .results{margin-top:16px;display:flex;flex-direction:column;gap:2px;}
+  .res{display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center;padding:12px 8px;border-radius:9px;font-size:.92rem;}
+  .res:nth-child(odd){background:var(--carta);}
+  .res .rp{font-family:"Space Mono";font-weight:700;}
+  .res .rs{font-family:"Space Mono";font-size:.74rem;color:var(--grigio);text-align:right;}
+  .res .best{color:var(--basilico);}
+  .res .best::after{content:" ✓";}
+
+  /* categories */
+  .cats-wrap{text-align:center;}
+  .chips{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:8px;}
+  .chip{border:1.5px solid var(--inchiostro);border-radius:40px;padding:10px 20px;font-weight:600;font-size:.96rem;background:#fff;display:inline-flex;align-items:center;gap:9px;transition:transform .15s, background .15s, color .15s;}
+  .chip:hover{transform:translateY(-3px);background:var(--inchiostro);color:var(--carta);}
+  .chip .dot{width:8px;height:8px;border-radius:50%;background:var(--mandarino);}
+
+  /* CTA / register */
+  .cta{background:var(--inchiostro);color:var(--carta);}
+  .cta-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;}
+  .cta h2{font-size:clamp(2rem,3.6vw,3rem);font-weight:800;color:#fff;margin-bottom:18px;}
+  .cta p{color:#c9c2b8;font-size:1.12rem;margin-bottom:16px;}
+  .cta-list{list-style:none;display:flex;flex-direction:column;gap:12px;margin-top:22px;}
+  .cta-list li{display:flex;align-items:flex-start;gap:12px;color:#e8e2d8;font-size:1.02rem;}
+  .cta-list svg{flex:none;color:var(--mandarino);margin-top:3px;}
+  .form{background:var(--carta);color:var(--inchiostro);border-radius:18px;padding:30px;}
+  .form h3{font-size:1.35rem;font-weight:700;margin-bottom:4px;}
+  .form .fsub{font-size:.92rem;color:var(--grigio);margin-bottom:20px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:.82rem;font-weight:600;margin-bottom:6px;}
+  .field input{width:100%;border:1.5px solid var(--linea);border-radius:10px;padding:12px 14px;font-family:"Hanken Grotesk";font-size:1rem;background:#fff;transition:border-color .2s;}
+  .field input:focus{outline:none;border-color:var(--mandarino);}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .sms-hint{display:flex;gap:10px;align-items:flex-start;background:var(--foglia);color:#155e3a;border-radius:10px;padding:12px 14px;font-size:.86rem;margin:6px 0 16px;}
+  .sms-hint svg{flex:none;margin-top:2px;}
+  .consent{display:flex;gap:9px;align-items:flex-start;font-size:.82rem;color:#4a443d;margin-bottom:18px;}
+  .consent input{margin-top:3px;flex:none;width:16px;height:16px;accent-color:var(--mandarino);}
+  .form .btn-primary{width:100%;justify-content:center;font-size:1.05rem;padding:14px;}
+  .form-msg{text-align:center;font-size:.88rem;color:var(--basilico);font-weight:600;margin-top:12px;min-height:1.2em;}
+
+  /* footer */
+  footer{border-top:1px solid var(--linea);padding:40px 0;}
+  .foot-in{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px;}
+  .foot-in p{font-size:.86rem;color:var(--grigio);}
+  .foot-links{display:flex;gap:22px;}
+  .foot-links a{color:var(--grigio);text-decoration:none;font-size:.86rem;transition:color .2s;}
+  .foot-links a:hover{color:var(--inchiostro);}
+
+  /* reveal on scroll */
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:900px){
+    .hero-grid,.trust .wrap,.dash,.cta-grid{grid-template-columns:1fr;}
+    .hero{padding:48px 0 20px;}
+    .receipt-stage{margin-top:20px;}
+    .parsed{right:0;}
+    .steps{grid-template-columns:1fr;}
+    .step{border-right:none;border-bottom:1.5px solid var(--inchiostro);}
+    .step:last-child{border-bottom:none;}
+    .nav-links{display:none;}
+    .nav-cta-mobile{display:inline-flex;}
+    section{padding:60px 0;}
+    .trust .demo{order:-1;}
+  }
+  @media (max-width:520px){
+    .field-row{grid-template-columns:1fr;}
+    .hero h1 .ink{white-space:normal;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;}
+    .r-row,.parsed{opacity:1!important;transform:none!important;}
+    .reveal{opacity:1!important;transform:none!important;}
+  }
+</style>
+</head>
+<body>
+<!-- Navigazione Globale AppUnic -->
+<nav class="appunic-nav">
+  <div style="font-weight: bold; font-size: 1.1rem; letter-spacing: 1px;">AppUnic</div>
+  <a href="./index.html" class="inactive">Confronto Bollette</a>
+  <a href="./spesasmart.html" class="active">SpesaSmart</a>
+</nav>
+
+<!-- NAV -->
+<nav>
+  <div class="wrap nav-in">
+    <div class="logo"><span class="logo-mark"></span>SpesaSmart</div>
+    <div class="nav-links">
+      <a href="#come">Come funziona</a>
+      <a href="#trasparenza">Prezzi onesti</a>
+      <a href="#area">Area clienti</a>
+      <a href="#registrati" class="btn btn-ghost">Entra</a>
+    </div>
+    <a href="#registrati" class="btn btn-primary nav-cta-mobile">Entra</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">Il tuo bilancio della spesa</span>
+      <h1>Ogni scontrino ti dice <span class="ink">dove conviene</span> fare la spesa.</h1>
+      <p class="lead">Fotografa lo scontrino o carica il PDF. SpesaSmart lo legge da solo, tiene il conto di quanto spendi e ti mostra dove gli stessi prodotti costano meno.</p>
+      <div class="hero-cta">
+        <a href="#registrati" class="btn btn-primary">Inizia gratis
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h9M8 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#come" class="btn btn-ghost">Guarda come funziona</a>
+      </div>
+      <div class="hero-note">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="var(--basilico)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="var(--basilico)" stroke-width="2.2"/></svg>
+        Foto o PDF · Nessun dato inventato · I conti tornano sempre
+      </div>
+    </div>
+
+    <div class="receipt-stage" id="stage">
+      <div class="receipt">
+        <div class="scanline"></div>
+        <div class="r-head">
+          <div class="r-logo">MD</div>
+          <div class="r-sub">SUPERMERCATO · FOGGIA</div>
+        </div>
+        <div class="r-row"><span class="r-name">PASTA BARILLA 500</span><span class="r-dots"></span><span class="r-price">1,29</span></div>
+        <div class="r-row"><span class="r-name">LATTE INT 1L</span><span class="r-dots"></span><span class="r-price">1,15</span></div>
+        <div class="r-row"><span class="r-name">TONNO RIO MARE 3X</span><span class="r-dots"></span><span class="r-price">3,49</span></div>
+        <div class="r-row"><span class="r-name">PARMIGIANO 200G</span><span class="r-dots"></span><span class="r-price">4,90</span></div>
+        <div class="r-row"><span class="r-name">SHOPPER</span><span class="r-dots"></span><span class="r-price">0,10</span></div>
+        <div class="r-total"><span>TOTALE</span><span>10,93</span></div>
+        <div class="r-barcode"></div>
+        <div class="r-foot">10-01-2026 · GRAZIE E ARRIVEDERCI</div>
+      </div>
+
+      <div class="parsed">
+        <div class="p-top">
+          <span class="p-name">Pasta Barilla</span>
+          <span class="p-cat">Alimentari</span>
+        </div>
+        <div class="p-prices">
+          <span class="p-full">1,29 €</span>
+          <span class="p-tag">2,58 €/kg</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- TICKER -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-in">
+    <span>
+      LETTO CON L'IA&nbsp;&nbsp;<b>◆</b>&nbsp;&nbsp;PREZZO PIENO PER I CONFRONTI&nbsp;&nbsp;<b>◆</b>&nbsp;&nbsp;RICERCA OGNI PRODOTTO&nbsp;&nbsp;<b>◆</b>&nbsp;&nbsp;SPESA PER CATEGORIA&nbsp;&nbsp;<b>◆</b>&nbsp;&nbsp;FOTO O PDF&nbsp;&nbsp;<b>◆</b>&nbsp;&nbsp;
+    </span>
+    <span>
+      LETTO CON L'IA&nbsp;&nbsp;<b>◆</b>&nbsp;&nbsp;PREZZO PIENO PER I CONFRONTI&nbsp;&nbsp;<b>◆</b>&nbsp;&nbsp;RICERCA OGNI PRODOTTO&nbsp;&nbsp;<b>◆</b>&nbsp;&nbsp;SPESA PER CATEGORIA&nbsp;&nbsp;<b>◆</b>&nbsp;&nbsp;FOTO O PDF&nbsp;&nbsp;<b>◆</b>&nbsp;&nbsp;
+    </span>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="come">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Come funziona</span>
+      <h2>Dallo scontrino ai tuoi conti, in tre passi.</h2>
+      <p>Niente da digitare a mano. Fai una foto e il lavoro noioso lo facciamo noi.</p>
+    </div>
+    <div class="steps reveal">
+      <div class="step">
+        <svg class="step-ico" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="13" r="3.5" stroke="currentColor" stroke-width="1.8"/><path d="M8 6l1.2-2h5.6L16 6" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <div class="step-n">01 — SCANSIONI</div>
+        <h3>Fotografi lo scontrino</h3>
+        <p>Con la fotocamera del telefono o caricando il PDF dello scontrino elettronico. Un secondo e hai finito.</p>
+      </div>
+      <div class="step">
+        <svg class="step-ico" viewBox="0 0 24 24" fill="none"><path d="M12 3v3M12 18v3M3 12h3M18 12h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><rect x="7" y="7" width="10" height="10" rx="2.5" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/></svg>
+        <div class="step-n">02 — L'IA LEGGE</div>
+        <h3>Prodotti e prezzi, ordinati</h3>
+        <p>L'intelligenza artificiale riconosce ogni voce, pulisce i nomi e li mette in categoria. Anche se lo scontrino è stropicciato.</p>
+      </div>
+      <div class="step">
+        <svg class="step-ico" viewBox="0 0 24 24" fill="none"><path d="M4 19V5M4 19h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M8 15l3-4 3 2 4-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="step-n">03 — CONFRONTI</div>
+        <h3>Vedi dove risparmi</h3>
+        <p>Quanto hai speso, in quali categorie, e dove gli stessi prodotti costano meno vicino a te. Tutto ricercabile.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRANSPARENCY -->
+<section class="trust" id="trasparenza">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">Prezzi onesti</span>
+      <h2>Le offerte non falsano i confronti.</h2>
+      <p>Sullo scontrino vedi tutto: prezzo pieno e prezzo scontato, con il totale reale che hai pagato. I conti tornano, sempre.</p>
+      <p>Ma quando confrontiamo i supermercati usiamo <strong>solo il prezzo pieno di listino</strong>. Perché un'offerta dura una settimana: il prezzo vero è quello di tutti i giorni.</p>
+    </div>
+    <div class="demo reveal">
+      <div class="demo-row">
+        <div class="demo-name">Pasta Barilla 500g<small>Alimentari</small></div>
+        <div class="demo-prices"><span class="price-full">1,29 €</span> <span class="badge-promo">−31%</span><br><span class="price-paid">pagato 0,89 €</span></div>
+      </div>
+      <div class="demo-row">
+        <div class="demo-name">Latte intero 1L<small>Alimentari</small></div>
+        <div class="demo-prices"><span class="price-full">1,15 €</span><br><span class="price-paid" style="text-decoration:none;color:var(--grigio)">nessuna offerta</span></div>
+      </div>
+      <div class="demo-row">
+        <div class="demo-name">Tonno Rio Mare 3×80<small>Alimentari</small></div>
+        <div class="demo-prices"><span class="price-full">4,99 €</span> <span class="badge-promo">−30%</span><br><span class="price-paid">pagato 3,49 €</span></div>
+      </div>
+      <div class="demo-caption">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>I prezzi scontati vengono scorporati dalle statistiche. Nei confronti tra supermercati conta solo il prezzo pieno.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD PREVIEW -->
+<section id="area">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Area clienti</span>
+      <h2>Il bilancio della spesa, sotto controllo.</h2>
+      <p>Quanto spendi, dove vanno i soldi, e la ricerca che trova ogni singolo prodotto che hai comprato.</p>
+    </div>
+    <div class="dash reveal">
+      <div class="card">
+        <div class="card-lbl">Spesa di gennaio</div>
+        <div class="big-num">387,40 €</div>
+        <div class="trend">↓ 42 € rispetto a dicembre</div>
+        <div class="cat-bars">
+          <div class="cat">
+            <div class="cat-top"><b>Alimentari</b><span>212 €</span></div>
+            <div class="bar"><i style="width:78%"></i></div>
+          </div>
+          <div class="cat">
+            <div class="cat-top"><b>Casa e pulizia</b><span>68 €</span></div>
+            <div class="bar"><i style="width:42%"></i></div>
+          </div>
+          <div class="cat">
+            <div class="cat-top"><b>Igiene personale</b><span>54 €</span></div>
+            <div class="bar"><i style="width:33%"></i></div>
+          </div>
+          <div class="cat">
+            <div class="cat-top"><b>Bevande</b><span>53 €</span></div>
+            <div class="bar g"><i style="width:31%"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card search-card">
+        <div class="card-lbl" style="margin-bottom:12px;">Cerca tra i tuoi acquisti</div>
+        <div class="search-box"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="var(--grigio)" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="var(--grigio)" stroke-width="2" stroke-linecap="round"/></svg>pasta<span class="cur">|</span></div>
+        <div class="results">
+          <div class="res"><span>Barilla Spaghetti n.5 500g</span><span class="rp best">1,19&nbsp;€</span><span class="rs">MD · 10 gen</span></div>
+          <div class="res"><span>De Cecco Penne 500g</span><span class="rp">1,45&nbsp;€</span><span class="rs">Conad · 4 gen</span></div>
+          <div class="res"><span>Barilla Fusilli 500g</span><span class="rp">1,29&nbsp;€</span><span class="rs">Lidl · 28 dic</span></div>
+          <div class="res"><span>Rummo Spaghetti 500g</span><span class="rp">1,89&nbsp;€</span><span class="rs">Coop · 21 dic</span></div>
+        </div>
+        <p style="margin-top:16px;font-size:.86rem;color:var(--grigio);">Cerca un prodotto, un marchio o un supermercato: trovi tutto quello che hai comprato, con i prezzi e le date.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="cats-wrap">
+  <div class="wrap reveal">
+    <span class="eyebrow" style="justify-content:center;">Tutto catalogato</span>
+    <h2 style="font-size:clamp(1.7rem,3.2vw,2.5rem);font-weight:800;margin:16px 0 6px;">Ogni prodotto trova la sua categoria</h2>
+    <p style="color:#4a443d;font-size:1.08rem;max-width:34em;margin:0 auto 30px;">Così sai davvero dove finiscono i tuoi soldi, mese dopo mese.</p>
+    <div class="chips">
+      <span class="chip"><span class="dot"></span>Alimentari</span>
+      <span class="chip"><span class="dot"></span>Bevande</span>
+      <span class="chip"><span class="dot"></span>Casa e pulizia</span>
+      <span class="chip"><span class="dot"></span>Igiene personale</span>
+      <span class="chip"><span class="dot"></span>Cura della persona</span>
+      <span class="chip"><span class="dot"></span>Animali</span>
+      <span class="chip"><span class="dot"></span>Altro</span>
+    </div>
+  </div>
+</section>
+
+<!-- CTA / REGISTER -->
+<section class="cta" id="registrati">
+  <div class="wrap cta-grid">
+    <div class="reveal">
+      <span class="eyebrow" style="color:#e9b38f;">Inizia gratis</span>
+      <h2>Il primo scontrino cambia già le tue abitudini.</h2>
+      <p>Registrati in un minuto e comincia a tenere sotto controllo la spesa di casa. Bastano nome, email e numero di telefono.</p>
+      <ul class="cta-list">
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.2"/></svg>Scansioni illimitate, foto o PDF</li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.2"/></svg>Statistiche e ricerca su tutta la spesa</li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.2"/></svg>Confronto onesto tra supermercati</li>
+      </ul>
+    </div>
+
+    <div class="form reveal">
+      <h3>Crea il tuo account</h3>
+      <p class="fsub">Gratis. Ci vuole un minuto.</p>
+      <div class="field-row">
+        <div class="field"><label for="nome">Nome</label><input id="nome" type="text" placeholder="Mario"></div>
+        <div class="field"><label for="cognome">Cognome</label><input id="cognome" type="text" placeholder="Rossi"></div>
+      </div>
+      <div class="field"><label for="email">Email</label><input id="email" type="email" placeholder="mario.rossi@email.it"></div>
+      <div class="field"><label for="tel">Numero di telefono</label><input id="tel" type="tel" placeholder="+39 333 000 0000"></div>
+      <div class="sms-hint">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="6" y="2.5" width="12" height="19" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M11 18.5h2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>Tieni il telefono a portata di mano: ti arriva un codice via SMS per confermare il numero.</span>
+      </div>
+      <label class="consent"><input type="checkbox" id="privacy"><span>Accetto i termini di servizio e la privacy policy. I dati di prezzo vengono usati in forma anonima e aggregata per analisi di mercato.</span></label>
+      <button class="btn btn-primary" id="submit">Ricevi il codice e registrati</button>
+      <div class="form-msg" id="msg"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap foot-in">
+    <div class="logo"><span class="logo-mark"></span>SpesaSmart</div>
+    <p>La spesa intelligente. Fatta in Italia. 🇮🇹</p>
+    <div class="foot-links">
+      <a href="#come">Come funziona</a>
+      <a href="#trasparenza">Prezzi onesti</a>
+      <a href="#registrati">Entra</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // hero receipt animation on load
+  window.addEventListener('load', function(){
+    document.getElementById('stage').classList.add('animate');
+  });
+
+  // scroll reveal
+  const io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:.15});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+  // register form (mock, no server)
+  document.getElementById('submit').addEventListener('click', function(){
+    const nome = document.getElementById('nome').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const tel = document.getElementById('tel').value.trim();
+    const privacy = document.getElementById('privacy').checked;
+    const msg = document.getElementById('msg');
+    if(!nome || !email || !tel){ msg.style.color = '#E24E12'; msg.textContent = 'Compila nome, email e telefono per continuare.'; return; }
+    if(!privacy){ msg.style.color = '#E24E12'; msg.textContent = 'Serve il consenso ai termini per registrarti.'; return; }
+    msg.style.color = 'var(--basilico)';
+    msg.textContent = 'Anteprima del sito — qui partirebbe l\'SMS con il codice a ' + tel + '.';
+  });
+</script>
+</body>
+</html>
