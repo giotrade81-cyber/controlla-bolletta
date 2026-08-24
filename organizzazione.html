@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Organizzazione e Agenda — AppUnic</title>
+    <meta
+      name="description"
+      content="La tua agenda intelligente 100% Zero-Server. Gestisci impegni e priorità solo sul tuo dispositivo."
+    />
+    <meta name="robots" content="index, follow" />
+    <style>
+      :root {
+        --carta: #FBF7EF;
+        --inchiostro: #1A1714;
+        --mandarino: #FF6A2B;
+        --basilico: #1F7A4D;
+        --bordo: #E4DACA;
+        --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      }
+      body {
+        margin: 0;
+        font-family: var(--sans);
+        background: linear-gradient(135deg, var(--carta) 0%, #fff0e6 100%);
+        color: var(--inchiostro);
+        min-height: 100vh;
+      }
+      nav {
+        background: var(--inchiostro);
+        color: white;
+        padding: 10px 24px;
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+      .brand {
+        font-weight: 800;
+        font-size: 1.1rem;
+        letter-spacing: 1px;
+        color: white;
+        text-decoration: none;
+      }
+      nav a {
+        color: white;
+        text-decoration: none;
+        padding: 5px 10px;
+        opacity: 0.7;
+        border-radius: 4px;
+      }
+      nav a.active {
+        background: rgba(255, 255, 255, 0.2);
+        opacity: 1;
+      }
+      nav a:hover {
+        opacity: 1;
+      }
+      .btn-personale {
+        margin-left: auto;
+        font-weight: bold;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        opacity: 1;
+      }
+      
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem;
+      }
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        text-align: center;
+      }
+      .subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 3rem;
+      }
+      
+      .dashboard {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+      }
+      
+      .panel {
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+      }
+      
+      .panel h2 {
+        margin-top: 0;
+        font-size: 1.4rem;
+        border-bottom: 2px solid var(--bordo);
+        padding-bottom: 10px;
+        margin-bottom: 1.5rem;
+      }
+
+      @media (max-width: 768px) {
+        .dashboard {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+    <script type="module" crossorigin src="./assets/organizzazione-DJrSE9ZJ.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/VoiceAssistant-CQXbsU9M.js">
+  </head>
+  <body>
+    <nav>
+      <a href="./index.html" class="brand">AppUnic</a>
+      <a href="./bollette.html">Confronto Bollette</a>
+      <a href="./spesasmart.html">SpesaSmart</a>
+      <a href="./organizzazione.html" class="active">Organizzazione</a>
+      <a href="./area-personale.html" class="btn-personale">Area Personale</a>
+    </nav>
+    
+    <div class="container">
+      <h1>Organizzazione & Agenda</h1>
+      <p class="subtitle">Il tuo assistente vocale intelligente per la produttività quotidiana.</p>
+      
+      <div id="app-organizzazione">
+        <!-- Contenuto generato da main.ts -->
+        <div class="dashboard">
+          <div class="panel">
+            <h2>🔥 Priorità di Oggi</h2>
+            <div id="lista-oggi">
+              <p style="color: #888;">Caricamento task...</p>
+            </div>
+          </div>
+          <div class="panel">
+            <h2>📅 Prossimamente</h2>
+            <div id="lista-prossimamente">
+              <p style="color: #888;">Caricamento task...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </body>
+</html>
