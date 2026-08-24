@@ -3,28 +3,148 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Confronto Bolletta — AppUnic</title>
-    <meta
-      name="description"
-      content="Verifica i conti della tua bolletta di luce e gas e confronta le offerte con il catalogo ufficiale ARERA. Il documento non lascia il tuo dispositivo."
-    />
-    <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://www.appunic.com/" />
-    <meta property="og:title" content="Confronto Bolletta — AppUnic" />
-    <meta property="og:description" content="Verifica trasparente e confronto tariffe luce e gas in tempo reale. Privacy totale a zero-server." />
-    <meta property="og:url" content="https://www.appunic.com/" />
-    <meta property="og:type" content="website" />
-    <script type="module" crossorigin src="./assets/main-B7-I2-ia.js"></script>
-    <link rel="modulepreload" crossorigin href="./assets/VoiceAssistant-C1KsU7RI.js">
-    <link rel="stylesheet" crossorigin href="./assets/VoiceAssistant-DqVLwIz1.css">
+    <title>Ecosistema AppUnic</title>
+    <meta name="description" content="Il tuo ecosistema intelligente e 100% Zero-Server. Bollette, Spesa e molto altro, nel massimo rispetto della tua privacy." />
+    <style>
+      :root {
+        --carta: #FBF7EF;
+        --inchiostro: #1A1714;
+        --mandarino: #FF6A2B;
+        --basilico: #1F7A4D;
+        --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      }
+      body {
+        margin: 0;
+        font-family: var(--sans);
+        background: linear-gradient(135deg, var(--carta) 0%, #fff0e6 100%);
+        color: var(--inchiostro);
+        min-height: 100vh;
+      }
+      nav {
+        background: var(--inchiostro);
+        color: white;
+        padding: 15px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .brand {
+        font-weight: 800;
+        font-size: 1.4rem;
+        letter-spacing: 1px;
+        text-decoration: none;
+        color: white;
+      }
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 4rem 2rem;
+      }
+      h1 {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+        line-height: 1.1;
+      }
+      p.subtitle {
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 3rem;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 20px;
+        padding: 2rem;
+        text-decoration: none;
+        color: var(--inchiostro);
+        box-shadow: 0 8px 32px rgba(26, 23, 20, 0.05);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        display: flex;
+        flex-direction: column;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(26, 23, 20, 0.1);
+      }
+      .card.disabled {
+        opacity: 0.6;
+        pointer-events: none;
+      }
+      .card h2 {
+        margin: 0 0 10px 0;
+        font-size: 1.5rem;
+      }
+      .card p {
+        margin: 0;
+        color: #555;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        flex-grow: 1;
+      }
+      .status {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        align-self: flex-start;
+      }
+      .status.active {
+        background: rgba(31, 122, 77, 0.15);
+        color: var(--basilico);
+      }
+      .status.soon {
+        background: rgba(26, 23, 20, 0.1);
+        color: #666;
+      }
+    </style>
   </head>
   <body>
-    <!-- Navigazione Globale AppUnic -->
-    <nav style="background: var(--inchiostro, #1A1714); color: white; padding: 10px 24px; display: flex; gap: 20px; font-family: sans-serif; align-items: center; position: sticky; top: 0; z-index: 1000;">
-      <div style="font-weight: bold; font-size: 1.1rem; letter-spacing: 1px;">AppUnic</div>
-      <a href="./index.html" style="color: white; text-decoration: none; padding: 5px 10px; background: rgba(255,255,255,0.2); border-radius: 4px;">Confronto Bollette</a>
-      <a href="./spesasmart.html" style="color: white; text-decoration: none; padding: 5px 10px; opacity: 0.7;">SpesaSmart</a>
+    <nav>
+      <a href="./index.html" class="brand">AppUnic</a>
     </nav>
-    <div id="app"></div>
+    <div class="container">
+      <h1>L'Ecosistema Personale</h1>
+      <p class="subtitle">Tutti i tuoi strumenti intelligenti. 100% Zero-Server. Massima privacy.</p>
+      
+      <div class="grid">
+        <a href="./bollette.html" class="card">
+          <span class="status active">ATTIVO</span>
+          <h2>Confronto Bollette</h2>
+          <p>Verifica i conti di luce e gas e scopri se il tuo fornitore ti sta addebitando costi nascosti, senza mai inviare i tuoi dati a server esterni.</p>
+        </a>
+        
+        <a href="./spesasmart.html" class="card">
+          <span class="status active">ATTIVO</span>
+          <h2>SpesaSmart</h2>
+          <p>Fotografa lo scontrino e lascia che l'IA lo legga per te. Tieni traccia dei tuoi consumi alimentari in un cruscotto elegante.</p>
+        </a>
+        
+        <div class="card disabled">
+          <span class="status soon">IN ARRIVO</span>
+          <h2>Fisco e Documenti</h2>
+          <p>Archivio intelligente per scontrini medici e documenti 730, pronto per la dichiarazione dei redditi.</p>
+        </div>
+
+        <div class="card disabled">
+          <span class="status soon">IN ARRIVO</span>
+          <h2>Salute e Benessere</h2>
+          <p>Diario alimentare, calcolo calorie e andamento del peso per mantenerti in forma senza condividere dati clinici.</p>
+        </div>
+
+        <div class="card disabled">
+          <span class="status soon">IN ARRIVO</span>
+          <h2>Organizzazione</h2>
+          <p>Agenda, To-Do list intelligenti e pianificazione per gestire al meglio le tue giornate.</p>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
