@@ -310,6 +310,9 @@
     .reveal{opacity:1!important;transform:none!important;}
   }
 </style>
+  <script type="module" crossorigin src="./assets/spesasmart-Bgkw021D.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/stile-CzuNk5ou.js">
+  <link rel="stylesheet" crossorigin href="./assets/stile-QhzGV8BP.css">
 </head>
 <body>
 <!-- Navigazione Globale AppUnic -->
@@ -319,6 +322,7 @@
   <a href="./spesasmart.html" class="active">SpesaSmart</a>
 </nav>
 
+<div id="vetrina-spesasmart">
 <!-- NAV -->
 <nav>
   <div class="wrap nav-in">
@@ -326,10 +330,10 @@
     <div class="nav-links">
       <a href="#come">Come funziona</a>
       <a href="#trasparenza">Prezzi onesti</a>
-      <a href="#area">Area clienti</a>
-      <a href="#registrati" class="btn btn-ghost">Entra</a>
+      <a href="#area" class="btn btn-ghost">Area clienti</a>
+      <button id="btn-entra-desk" class="btn btn-ghost" style="border: none; cursor: pointer; font: inherit;">Entra</button>
     </div>
-    <a href="#registrati" class="btn btn-primary nav-cta-mobile">Entra</a>
+    <button id="btn-entra-mob" class="btn btn-primary nav-cta-mobile" style="border: none; cursor: pointer; font: inherit;">Entra</button>
   </div>
 </nav>
 
@@ -341,9 +345,9 @@
       <h1>Ogni scontrino ti dice <span class="ink">dove conviene</span> fare la spesa.</h1>
       <p class="lead">Fotografa lo scontrino o carica il PDF. SpesaSmart lo legge da solo, tiene il conto di quanto spendi e ti mostra dove gli stessi prodotti costano meno.</p>
       <div class="hero-cta">
-        <a href="#registrati" class="btn btn-primary">Inizia gratis
+        <button id="btn-inizia-gratis" class="btn btn-primary" style="border: none; cursor: pointer; font: inherit;">Inizia gratis
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h9M8 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
+        </button>
         <a href="#come" class="btn btn-ghost">Guarda come funziona</a>
       </div>
       <div class="hero-note">
@@ -568,31 +572,7 @@
     </div>
   </div>
 </footer>
+</div> <!-- Fine vetrina-spesasmart -->
 
-<script>
-  // hero receipt animation on load
-  window.addEventListener('load', function(){
-    document.getElementById('stage').classList.add('animate');
-  });
-
-  // scroll reveal
-  const io = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
-  }, {threshold:.15});
-  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
-
-  // register form (mock, no server)
-  document.getElementById('submit').addEventListener('click', function(){
-    const nome = document.getElementById('nome').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const tel = document.getElementById('tel').value.trim();
-    const privacy = document.getElementById('privacy').checked;
-    const msg = document.getElementById('msg');
-    if(!nome || !email || !tel){ msg.style.color = '#E24E12'; msg.textContent = 'Compila nome, email e telefono per continuare.'; return; }
-    if(!privacy){ msg.style.color = '#E24E12'; msg.textContent = 'Serve il consenso ai termini per registrarti.'; return; }
-    msg.style.color = 'var(--basilico)';
-    msg.textContent = 'Anteprima del sito — qui partirebbe l\'SMS con il codice a ' + tel + '.';
-  });
-</script>
 </body>
 </html>
