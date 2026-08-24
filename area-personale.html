@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Area Personale — AppUnic</title>
+    <meta name="description" content="Gestisci il tuo Ecosistema AppUnic. Totalmente in locale, nessuna registrazione necessaria." />
+    <style>
+      :root {
+        --carta: #FBF7EF;
+        --inchiostro: #1A1714;
+        --inchiostro-tenue: #8A8178;
+        --mandarino: #FF6A2B;
+        --mandarino-scuro: #E24E12;
+        --basilico: #1F7A4D;
+        --bordo: #E4DACA;
+        --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      }
+      body {
+        margin: 0;
+        font-family: var(--sans);
+        background: linear-gradient(135deg, var(--carta) 0%, #fff0e6 100%);
+        color: var(--inchiostro);
+        min-height: 100vh;
+      }
+      nav {
+        background: var(--inchiostro);
+        color: white;
+        padding: 15px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .brand {
+        font-weight: 800;
+        font-size: 1.4rem;
+        letter-spacing: 1px;
+        text-decoration: none;
+        color: white;
+      }
+      .nav-links a {
+        color: white;
+        text-decoration: none;
+        margin-left: 20px;
+        font-weight: bold;
+        opacity: 0.8;
+      }
+      .nav-links a:hover, .nav-links a.active {
+        opacity: 1;
+      }
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 4rem 2rem;
+      }
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        line-height: 1.1;
+      }
+      p.subtitle {
+        font-size: 1.1rem;
+        color: var(--inchiostro-tenue);
+        margin-bottom: 3rem;
+      }
+      
+      .panel {
+        background: rgba(255, 255, 255, 0.75);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 20px;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+      }
+      .panel h2 {
+        margin-top: 0;
+        font-size: 1.6rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      
+      /* Security Banner */
+      .security-banner {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        background: rgba(31, 122, 77, 0.08);
+        border: 1px solid rgba(31, 122, 77, 0.2);
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+      }
+      .security-icon {
+        font-size: 2rem;
+      }
+      .security-text h3 {
+        margin: 0 0 5px 0;
+        color: var(--basilico);
+      }
+      .security-text p {
+        margin: 0;
+        font-size: 0.95rem;
+        color: #2b5f42;
+      }
+
+      /* Form Area */
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+      label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+      }
+      input[type="password"] {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid var(--bordo);
+        border-radius: 10px;
+        font-size: 1rem;
+        font-family: monospace;
+        box-sizing: border-box;
+      }
+      
+      .guide-box {
+        background: rgba(255, 106, 43, 0.05);
+        border: 1px solid rgba(255, 106, 43, 0.2);
+        padding: 1.2rem;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+      }
+      .guide-box h4 {
+        margin: 0 0 10px 0;
+        color: var(--mandarino-scuro);
+      }
+      .guide-box ol {
+        margin: 0;
+        padding-left: 1.2rem;
+        font-size: 0.9rem;
+      }
+      .guide-box li {
+        margin-bottom: 8px;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+        border: none;
+        transition: transform 0.1s, box-shadow 0.2s;
+        font-size: 1rem;
+      }
+      .btn-primary {
+        background: var(--mandarino);
+        color: white;
+        box-shadow: 0 4px 15px rgba(255, 106, 43, 0.3);
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 106, 43, 0.4);
+      }
+      .btn-blue {
+        background: #4285F4;
+        color: white;
+        box-shadow: 0 4px 15px rgba(66, 133, 244, 0.3);
+      }
+      .btn-blue:hover {
+        transform: translateY(-2px);
+      }
+      .btn-success {
+        background: var(--basilico);
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="./index.html" class="brand">AppUnic</a>
+      <div class="nav-links">
+        <a href="./index.html">Home</a>
+        <a href="./bollette.html">Bollette</a>
+        <a href="./spesasmart.html">SpesaSmart</a>
+        <a href="./area-personale.html" class="active">Area Personale</a>
+      </div>
+    </nav>
+    
+    <div class="container">
+      <h1>Area Personale</h1>
+      <p class="subtitle">Il tuo centro di controllo Zero-Server.</p>
+      
+      <div class="panel">
+        <h2>🛡️ Il tuo Profilo Locale</h2>
+        <div class="security-banner">
+          <div class="security-icon">🔒</div>
+          <div class="security-text">
+            <h3>Nessuna registrazione necessaria</h3>
+            <p>AppUnic non usa email, password o database nel cloud. I tuoi dati (bollette, scontrini, abitudini) non escono mai da questo dispositivo. Sei l'unico proprietario delle tue informazioni.</p>
+          </div>
+        </div>
+        <p style="font-size: 0.95rem; color: #555;">Stato Archiviazione: <strong style="color: var(--basilico);">Attiva e Protetta</strong></p>
+      </div>
+
+      <div class="panel">
+        <h2>🧠 Motore Intelligenza Artificiale</h2>
+        <p style="font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.5;">Per alimentare l'Assistente Vocale e la lettura scontrini in modo totalmente privato, AppUnic si collega direttamente a Google Gemini dal tuo browser. Inserisci qui la tua chiave segreta.</p>
+        
+        <div class="guide-box">
+          <h4>Come ottenere la chiave gratuita:</h4>
+          <ol>
+            <li>Clicca il pulsante blu qui sotto per andare su Google AI Studio.</li>
+            <li>Accedi con il tuo account Google e clicca <strong>"Create API Key"</strong>.</li>
+            <li>Copia la chiave e incollala nel box sottostante.</li>
+          </ol>
+          <div style="margin-top: 15px;">
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="btn btn-blue">
+              Vai a Google AI Studio
+            </a>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="gemini-key">La tua Google Gemini API Key</label>
+          <input type="password" id="gemini-key" placeholder="AIzaSy..." autocomplete="off" spellcheck="false" />
+        </div>
+        <button id="btn-save" class="btn btn-primary">Salva e Attiva</button>
+      </div>
+    </div>
+
+    <script>
+      const inputKey = document.getElementById('gemini-key');
+      const btnSave = document.getElementById('btn-save');
+
+      // Carica la chiave salvata
+      const savedKey = localStorage.getItem('APPUNIC_GEMINI_KEY');
+      if (savedKey) {
+        inputKey.value = savedKey;
+      }
+
+      btnSave.addEventListener('click', () => {
+        const value = inputKey.value.trim();
+        if (value) {
+          localStorage.setItem('APPUNIC_GEMINI_KEY', value);
+          btnSave.className = 'btn btn-success';
+          btnSave.textContent = 'Chiave Salvata!';
+          setTimeout(() => {
+            btnSave.className = 'btn btn-primary';
+            btnSave.textContent = 'Salva e Attiva';
+          }, 2000);
+        } else {
+          localStorage.removeItem('APPUNIC_GEMINI_KEY');
+          btnSave.textContent = 'Chiave Rimossa';
+          setTimeout(() => {
+            btnSave.textContent = 'Salva e Attiva';
+          }, 2000);
+        }
+      });
+    </script>
+  </body>
+</html>
