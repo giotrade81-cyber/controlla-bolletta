@@ -333,10 +333,10 @@
     <div class="nav-links">
       <a href="#come">Come funziona</a>
       <a href="#trasparenza">Prezzi onesti</a>
-      <a href="#area">Area clienti</a>
-      <a href="#registrati" class="btn btn-ghost">Entra</a>
+      <a href="./area-personale.html">Area clienti</a>
+      <a href="#inizia" class="btn btn-ghost">Entra</a>
     </div>
-    <a href="#registrati" class="btn btn-primary nav-cta-mobile">Entra</a>
+    <a href="#inizia" class="btn btn-primary nav-cta-mobile">Entra</a>
   </div>
 </nav>
 
@@ -348,7 +348,7 @@
       <h1>Ogni scontrino ti dice <span class="ink">dove conviene</span> fare la spesa.</h1>
       <p class="lead">Fotografa lo scontrino o carica il PDF. SpesaSmart lo legge da solo, tiene il conto di quanto spendi e ti mostra dove gli stessi prodotti costano meno.</p>
       <div class="hero-cta">
-        <a href="#registrati" class="btn btn-primary">Inizia gratis
+        <a href="#inizia" class="btn btn-primary">Inizia gratis
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h9M8 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
         <a href="#come" class="btn btn-ghost">Guarda come funziona</a>
@@ -537,28 +537,25 @@
       <h2>Il primo scontrino cambia già le tue abitudini.</h2>
       <p>Registrati in un minuto e comincia a tenere sotto controllo la spesa di casa. Bastano nome, email e numero di telefono.</p>
       <ul class="cta-list">
+<!-- SEZIONE FINALE ACCESSO LIBERO -->
+<section class="cta" id="inizia">
+  <div class="wrap cta-grid">
+    <div>
+      <span class="eyebrow" style="color:var(--mandarino);">Accesso Libero &amp; Gratuito</span>
+      <h2>Inizia subito a risparmiare sulla tua spesa.</h2>
+      <p>SpesaSmart è già pronto all'uso su questo dispositivo. Nessun modulo obbligatorio: carica il tuo scontrino o usa la lista della spesa per confrontare i prezzi migliori nei supermercati della tua zona.</p>
+      <ul class="cta-list">
         <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.2"/></svg>Scansioni illimitate, foto o PDF</li>
         <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.2"/></svg>Statistiche e ricerca su tutta la spesa</li>
         <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.2"/></svg>Confronto onesto tra supermercati</li>
       </ul>
     </div>
 
-    <div class="form reveal">
-      <h3>Crea il tuo account</h3>
-      <p class="fsub">Gratis. Ci vuole un minuto.</p>
-      <div class="field-row">
-        <div class="field"><label for="nome">Nome</label><input id="nome" type="text" placeholder="Mario"></div>
-        <div class="field"><label for="cognome">Cognome</label><input id="cognome" type="text" placeholder="Rossi"></div>
-      </div>
-      <div class="field"><label for="email">Email</label><input id="email" type="email" placeholder="mario.rossi@email.it"></div>
-      <div class="field"><label for="tel">Numero di telefono</label><input id="tel" type="tel" placeholder="+39 333 000 0000"></div>
-      <div class="sms-hint">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="6" y="2.5" width="12" height="19" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M11 18.5h2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <span>Tieni il telefono a portata di mano: ti arriva un codice via SMS per confermare il numero.</span>
-      </div>
-      <label class="consent"><input type="checkbox" id="privacy"><span>Accetto i termini di servizio e la privacy policy. I dati di prezzo vengono usati in forma anonima e aggregata per analisi di mercato.</span></label>
-      <button class="btn btn-primary" id="submit">Ricevi il codice e registrati</button>
-      <div class="form-msg" id="msg"></div>
+    <div class="form reveal" style="text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 15px;">
+      <div style="font-size: 3rem;">🛒</div>
+      <h3>Tutto Sbloccato &amp; Libero</h3>
+      <p class="fsub" style="margin-bottom: 10px;">Puoi usare tutte le funzioni liberamente. Se vuoi gestire il tuo abbonamento o attivare una licenza, visita l'Area Personale.</p>
+      <a href="./area-personale.html" class="btn btn-primary" style="width: auto; padding: 12px 28px;">Vai all'Area Personale &amp; Licenze</a>
     </div>
   </div>
 </section>
@@ -571,7 +568,7 @@
     <div class="foot-links">
       <a href="#come">Come funziona</a>
       <a href="#trasparenza">Prezzi onesti</a>
-      <a href="#registrati">Entra</a>
+      <a href="./area-personale.html">Area Personale &amp; Licenze</a>
     </div>
   </div>
 </footer>
@@ -579,7 +576,7 @@
 <script>
   // hero receipt animation on load
   window.addEventListener('load', function(){
-    document.getElementById('stage').classList.add('animate');
+    document.getElementById('stage')?.classList.add('animate');
     renderShoppingList();
   });
 
@@ -588,19 +585,6 @@
     entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
   }, {threshold:.15});
   document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
-
-  // register form (mock, no server)
-  document.getElementById('submit').addEventListener('click', function(){
-    const nome = document.getElementById('nome').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const tel = document.getElementById('tel').value.trim();
-    const privacy = document.getElementById('privacy').checked;
-    const msg = document.getElementById('msg');
-    if(!nome || !email || !tel){ msg.style.color = '#E24E12'; msg.textContent = 'Compila nome, email e telefono per continuare.'; return; }
-    if(!privacy){ msg.style.color = '#E24E12'; msg.textContent = 'Serve il consenso ai termini per registrarti.'; return; }
-    msg.style.color = 'var(--basilico)';
-    msg.textContent = 'Anteprima del sito — qui partirebbe l\'SMS con il codice a ' + tel + '.';
-  });
 
   // SHOPPING LIST LOGIC
   function renderShoppingList() {
