@@ -421,7 +421,7 @@
         font-size: 0.9rem;
       }
 
-      /* Modale */
+      /* Modali */
       .modal-overlay {
         position: fixed;
         top: 0; left: 0; width: 100%; height: 100%;
@@ -437,8 +437,10 @@
         border-radius: 16px;
         padding: 2rem;
         width: 100%;
-        max-width: 480px;
+        max-width: 520px;
         box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        max-height: 90vh;
+        overflow-y: auto;
       }
       .form-group {
         margin-bottom: 12px;
@@ -457,6 +459,42 @@
         border-radius: 8px;
         font-size: 0.95rem;
         box-sizing: border-box;
+      }
+
+      /* Gallery Sfondi Selezionabili */
+      .bg-picker-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+        gap: 8px;
+        margin-top: 6px;
+        margin-bottom: 10px;
+      }
+      .bg-picker-item {
+        height: 60px;
+        border-radius: 8px;
+        background-size: cover;
+        background-position: center;
+        cursor: pointer;
+        border: 2px solid transparent;
+        position: relative;
+        transition: all 0.2s ease;
+      }
+      .bg-picker-item:hover {
+        transform: scale(1.04);
+      }
+      .bg-picker-item.selected {
+        border-color: var(--mandarino);
+        box-shadow: 0 0 0 2px white, 0 0 0 4px var(--mandarino);
+      }
+      .bg-picker-item span {
+        position: absolute;
+        bottom: 2px;
+        left: 2px;
+        background: rgba(0,0,0,0.6);
+        color: white;
+        font-size: 0.65rem;
+        padding: 1px 4px;
+        border-radius: 4px;
       }
     </style>
     <script type="module" crossorigin src="./assets/VoiceAssistant-CpTO9j7I.js"></script>
@@ -519,10 +557,10 @@
             </div>
           </div>
           <div class="guide-item">
-            <span class="guide-item-icon">🧩</span>
+            <span class="guide-item-icon">🖼️</span>
             <div class="guide-item-text">
-              <strong>Buste Componibili & Senza Limiti</strong>
-              <span>Crea nuove buste di spesa su misura (Farmaci, Salute, Casa, ecc.) e modifica o cancella quello che vuoi.</span>
+              <strong>Buste con Galleria Sfondi IA</strong>
+              <span>Scegli tra oltre 12 sfondi grafici a tema o inserisci immagini personalizzate per ogni scheda.</span>
             </div>
           </div>
         </div>
@@ -535,7 +573,7 @@
           <span class="radar-val" id="kpi-saldo-totale" style="color: var(--inchiostro);">€ 0,00</span>
         </div>
         <div class="radar-kpi" style="border-left: 1px solid #eee; border-right: 1px solid #eee; padding: 0 1rem;">
-          <span class="radar-label">⏳ Spese Fisse Mancanti a Fine Mese</span>
+          <span class="radar-label">⏳ Spese Fisse</span>
           <span class="radar-val" id="kpi-spese-fisse" style="color: var(--rosso);">- € 0,00</span>
         </div>
         <div class="radar-kpi">
@@ -581,7 +619,7 @@
       <!-- 3. LE BUSTE DI SPESA (COMPONIBILI E PERSONALIZZABILI) -->
       <div class="sub-block-title" style="margin-top: 2rem;">
         <span style="font-size: 1.35rem; font-weight: 800;">📊 Le Buste di Spesa & Budget</span>
-        <button class="btn btn-outline" id="btn-add-busta">+ Nuova Busta Personalizzata</button>
+        <button class="btn btn-outline" id="btn-open-modal-busta">+ Nuova Busta Personalizzata</button>
       </div>
       <div class="buste-grid" id="buste-container">
         <!-- Rendered by JS -->
@@ -627,7 +665,10 @@
               <div class="sub-block">
                 <div class="sub-block-title">
                   <span>🎯 Obiettivo Budget Mensile</span>
-                  <button class="btn btn-danger" id="btn-delete-current-busta" style="font-size: 0.75rem;">Elimina Busta</button>
+                  <div>
+                    <button class="btn btn-outline" id="btn-edit-current-busta" style="font-size: 0.75rem; margin-right: 5px;">Modifica Sfondo</button>
+                    <button class="btn btn-danger" id="btn-delete-current-busta" style="font-size: 0.75rem;">Elimina Busta</button>
+                  </div>
                 </div>
                 <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 12px;">
                   <label style="font-weight: 600; font-size: 0.9rem;">Budget (€):</label>
@@ -639,10 +680,11 @@
                 </p>
               </div>
 
+              <!-- SPESE FISSE 100% PERSONALIZZABILI -->
               <div class="sub-block">
                 <div class="sub-block-title">
                   <span>⏰ Spese Fisse Ricorrenti</span>
-                  <button class="btn btn-outline" id="btn-add-spesa-fissa">+ Aggiungi Fissa</button>
+                  <button class="btn btn-outline" id="btn-add-spesa-fissa">+ Aggiungi Spesa Fissa</button>
                 </div>
                 <div id="spese-fisse-container">
                   <!-- Rendered by JS -->
@@ -691,9 +733,145 @@
       </div>
     </div>
 
+    <!-- Modale Creazione / Modifica Busta con Galleria Sfondi -->
+    <div class="modal-overlay" id="modal-busta">
+      <div class="modal-content">
+        <h3 id="modal-busta-title" style="margin-top: 0;">➕ Nuova Busta di Spesa</h3>
+        <input type="hidden" id="busta-edit-id">
+        <div class="form-group">
+          <label>Nome Busta / Categoria</label>
+          <input type="text" id="busta-input-nome" placeholder="Es: Corsi & Libri / Animali / Sport">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-group">
+            <label>Icona Emoji</label>
+            <input type="text" id="busta-input-icona" placeholder="Es: 📚, 🐕, 🏋️, 🎁" value="📦">
+          </div>
+          <div class="form-group">
+            <label>Budget Mensile (€)</label>
+            <input type="number" id="busta-input-budget" placeholder="0.00" value="0">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Scegli Sfondo Grafico IA (Clicca per selezionare)</label>
+          <div class="bg-picker-grid" id="bg-picker-container">
+            <!-- Rendered by JS with 12+ Wallpapers -->
+          </div>
+          <input type="text" id="busta-input-bg-custom" placeholder="Oppure incolla URL immagine personalizzato" style="font-size: 0.85rem; margin-top: 5px;">
+        </div>
+
+    <!-- Modale Conto / Carta -->
+    <div class="modal-overlay" id="modal-conto">
+      <div class="modal-content">
+        <h3 id="modal-conto-title" style="margin-top: 0;">💳 Nuovo Conto / Carta</h3>
+        <input type="hidden" id="conto-edit-id">
+        <div class="form-group">
+          <label>Nome del Conto o Carta</label>
+          <input type="text" id="conto-input-nome" placeholder="Es: Conto Corrente Intesa / Carta di Credito Visa / Revolut">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-group">
+            <label>Icona</label>
+            <select id="conto-input-icona">
+              <option value="🏦">🏦 Conto Bancario</option>
+              <option value="💳">💳 Carta di Credito / Debito</option>
+              <option value="💵">💵 Contanti / Portafoglio</option>
+              <option value="🛡️">🛡️ Fondo Risparmio</option>
+              <option value="🪙">🪙 Cripto / Investimenti</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Saldo Attuale (€)</label>
+            <input type="number" step="0.01" id="conto-input-saldo" placeholder="0.00" value="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Note / Dettagli (es: Plafond, Rata, IBAN)</label>
+          <input type="text" id="conto-input-extra" placeholder="Es: Plafond €1.500 (Addebito il 15) oppure Rata €100/mese">
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+          <button class="btn btn-outline" id="btn-close-modal-conto">Annulla</button>
+          <button class="btn btn-primary" id="btn-save-conto">Salva Conto</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modale Spesa Fissa -->
+    <div class="modal-overlay" id="modal-spesa-fissa">
+      <div class="modal-content">
+        <h3 id="modal-fissa-title" style="margin-top: 0;">⏰ Nuova Spesa Fissa</h3>
+        <input type="hidden" id="fissa-edit-id">
+        <div class="form-group">
+          <label>Nome della Spesa Fissa</label>
+          <input type="text" id="fissa-input-nome" placeholder="Es: Affitto / Mutuo / Assicurazione Auto">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-group">
+            <label>Importo Mensile (€)</label>
+            <input type="number" step="0.01" id="fissa-input-importo" placeholder="0.00" value="0">
+          </div>
+          <div class="form-group">
+            <label>Categoria (Busta)</label>
+            <select id="fissa-input-cat">
+              <!-- Populated via JS -->
+            </select>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+          <button class="btn btn-outline" id="btn-close-modal-fissa">Annulla</button>
+          <button class="btn btn-primary" id="btn-save-fissa">Salva Spesa Fissa</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modale Entrata Ricorrente -->
+    <div class="modal-overlay" id="modal-entrata">
+      <div class="modal-content">
+        <h3 id="modal-entrata-title" style="margin-top: 0;">💵 Nuova Entrata Ricorrente</h3>
+        <input type="hidden" id="entrata-edit-id">
+        <div class="form-group">
+          <label>Fonte / Descrizione</label>
+          <input type="text" id="entrata-input-desc" placeholder="Es: Stipendio Netto / Pensione / Rendita">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-group">
+            <label>Importo Netto (€)</label>
+            <input type="number" step="0.01" id="entrata-input-importo" placeholder="0.00" value="0">
+          </div>
+          <div class="form-group">
+            <label>Giorno Accredito (1-31)</label>
+            <input type="number" id="entrata-input-giorno" min="1" max="31" value="27">
+          </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+          <button class="btn btn-outline" id="btn-close-modal-entrata">Annulla</button>
+          <button class="btn btn-primary" id="btn-save-entrata">Salva Entrata</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Script di Gestione Finanze Personali Completo -->
     <script>
-      const STORAGE_KEY = 'APPUNIC_FINANZE_DATA_V4';
+      const STORAGE_KEY = 'APPUNIC_FINANZE_DATA_V5';
+
+      // Catalogo Sfondi Tematici IA Selezionabili
+      const AVAILABLE_BACKGROUNDS = [
+        { id: 'casa', name: 'Casa', url: 'immagini/bg_finanze_casa.jpg' },
+        { id: 'spesa', name: 'Spesa', url: 'immagini/bg_finanze_hero.jpg' },
+        { id: 'trasporti', name: 'Auto', url: 'immagini/bg_finanze_trasporti.jpg' },
+        { id: 'farmaci', name: 'Farmaci', url: 'immagini/bg_finanze_farmaci.jpg' },
+        { id: 'salute', name: 'Salute', url: 'immagini/bg_finanze_salute.jpg' },
+        { id: 'tecnologia', name: 'Tech', url: 'immagini/bg_finanze_tecnologia.jpg' },
+        { id: 'svago', name: 'Svago', url: 'immagini/bg_finanze_svago.jpg' },
+        { id: 'risparmio', name: 'Risparmio', url: 'immagini/bg_finanze_risparmio.jpg' },
+        { id: 'viaggi', name: 'Viaggi', url: 'immagini/bg_luoghi.jpg' },
+        { id: 'ristoranti', name: 'Ristoranti', url: 'immagini/bg_ristoranti.jpg' },
+        { id: 'musica', name: 'Musica', url: 'immagini/bg_musica.jpg' },
+        { id: 'amicizie', name: 'Amicizie', url: 'immagini/bg_amicizie.jpg' }
+      ];
+
+      let selectedBgUrl = 'immagini/bg_finanze_hero.jpg';
 
       let finanzeData = {
         conti: [
@@ -770,8 +948,8 @@
             <div class="conto-header">
               <span class="conto-nome">${c.icona} ${c.nome}</span>
               <div style="display:flex; gap:6px;">
-                <button class="btn-outline" style="padding:2px 6px; font-size:0.75rem; border:none; cursor:pointer;" onclick="editConto('${c.id}')">✏️</button>
-                <button class="btn-danger" style="padding:2px 6px; font-size:0.75rem; cursor:pointer;" onclick="deleteConto('${c.id}')">✕</button>
+                <button class="btn-outline" style="padding:3px 7px; font-size:0.8rem; cursor:pointer;" onclick="openModalConto('${c.id}')" title="Modifica">✏️</button>
+                <button class="btn-danger" style="padding:3px 7px; font-size:0.8rem; cursor:pointer;" onclick="deleteConto('${c.id}')" title="Elimina">✕</button>
               </div>
             </div>
             <div class="conto-saldo" style="color: ${c.saldo < 0 ? 'var(--rosso)' : 'var(--inchiostro)'};">
@@ -815,18 +993,18 @@
         tbody.innerHTML = '';
 
         if (finanzeData.entrateRicorrenti.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#888;">Nessuna entrata ricorrente configurata. Clicca "+ Aggiungi Entrata".</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#888;">Nessuna entrata configurata. Clicca "+ Aggiungi Entrata Ricorrente".</td></tr>';
           return;
         }
 
         finanzeData.entrateRicorrenti.forEach((e, idx) => {
           const tr = document.createElement('tr');
           tr.innerHTML = `
-            <td style="font-weight:600;"><input type="text" value="${e.desc||''}" style="border:1px solid #ddd; border-radius:4px; padding:4px 8px; width:90%;" onchange="finanzeData.entrateRicorrenti[${idx}].desc=this.value;saveData()"></td>
-            <td style="color:var(--basilico); font-weight:bold;">+ € <input type="number" value="${e.importo||0}" style="width:100px; padding:4px 8px; border:1px solid #ddd; border-radius:4px;" onchange="finanzeData.entrateRicorrenti[${idx}].importo=parseFloat(this.value)||0;saveData()"></td>
+            <td style="font-weight:600;"><input type="text" value="${e.desc||''}" style="border:1px solid #ddd; border-radius:4px; padding:4px 8px; width:90%; font-size:0.9rem;" onchange="finanzeData.entrateRicorrenti[${idx}].desc=this.value;saveData()"></td>
+            <td style="color:var(--basilico); font-weight:bold;">+ € <input type="number" value="${e.importo||0}" style="width:100px; padding:4px 8px; border:1px solid #ddd; border-radius:4px; font-size:0.9rem;" onchange="finanzeData.entrateRicorrenti[${idx}].importo=parseFloat(this.value)||0;saveData()"></td>
             <td>Giorno ${e.giorno || 1} del mese</td>
             <td>
-              <button class="btn btn-outline" style="padding:2px 8px; font-size:0.75rem;" onclick="finanzeData.entrateRicorrenti[${idx}].accreditata=!finanzeData.entrateRicorrenti[${idx}].accreditata;saveData()">
+              <button class="btn btn-outline" style="padding:3px 10px; font-size:0.8rem;" onclick="finanzeData.entrateRicorrenti[${idx}].accreditata=!finanzeData.entrateRicorrenti[${idx}].accreditata;saveData()">
                 ${e.accreditata ? '✅ Già Accreditata' : '⏳ In Arrivo'}
               </button>
             </td>
@@ -840,17 +1018,19 @@
       function renderBuste() {
         const cont = document.getElementById('buste-container');
         const selectCat = document.getElementById('spesa-categoria');
+        const selectFissaCat = document.getElementById('fissa-input-cat');
         if (!cont) return;
         cont.innerHTML = '';
         if (selectCat) selectCat.innerHTML = '';
+        if (selectFissaCat) selectFissaCat.innerHTML = '';
 
         finanzeData.buste.forEach(b => {
-          const budget = b.budget || 1;
+          const budget = b.budget || 0;
           const speso = finanzeData.movimenti
             .filter(m => m.cat === b.id)
             .reduce((sum, m) => sum + m.importo, 0);
 
-          const percent = Math.min(100, Math.round((speso / budget) * 100));
+          const percent = budget > 0 ? Math.min(100, Math.round((speso / budget) * 100)) : (speso > 0 ? 100 : 0);
 
           const card = document.createElement('div');
           card.className = `busta-card ${b.id === activeBusta ? 'active' : ''}`;
@@ -874,6 +1054,12 @@
             opt.value = b.id;
             opt.textContent = `${b.icona || '📦'} ${b.nome}`;
             selectCat.appendChild(opt);
+          }
+          if (selectFissaCat) {
+            const opt = document.createElement('option');
+            opt.value = b.id;
+            opt.textContent = `${b.icona || '📦'} ${b.nome}`;
+            selectFissaCat.appendChild(opt);
           }
         });
       }
@@ -904,7 +1090,7 @@
         });
       }
 
-      // 5. RENDER BUDGET & SPESE FISSE
+      // 5. RENDER BUDGET & SPESE FISSE PERSONALIZZABILI
       function renderBudgetSection() {
         const inputBudget = document.getElementById('input-budget-cat');
         const descText = document.getElementById('budget-desc-text');
@@ -917,10 +1103,10 @@
           .reduce((sum, m) => sum + m.importo, 0);
 
         const rimanente = currBudget - speso;
-        const percent = Math.round((speso / (currBudget || 1)) * 100);
+        const percent = currBudget > 0 ? Math.round((speso / currBudget) * 100) : 0;
 
         if (descText) {
-          descText.innerHTML = `Hai speso il <strong>${percent}%</strong> del budget previsto (€ ${speso.toFixed(2)} su € ${currBudget}). Ti restano <strong style="color:${rimanente >= 0 ? 'var(--basilico)' : 'var(--rosso)'}">€ ${rimanente.toFixed(2)}</strong> per questo mese.`;
+          descText.innerHTML = `Speso: <strong>€ ${speso.toFixed(2)}</strong> su budget previsto <strong>€ ${currBudget.toFixed(2)}</strong>. Disponibilità residua: <strong style="color:${rimanente >= 0 ? 'var(--basilico)' : 'var(--rosso)'}">€ ${rimanente.toFixed(2)}</strong>.`;
         }
 
         // Spese fisse della categoria
@@ -929,23 +1115,27 @@
           fisseCont.innerHTML = '';
           const fisse = finanzeData.speseFisse.filter(f => f.cat === activeBusta);
           if (fisse.length === 0) {
-            fisseCont.innerHTML = '<p style="color:#888; font-size:0.85rem; margin:0;">Nessuna spesa fissa ricorrente per questa categoria.</p>';
+            fisseCont.innerHTML = '<p style="color:#888; font-size:0.85rem; margin:0;">Nessuna spesa fissa ricorrente per questa categoria. Clicca "+ Aggiungi Spesa Fissa".</p>';
           } else {
             fisse.forEach(f => {
               const div = document.createElement('div');
               div.style.display = 'flex';
               div.style.justifyContent = 'space-between';
               div.style.alignItems = 'center';
-              div.style.padding = '6px 0';
+              div.style.padding = '8px 0';
               div.style.borderBottom = '1px solid #eee';
               div.innerHTML = `
                 <div>
-                  <span style="font-weight:600; font-size:0.9rem;">${f.nome}</span>
-                  <span style="font-size:0.8rem; color:#888; margin-left:6px;">€ ${f.importo.toFixed(2)}</span>
+                  <span style="font-weight:600; font-size:0.95rem;">${f.nome}</span>
+                  <span style="font-size:0.9rem; color:var(--rosso); font-weight:bold; margin-left:8px;">€ ${f.importo.toFixed(2)}</span>
                 </div>
-                <button class="btn btn-outline" style="padding:2px 8px; font-size:0.75rem;" onclick="toggleSpesaFissa('${f.id}')">
-                  ${f.pagata ? '✅ Pagata' : '⏳ Da pagare'}
-                </button>
+                <div style="display:flex; gap:6px; align-items:center;">
+                  <button class="btn btn-outline" style="padding:3px 10px; font-size:0.8rem;" onclick="toggleSpesaFissa('${f.id}')">
+                    ${f.pagata ? '✅ Pagata' : '⏳ Da pagare'}
+                  </button>
+                  <button class="btn-outline" style="padding:3px 7px; font-size:0.8rem; cursor:pointer;" onclick="openModalSpesaFissa('${f.id}')">✏️</button>
+                  <button class="btn-danger" style="padding:3px 7px; font-size:0.8rem; cursor:pointer;" onclick="deleteSpesaFissa('${f.id}')">✕</button>
+                </div>
               `;
               fisseCont.appendChild(div);
             });
@@ -982,36 +1172,273 @@
         }
       };
 
+      window.deleteSpesaFissa = (id) => {
+        finanzeData.speseFisse = finanzeData.speseFisse.filter(x => x.id !== id);
+        saveData();
+      };
+
       window.deleteConto = (id) => {
-        if (confirm('Sei sicuro di voler eliminare questo conto?')) {
-          finanzeData.conti = finanzeData.conti.filter(c => c.id !== id);
-          saveData();
-        }
+        finanzeData.conti = finanzeData.conti.filter(c => c.id !== id);
+        saveData();
       };
 
-      window.editConto = (id) => {
-        const c = finanzeData.conti.find(x => x.id === id);
-        if (!c) return;
-        const nuovoNome = prompt('Nome Conto / Carta:', c.nome);
-        if (nuovoNome) {
-          const nuovoSaldo = parseFloat(prompt('Saldo attuale (€):', c.saldo.toString())) || 0;
-          const nuovoExtra = prompt('Dettagli / Plafond / Rata:', c.extra || '');
-          c.nome = nuovoNome;
-          c.saldo = nuovoSaldo;
-          c.extra = nuovoExtra;
-          saveData();
+      // MODALE CONTO / CARTA LOGIC
+      const modalConto = document.getElementById('modal-conto');
+      window.openModalConto = (id = null) => {
+        if (id) {
+          const c = finanzeData.conti.find(x => x.id === id);
+          if (!c) return;
+          document.getElementById('modal-conto-title').textContent = '✏️ Modifica Conto / Carta';
+          document.getElementById('conto-edit-id').value = c.id;
+          document.getElementById('conto-input-nome').value = c.nome;
+          document.getElementById('conto-input-icona').value = c.icona || '🏦';
+          document.getElementById('conto-input-saldo').value = c.saldo || 0;
+          document.getElementById('conto-input-extra').value = c.extra || '';
+        } else {
+          document.getElementById('modal-conto-title').textContent = '➕ Nuovo Conto / Carta';
+          document.getElementById('conto-edit-id').value = '';
+          document.getElementById('conto-input-nome').value = '';
+          document.getElementById('conto-input-icona').value = '🏦';
+          document.getElementById('conto-input-saldo').value = '0';
+          document.getElementById('conto-input-extra').value = '';
         }
+        modalConto.style.display = 'flex';
       };
 
-      function renderAll() {
-        renderConti();
-        renderEntrate();
-        renderBuste();
-        renderMovimenti();
-        renderBudgetSection();
+      document.getElementById('btn-add-conto')?.addEventListener('click', () => openModalConto());
+      document.getElementById('btn-close-modal-conto')?.addEventListener('click', () => modalConto.style.display = 'none');
+      document.getElementById('btn-save-conto')?.addEventListener('click', () => {
+        const id = document.getElementById('conto-edit-id').value;
+        const nome = document.getElementById('conto-input-nome').value.trim();
+        const icona = document.getElementById('conto-input-icona').value;
+        const saldo = parseFloat(document.getElementById('conto-input-saldo').value) || 0;
+        const extra = document.getElementById('conto-input-extra').value.trim();
+
+        if (!nome) {
+          alert('Inserisci un nome per il conto o carta.');
+          return;
+        }
+
+        if (id) {
+          const c = finanzeData.conti.find(x => x.id === id);
+          if (c) {
+            c.nome = nome;
+            c.icona = icona;
+            c.saldo = saldo;
+            c.extra = extra;
+          }
+        } else {
+          finanzeData.conti.push({
+            id: 'conto_' + Date.now(),
+            nome,
+            icona,
+            saldo,
+            extra
+          });
+        }
+        saveData();
+        modalConto.style.display = 'none';
+      });
+
+      // MODALE SPESA FISSA LOGIC
+      const modalFissa = document.getElementById('modal-spesa-fissa');
+      window.openModalSpesaFissa = (id = null) => {
+        if (id) {
+          const f = finanzeData.speseFisse.find(x => x.id === id);
+          if (!f) return;
+          document.getElementById('modal-fissa-title').textContent = '✏️ Modifica Spesa Fissa';
+          document.getElementById('fissa-edit-id').value = f.id;
+          document.getElementById('fissa-input-nome').value = f.nome;
+          document.getElementById('fissa-input-importo').value = f.importo || 0;
+          document.getElementById('fissa-input-cat').value = f.cat || activeBusta;
+        } else {
+          document.getElementById('modal-fissa-title').textContent = '⏰ Nuova Spesa Fissa';
+          document.getElementById('fissa-edit-id').value = '';
+          document.getElementById('fissa-input-nome').value = '';
+          document.getElementById('fissa-input-importo').value = '0';
+          document.getElementById('fissa-input-cat').value = activeBusta;
+        }
+        modalFissa.style.display = 'flex';
+      };
+
+      document.getElementById('btn-add-spesa-fissa')?.addEventListener('click', () => openModalSpesaFissa());
+      document.getElementById('btn-close-modal-fissa')?.addEventListener('click', () => modalFissa.style.display = 'none');
+      document.getElementById('btn-save-fissa')?.addEventListener('click', () => {
+        const id = document.getElementById('fissa-edit-id').value;
+        const nome = document.getElementById('fissa-input-nome').value.trim();
+        const importo = parseFloat(document.getElementById('fissa-input-importo').value) || 0;
+        const cat = document.getElementById('fissa-input-cat').value || activeBusta;
+
+        if (!nome || importo <= 0) {
+          alert('Inserisci nome e importo valido per la spesa fissa.');
+          return;
+        }
+
+        if (id) {
+          const f = finanzeData.speseFisse.find(x => x.id === id);
+          if (f) {
+            f.nome = nome;
+            f.importo = importo;
+            f.cat = cat;
+          }
+        } else {
+          finanzeData.speseFisse.push({
+            id: 'fissa_' + Date.now(),
+            nome,
+            importo,
+            cat,
+            pagata: false
+          });
+        }
+        saveData();
+        modalFissa.style.display = 'none';
+      });
+
+      // MODALE ENTRATA RICORRENTE LOGIC
+      const modalEntrata = document.getElementById('modal-entrata');
+      window.openModalEntrata = (id = null) => {
+        if (id) {
+          const e = finanzeData.entrateRicorrenti.find(x => x.id === id);
+          if (!e) return;
+          document.getElementById('modal-entrata-title').textContent = '✏️ Modifica Entrata';
+          document.getElementById('entrata-edit-id').value = e.id;
+          document.getElementById('entrata-input-desc').value = e.desc;
+          document.getElementById('entrata-input-importo').value = e.importo || 0;
+          document.getElementById('entrata-input-giorno').value = e.giorno || 27;
+        } else {
+          document.getElementById('modal-entrata-title').textContent = '💵 Nuova Entrata Ricorrente';
+          document.getElementById('entrata-edit-id').value = '';
+          document.getElementById('entrata-input-desc').value = '';
+          document.getElementById('entrata-input-importo').value = '0';
+          document.getElementById('entrata-input-giorno').value = '27';
+        }
+        modalEntrata.style.display = 'flex';
+      };
+
+      document.getElementById('btn-add-entrata')?.addEventListener('click', () => openModalEntrata());
+      document.getElementById('btn-close-modal-entrata')?.addEventListener('click', () => modalEntrata.style.display = 'none');
+      document.getElementById('btn-save-entrata')?.addEventListener('click', () => {
+        const id = document.getElementById('entrata-edit-id').value;
+        const desc = document.getElementById('entrata-input-desc').value.trim();
+        const importo = parseFloat(document.getElementById('entrata-input-importo').value) || 0;
+        const giorno = parseInt(document.getElementById('entrata-input-giorno').value) || 1;
+
+        if (!desc || importo <= 0) {
+          alert('Inserisci descrizione e importo valido.');
+          return;
+        }
+
+        if (id) {
+          const e = finanzeData.entrateRicorrenti.find(x => x.id === id);
+          if (e) {
+            e.desc = desc;
+            e.importo = importo;
+            e.giorno = giorno;
+          }
+        } else {
+          finanzeData.entrateRicorrenti.push({
+            id: 'entrata_' + Date.now(),
+            desc,
+            importo,
+            giorno,
+            accreditata: false
+          });
+        }
+        saveData();
+        modalEntrata.style.display = 'none';
+      });
+
+      // MODALE BUSTE & SFONDI LOGIC
+      function initBgPicker() {
+        const cont = document.getElementById('bg-picker-container');
+        if (!cont) return;
+        cont.innerHTML = '';
+        AVAILABLE_BACKGROUNDS.forEach(bg => {
+          const item = document.createElement('div');
+          item.className = `bg-picker-item ${bg.url === selectedBgUrl ? 'selected' : ''}`;
+          item.style.backgroundImage = `url('${bg.url}')`;
+          item.innerHTML = `<span>${bg.name}</span>`;
+          item.onclick = () => {
+            selectedBgUrl = bg.url;
+            document.querySelectorAll('.bg-picker-item').forEach(el => el.classList.remove('selected'));
+            item.classList.add('selected');
+            document.getElementById('busta-input-bg-custom').value = '';
+          };
+          cont.appendChild(item);
+        });
       }
 
-      // Modal Handling
+      const modalBusta = document.getElementById('modal-busta');
+      document.getElementById('btn-open-modal-busta')?.addEventListener('click', () => {
+        document.getElementById('modal-busta-title').textContent = '➕ Nuova Busta di Spesa';
+        document.getElementById('busta-edit-id').value = '';
+        document.getElementById('busta-input-nome').value = '';
+        document.getElementById('busta-input-icona').value = '📦';
+        document.getElementById('busta-input-budget').value = '0';
+        document.getElementById('busta-input-bg-custom').value = '';
+        selectedBgUrl = AVAILABLE_BACKGROUNDS[0].url;
+        initBgPicker();
+        modalBusta.style.display = 'flex';
+      });
+
+      document.getElementById('btn-edit-current-busta')?.addEventListener('click', () => {
+        const b = finanzeData.buste.find(x => x.id === activeBusta);
+        if (!b) return;
+        document.getElementById('modal-busta-title').textContent = '✏️ Modifica Busta / Sfondo';
+        document.getElementById('busta-edit-id').value = b.id;
+        document.getElementById('busta-input-nome').value = b.nome;
+        document.getElementById('busta-input-icona').value = b.icona || '📦';
+        document.getElementById('busta-input-budget').value = b.budget || 0;
+        document.getElementById('busta-input-bg-custom').value = b.bg || '';
+        selectedBgUrl = b.bg || AVAILABLE_BACKGROUNDS[0].url;
+        initBgPicker();
+        modalBusta.style.display = 'flex';
+      });
+
+      document.getElementById('btn-close-modal-busta')?.addEventListener('click', () => {
+        modalBusta.style.display = 'none';
+      });
+
+      document.getElementById('btn-save-busta')?.addEventListener('click', () => {
+        const editId = document.getElementById('busta-edit-id').value;
+        const nome = document.getElementById('busta-input-nome').value.trim();
+        const icona = document.getElementById('busta-input-icona').value.trim() || '📦';
+        const budget = parseFloat(document.getElementById('busta-input-budget').value) || 0;
+        const customBg = document.getElementById('busta-input-bg-custom').value.trim();
+        const bg = customBg || selectedBgUrl;
+
+        if (!nome) {
+          alert('Inserisci un nome per la busta.');
+          return;
+        }
+
+        if (editId) {
+          const b = finanzeData.buste.find(x => x.id === editId);
+          if (b) {
+            b.nome = nome;
+            b.icona = icona;
+            b.budget = budget;
+            b.bg = bg;
+          }
+          saveData();
+          switchBusta(editId);
+        } else {
+          const newId = 'busta_' + Date.now();
+          finanzeData.buste.push({
+            id: newId,
+            nome: nome,
+            icona: icona,
+            bg: bg,
+            budget: budget
+          });
+          saveData();
+          switchBusta(newId);
+        }
+
+        modalBusta.style.display = 'none';
+      });
+
+      // MODALE SPESA REGISTRATA LOGIC
       const modalSpesa = document.getElementById('modal-spesa');
       document.getElementById('btn-open-modal-spesa')?.addEventListener('click', () => {
         document.getElementById('spesa-data').value = new Date().toISOString().split('T')[0];
@@ -1060,87 +1487,16 @@
         saveData();
       });
 
-      // Aggiunta Conto / Carta
-      document.getElementById('btn-add-conto')?.addEventListener('click', () => {
-        const nome = prompt('Nome del conto o della carta (es: Carta di Credito Visa, Conto Arancio):');
-        if (nome) {
-          const saldo = parseFloat(prompt('Saldo attuale o Plafond utilizzato (€, metti negativo se debito):', '0')) || 0;
-          const extra = prompt('Dettagli / Note (es: Plafond €2.000 / Rata €150):', '');
-          finanzeData.conti.push({
-            id: Date.now().toString(),
-            nome: nome,
-            saldo: saldo,
-            icona: '💳',
-            extra: extra
-          });
-          saveData();
-        }
-      });
-
-      // Aggiunta Entrata Ricorrente
-      document.getElementById('btn-add-entrata')?.addEventListener('click', () => {
-        const desc = prompt('Descrizione entrata (es: Stipendio, Pensione, Rendita, Rimborso):');
-        if (desc) {
-          const importo = parseFloat(prompt('Importo mensile netto (€):', '1500')) || 0;
-          const giorno = parseInt(prompt('Giorno del mese in cui viene accreditata (1-31):', '27')) || 1;
-          finanzeData.entrateRicorrenti.push({
-            id: Date.now().toString(),
-            desc: desc,
-            importo: importo,
-            giorno: giorno,
-            accreditata: false
-          });
-          saveData();
-        }
-      });
-
-      // Aggiunta Busta Personalizzata
-      document.getElementById('btn-add-busta')?.addEventListener('click', () => {
-        const nome = prompt('Nome della nuova busta di spesa (es: Corsi & Libri, Animali Domestici, Regali):');
-        if (nome) {
-          const icona = prompt('Icona emoji (es: 📚, 🐕, 🎁, 👗):', '📦') || '📦';
-          const budget = parseFloat(prompt('Budget mensile previsto (€):', '100')) || 100;
-          const newId = 'busta_' + Date.now();
-          finanzeData.buste.push({
-            id: newId,
-            nome: nome,
-            icona: icona,
-            bg: 'immagini/bg_finanze_hero.jpg',
-            budget: budget
-          });
-          saveData();
-          switchBusta(newId);
-        }
-      });
-
       // Elimina Busta Corrente
       document.getElementById('btn-delete-current-busta')?.addEventListener('click', () => {
         if (finanzeData.buste.length <= 1) {
           alert('Devi mantenere almeno una busta di spesa attiva.');
           return;
         }
-        if (confirm(`Sei sicuro di voler eliminare la busta selezionata? I movimenti associati rimarranno archiviati.`)) {
-          finanzeData.buste = finanzeData.buste.filter(b => b.id !== activeBusta);
-          activeBusta = finanzeData.buste[0].id;
-          saveData();
-          switchBusta(activeBusta);
-        }
-      });
-
-      // Aggiunta Spesa Fissa
-      document.getElementById('btn-add-spesa-fissa')?.addEventListener('click', () => {
-        const nome = prompt('Nome della spesa fissa ricorrente:');
-        if (nome) {
-          const importo = parseFloat(prompt('Importo mensile (€):', '50')) || 0;
-          finanzeData.speseFisse.push({
-            id: Date.now().toString(),
-            nome: nome,
-            importo: importo,
-            cat: activeBusta,
-            pagata: false
-          });
-          saveData();
-        }
+        finanzeData.buste = finanzeData.buste.filter(b => b.id !== activeBusta);
+        activeBusta = finanzeData.buste[0].id;
+        saveData();
+        switchBusta(activeBusta);
       });
 
       // Import CSV
@@ -1183,10 +1539,18 @@
         reader.readAsText(file);
       });
 
+      function renderAll() {
+        renderConti();
+        renderEntrate();
+        renderBuste();
+        renderMovimenti();
+        renderBudgetSection();
+      }
+
       document.addEventListener('DOMContentLoaded', () => {
         loadData();
         renderAll();
       });
-    </script>
+    </script>
   </body>
 </html>
