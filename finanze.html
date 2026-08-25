@@ -947,7 +947,7 @@
       const AVAILABLE_BACKGROUNDS = [
         { id: 'casa', name: 'Casa', url: 'immagini/bg_finanze_casa.jpg' },
         { id: 'spesa', name: 'Spesa', url: 'immagini/bg_finanze_hero.jpg' },
-        { id: 'bambini', name: 'Bambini', url: 'immagini/bg_amicizie.jpg' },
+        { id: 'bambini', name: 'Bambini', url: 'immagini/bg_finanze_bambini.svg' },
         { id: 'trasporti', name: 'Auto', url: 'immagini/bg_finanze_trasporti.jpg' },
         { id: 'farmaci', name: 'Farmaci', url: 'immagini/bg_finanze_farmaci.jpg' },
         { id: 'salute', name: 'Salute', url: 'immagini/bg_finanze_salute.jpg' },
@@ -957,7 +957,7 @@
         { id: 'viaggi', name: 'Viaggi', url: 'immagini/bg_luoghi.jpg' },
         { id: 'ristoranti', name: 'Ristoranti', url: 'immagini/bg_ristoranti.jpg' },
         { id: 'musica', name: 'Musica', url: 'immagini/bg_musica.jpg' },
-        { id: 'amicizie', name: 'Amicizie', url: 'immagini/bg_amicizie.jpg' }
+        { id: 'amicizie', name: 'Amicizie (Archivio)', url: 'immagini/bg_amicizie.jpg' }
       ];
 
       let selectedBgUrl = 'immagini/bg_finanze_hero.jpg';
@@ -973,7 +973,7 @@
         buste: [
           { id: 'casa', nome: 'Casa & Utenze', icona: '🏠', bg: 'immagini/bg_finanze_casa.jpg', budget: 0 },
           { id: 'spesa', nome: 'Spesa & Alimentari', icona: '🛒', bg: 'immagini/bg_finanze_hero.jpg', budget: 0 },
-          { id: 'bambini', nome: 'Bambini & Figli', icona: '👶', bg: 'immagini/bg_amicizie.jpg', budget: 0 },
+          { id: 'bambini', nome: 'Bambini & Figli', icona: '👶', bg: 'immagini/bg_finanze_bambini.svg', budget: 0 },
           { id: 'trasporti', nome: 'Auto & Trasporti', icona: '🚗', bg: 'immagini/bg_finanze_trasporti.jpg', budget: 0 },
           { id: 'farmaci', nome: 'Farmaci & Terapie', icona: '💊', bg: 'immagini/bg_finanze_farmaci.jpg', budget: 0 },
           { id: 'salute', nome: 'Salute & Visite', icona: '⚕️', bg: 'immagini/bg_finanze_salute.jpg', budget: 0 },
@@ -992,9 +992,14 @@
           try {
             const parsed = JSON.parse(saved);
             finanzeData = { ...finanzeData, ...parsed };
-            // Ensure bambini exists if not present
-            if (!finanzeData.buste.some(b => b.id === 'bambini')) {
-              finanzeData.buste.splice(2, 0, { id: 'bambini', nome: 'Bambini & Figli', icona: '👶', bg: 'immagini/bg_amicizie.jpg', budget: 0 });
+            // Ensure bambini exists and has proper kid background
+            const bIndex = finanzeData.buste.findIndex(b => b.id === 'bambini');
+            if (bIndex > -1) {
+              if (finanzeData.buste[bIndex].bg === 'immagini/bg_amicizie.jpg') {
+                finanzeData.buste[bIndex].bg = 'immagini/bg_finanze_bambini.svg';
+              }
+            } else {
+              finanzeData.buste.splice(2, 0, { id: 'bambini', nome: 'Bambini & Figli', icona: '👶', bg: 'immagini/bg_finanze_bambini.svg', budget: 0 });
             }
           } catch(e) { console.error(e); }
         }
