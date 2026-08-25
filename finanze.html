@@ -532,15 +532,15 @@
       <div class="radar-banner">
         <div class="radar-kpi">
           <span class="radar-label">💵 Saldo Totale Conti</span>
-          <span class="radar-val" id="kpi-saldo-totale" style="color: var(--inchiostro);">€ 2.850,00</span>
+          <span class="radar-val" id="kpi-saldo-totale" style="color: var(--inchiostro);">€ 0,00</span>
         </div>
         <div class="radar-kpi" style="border-left: 1px solid #eee; border-right: 1px solid #eee; padding: 0 1rem;">
           <span class="radar-label">⏳ Spese Fisse Mancanti a Fine Mese</span>
-          <span class="radar-val" id="kpi-spese-fisse" style="color: var(--rosso);">- € 820,00</span>
+          <span class="radar-val" id="kpi-spese-fisse" style="color: var(--rosso);">- € 0,00</span>
         </div>
         <div class="radar-kpi">
           <span class="radar-label">🔮 Saldo Libero Spendibile Reale</span>
-          <span class="radar-val" id="kpi-saldo-libero" style="color: var(--basilico);">€ 2.030,00</span>
+          <span class="radar-val" id="kpi-saldo-libero" style="color: var(--basilico);">€ 0,00</span>
         </div>
       </div>
 
@@ -631,7 +631,7 @@
                 </div>
                 <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 12px;">
                   <label style="font-weight: 600; font-size: 0.9rem;">Budget (€):</label>
-                  <input type="number" id="input-budget-cat" style="padding: 6px 10px; border: 1px solid #ddd; border-radius: 6px; width: 120px; font-weight: bold;" value="800">
+                  <input type="number" id="input-budget-cat" style="padding: 6px 10px; border: 1px solid #ddd; border-radius: 6px; width: 120px; font-weight: bold;" value="0">
                   <button class="btn btn-outline" onclick="saveCurrentBudget()">Aggiorna</button>
                 </div>
                 <p id="budget-desc-text" style="font-size: 0.85rem; color: #666; margin: 0; line-height: 1.4;">
@@ -693,41 +693,27 @@
 
     <!-- Script di Gestione Finanze Personali Completo -->
     <script>
-      const STORAGE_KEY = 'APPUNIC_FINANZE_DATA_V2';
+      const STORAGE_KEY = 'APPUNIC_FINANZE_DATA_V4';
 
       let finanzeData = {
         conti: [
-          { id: '1', nome: 'Conto Corrente Principale', tipo: 'banca', saldo: 2450.00, icona: '🏦', extra: 'IBAN Principale' },
-          { id: '2', nome: 'Carta di Credito', tipo: 'credito', saldo: -380.00, icona: '💳', extra: 'Plafond €1.500 (Addebito il 15)' },
-          { id: '3', nome: 'Carta Revolving', tipo: 'revolving', saldo: -920.00, icona: '💳', extra: 'Rata €100/mese (Debito res: €920)' },
-          { id: '4', nome: 'Fondo Risparmio & Emergenze', tipo: 'risparmio', saldo: 1200.00, icona: '🛡️', extra: 'Accantonamento sicuro' }
+          { id: '1', nome: 'Conto Corrente Principale', tipo: 'banca', saldo: 0.00, icona: '🏦', extra: 'Conto e IBAN' },
+          { id: '2', nome: 'Carta di Credito', tipo: 'credito', saldo: 0.00, icona: '💳', extra: 'Plafond / Addebito' },
+          { id: '3', nome: 'Carta Revolving', tipo: 'revolving', saldo: 0.00, icona: '💳', extra: 'Rata / Debito Residuo' },
+          { id: '4', nome: 'Fondo Risparmio & Emergenze', tipo: 'risparmio', saldo: 0.00, icona: '🛡️', extra: 'Accantonamento sicuro' }
         ],
-        entrateRicorrenti: [
-          { id: '1', desc: 'Stipendio Netto', importo: 1850.00, giorno: 27, accreditata: true },
-          { id: '2', desc: 'Entrata Extra / Consulenza', importo: 300.00, giorno: 15, accreditata: false }
-        ],
+        entrateRicorrenti: [],
         buste: [
-          { id: 'casa', nome: 'Casa & Utenze', icona: '🏠', bg: 'immagini/bg_finanze_casa.jpg', budget: 800 },
-          { id: 'spesa', nome: 'Spesa & Alimentari', icona: '🛒', bg: 'immagini/bg_finanze_hero.jpg', budget: 500 },
-          { id: 'trasporti', nome: 'Auto & Trasporti', icona: '🚗', bg: 'immagini/bg_finanze_trasporti.jpg', budget: 250 },
-          { id: 'farmaci', nome: 'Farmaci & Terapie', icona: '💊', bg: 'immagini/bg_finanze_farmaci.jpg', budget: 120 },
-          { id: 'salute', nome: 'Salute & Visite', icona: '⚕️', bg: 'immagini/bg_finanze_salute.jpg', budget: 150 },
-          { id: 'svago', nome: 'Svago & Stile di Vita', icona: '🍿', bg: 'immagini/bg_finanze_svago.jpg', budget: 300 },
-          { id: 'risparmio', nome: 'Risparmio & Fondo', icona: '🛡️', bg: 'immagini/bg_finanze_risparmio.jpg', budget: 400 }
+          { id: 'casa', nome: 'Casa & Utenze', icona: '🏠', bg: 'immagini/bg_finanze_casa.jpg', budget: 0 },
+          { id: 'spesa', nome: 'Spesa & Alimentari', icona: '🛒', bg: 'immagini/bg_finanze_hero.jpg', budget: 0 },
+          { id: 'trasporti', nome: 'Auto & Trasporti', icona: '🚗', bg: 'immagini/bg_finanze_trasporti.jpg', budget: 0 },
+          { id: 'farmaci', nome: 'Farmaci & Terapie', icona: '💊', bg: 'immagini/bg_finanze_farmaci.jpg', budget: 0 },
+          { id: 'salute', nome: 'Salute & Visite', icona: '⚕️', bg: 'immagini/bg_finanze_salute.jpg', budget: 0 },
+          { id: 'svago', nome: 'Svago & Stile di Vita', icona: '🍿', bg: 'immagini/bg_finanze_svago.jpg', budget: 0 },
+          { id: 'risparmio', nome: 'Risparmio & Fondo', icona: '🛡️', bg: 'immagini/bg_finanze_risparmio.jpg', budget: 0 }
         ],
-        movimenti: [
-          { id: '1', data: '2026-08-20', desc: 'Bolletta Enel Luce', cat: 'casa', contoId: '1', importo: 95.40 },
-          { id: '2', data: '2026-08-22', desc: 'Supermercato Coop', cat: 'spesa', contoId: '2', importo: 68.50 },
-          { id: '3', data: '2026-08-23', desc: 'Pieno Benzina Eni', cat: 'trasporti', contoId: '2', importo: 55.00 },
-          { id: '4', data: '2026-08-24', desc: 'Acquisto Farmacia', cat: 'farmaci', contoId: '2', importo: 24.80 },
-          { id: '5', data: '2026-08-25', desc: 'Pizzeria con amici', cat: 'svago', contoId: '1', importo: 32.00 }
-        ],
-        speseFisse: [
-          { id: '1', nome: 'Affitto / Mutuo', importo: 550, cat: 'casa', pagata: false },
-          { id: '2', nome: 'Assicurazione Auto', importo: 180, cat: 'trasporti', pagata: false },
-          { id: '3', nome: 'Abbonamento Internet Fibra', importo: 30, cat: 'casa', pagata: false },
-          { id: '4', nome: 'Rata Carta Revolving', importo: 100, cat: 'casa', pagata: false }
-        ]
+        movimenti: [],
+        speseFisse: []
       };
 
       let activeBusta = 'casa';
@@ -1201,6 +1187,6 @@
         loadData();
         renderAll();
       });
-    </script>
+    </script>
   </body>
 </html>
