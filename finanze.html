@@ -1,0 +1,996 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finanze & Spese Casa — AppUnic</title>
+    <meta name="description" content="Gestione del bilancio familiare e spese di casa 100% Zero-Server. Saldo libero a fine mese, budget a buste e privacy totale." />
+    <link rel="canonical" href="https://www.appunic.com/" />
+    <style>
+      :root {
+        --carta: #FBF7EF;
+        --inchiostro: #1A1714;
+        --mandarino: #FF6A2B;
+        --mandarino-scuro: #E24E12;
+        --basilico: #1F7A4D;
+        --oro: #d4af37;
+        --rosso: #e74c3c;
+        --blu: #2980b9;
+        --viola: #8e44ad;
+        --bordo: #E4DACA;
+        --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      }
+      body {
+        margin: 0;
+        font-family: var(--sans);
+        background: linear-gradient(135deg, var(--carta) 0%, #fef5ed 100%);
+        color: var(--inchiostro);
+        min-height: 100vh;
+      }
+      nav.appunic-nav {
+        background: var(--inchiostro);
+        color: white;
+        padding: 10px 24px;
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+      .brand {
+        font-weight: 800;
+        font-size: 1.1rem;
+        letter-spacing: 1px;
+        color: white;
+        text-decoration: none;
+      }
+      nav a {
+        color: white;
+        text-decoration: none;
+        padding: 5px 10px;
+        opacity: 0.7;
+        border-radius: 4px;
+        font-weight: 600;
+      }
+      nav a.active {
+        background: rgba(255, 255, 255, 0.2);
+        opacity: 1;
+      }
+      nav a:hover {
+        opacity: 1;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2.5rem 1.5rem;
+      }
+      
+      .top-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+      h1 {
+        font-size: 2.3rem;
+        margin: 0 0 0.3rem 0;
+      }
+      .subtitle {
+        font-size: 1.05rem;
+        opacity: 0.8;
+        margin: 0;
+      }
+
+      /* Bottoni */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        border: none;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+      }
+      .btn-primary {
+        background: var(--mandarino);
+        color: white;
+      }
+      .btn-primary:hover {
+        background: var(--mandarino-scuro);
+      }
+      .btn-outline {
+        background: white;
+        border: 1px solid #ddd;
+        color: var(--inchiostro);
+      }
+      .btn-outline:hover {
+        background: #f8f9fa;
+        border-color: #bbb;
+      }
+      .btn-danger {
+        background: rgba(231, 76, 60, 0.1);
+        color: var(--rosso);
+        padding: 4px 8px;
+        font-size: 0.8rem;
+      }
+      .btn-danger:hover {
+        background: var(--rosso);
+        color: white;
+      }
+
+      /* Griglia Conti */
+      .conti-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.2rem;
+        margin-bottom: 2rem;
+      }
+      .conto-card {
+        background: white;
+        border-radius: 14px;
+        padding: 1.2rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .conto-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+      .conto-nome {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #555;
+      }
+      .conto-saldo {
+        font-size: 1.45rem;
+        font-weight: 800;
+        color: var(--inchiostro);
+      }
+
+      /* Radar Flusso di Cassa & Saldo Libero */
+      .radar-banner {
+        background: white;
+        border-radius: 18px;
+        padding: 1.5rem 2rem;
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        margin-bottom: 2.5rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 2rem;
+        align-items: center;
+      }
+      @media (max-width: 800px) {
+        .radar-banner {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+      }
+      .radar-kpi {
+        display: flex;
+        flex-direction: column;
+      }
+      .radar-label {
+        font-size: 0.85rem;
+        color: #777;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+      }
+      .radar-val {
+        font-size: 1.7rem;
+        font-weight: 800;
+      }
+
+      /* Griglia dei 5 Pulsantoni delle Buste */
+      .buste-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 1.2rem;
+        margin-bottom: 2rem;
+      }
+      .busta-card {
+        background: white;
+        border: 2px solid transparent;
+        border-radius: 16px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+        cursor: pointer;
+        transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .busta-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+      }
+      .busta-card.active {
+        border-color: var(--mandarino);
+        box-shadow: 0 10px 30px rgba(255, 106, 43, 0.25);
+      }
+      .busta-thumb {
+        height: 90px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+      }
+      .busta-body {
+        padding: 1.2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        flex: 1;
+      }
+      .busta-icon {
+        font-size: 1.6rem;
+        margin-bottom: 0.3rem;
+      }
+      .busta-title {
+        font-size: 1.15rem;
+        font-weight: 800;
+        margin: 0 0 4px 0;
+      }
+      .busta-speso {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--mandarino);
+        margin: 0 0 8px 0;
+      }
+      .progress-bar-wrap {
+        background: #f0f0f0;
+        height: 6px;
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      .progress-bar-fill {
+        height: 100%;
+        background: var(--basilico);
+        border-radius: 3px;
+        transition: width 0.3s ease;
+      }
+
+      /* Pannello Espanso Dati */
+      .expanded-wrapper {
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 15px 45px rgba(0, 0, 0, 0.08);
+        margin-bottom: 3rem;
+        background: white;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+      }
+      .expanded-hero {
+        height: 170px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        padding: 1.5rem 2rem;
+        transition: background-image 0.4s ease;
+      }
+      .expanded-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 100%);
+      }
+      .hero-content {
+        position: relative;
+        z-index: 2;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+      }
+      .hero-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin: 0;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      }
+      .expanded-content-body {
+        padding: 2rem;
+        background: #faf8f5;
+      }
+
+      /* Layout a 2 Colonne */
+      .two-columns-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.8rem;
+      }
+      @media (max-width: 850px) {
+        .two-columns-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .sub-block {
+        background: white;
+        border: 1px solid rgba(0, 0, 0, 0.07);
+        border-radius: 14px;
+        padding: 1.4rem;
+        margin-bottom: 1.3rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+      }
+      .sub-block-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-top: 0;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      /* Tabelle Movimenti */
+      .table-movimenti {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .table-movimenti th {
+        text-align: left;
+        padding: 8px 10px;
+        background: rgba(0, 0, 0, 0.03);
+        color: #555;
+        font-size: 0.8rem;
+        font-weight: 600;
+        border-radius: 4px;
+      }
+      .table-movimenti td {
+        padding: 8px 10px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        font-size: 0.9rem;
+      }
+
+      /* Modale */
+      .modal-overlay {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        backdrop-filter: blur(4px);
+      }
+      .modal-content {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        width: 100%;
+        max-width: 480px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      }
+      .form-group {
+        margin-bottom: 12px;
+      }
+      .form-group label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+        color: #555;
+      }
+      .form-group input, .form-group select {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        box-sizing: border-box;
+      }
+    </style>
+    <script type="module" crossorigin src="./assets/VoiceAssistant-CpTO9j7I.js"></script>
+    <script type="module" crossorigin src="./assets/globalVoice-DNmjMw79.js"></script>
+  </head>
+  <body>
+    <!-- Navigazione Globale AppUnic -->
+    <nav class="appunic-nav">
+      <a href="./index.html" class="brand">AppUnic</a>
+      <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+        <a href="./bollette.html">Bollette</a>
+        <a href="./spesasmart.html">SpesaSmart</a>
+        <a href="./organizzazione.html">Organizzazione</a>
+        <a href="./memorie.html">Memorie</a>
+        <a href="./finanze.html" class="active">Finanze</a>
+        <a href="#" style="opacity: 0.4; cursor: not-allowed;">Fisco</a>
+        <a href="#" style="opacity: 0.4; cursor: not-allowed;">Salute</a>
+      </div>
+      <a href="./area-personale.html" style="margin-left: auto; color: white; text-decoration: none; padding: 5px 10px; font-weight: bold; background: rgba(255, 255, 255, 0.2); border-radius: 8px;">Area Personale</a>
+    </nav>
+
+    <div class="container">
+      <div class="top-header">
+        <div>
+          <h1>Finanze Personali & Spese Casa 💰</h1>
+          <p class="subtitle">Il tuo centro di controllo patrimoniale zero-server. Saldo libero a fine mese e privacy totale.</p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-outline" id="btn-import-csv">📥 Importa Estratto Conto</button>
+          <input type="file" id="file-csv-input" accept=".csv,.txt" style="display: none;">
+          <button class="btn btn-primary" id="btn-open-modal-spesa">+ Nuova Spesa</button>
+        </div>
+      </div>
+
+      <!-- RADAR SALDO LIBERO A FINE MESE -->
+      <div class="radar-banner">
+        <div class="radar-kpi">
+          <span class="radar-label">💵 Saldo Totale Conti</span>
+          <span class="radar-val" id="kpi-saldo-totale" style="color: var(--inchiostro);">€ 2.850,00</span>
+        </div>
+        <div class="radar-kpi" style="border-left: 1px solid #eee; border-right: 1px solid #eee; padding: 0 1rem;">
+          <span class="radar-label">⏳ Spese Fisse Mancanti a Fine Mese</span>
+          <span class="radar-val" id="kpi-spese-fisse" style="color: var(--rosso);">- € 820,00</span>
+        </div>
+        <div class="radar-kpi">
+          <span class="radar-label">🔮 Saldo Libero Spendibile Reale</span>
+          <span class="radar-val" id="kpi-saldo-libero" style="color: var(--basilico);">€ 2.030,00</span>
+        </div>
+      </div>
+
+      <!-- CARDS DEI CONTI -->
+      <div class="sub-block-title">
+        <span>💳 I Tuoi Conti & Carte</span>
+        <button class="btn btn-outline" id="btn-add-conto">+ Aggiungi Conto</button>
+      </div>
+      <div class="conti-grid" id="conti-container">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- 5 PULSANTONI DELLE BUSTE DI SPESA -->
+      <h2 style="font-size: 1.4rem; margin: 2rem 0 1rem 0;">📊 Le Buste di Spesa & Budget</h2>
+      <div class="buste-grid">
+        <div class="busta-card active" id="btn-tab-casa" onclick="switchBusta('casa')">
+          <div class="busta-thumb" style="background-image: url('immagini/bg_finanze_casa.jpg');"></div>
+          <div class="busta-body">
+            <div class="busta-icon">🏠</div>
+            <h3 class="busta-title">Casa & Utenze</h3>
+            <span class="busta-speso" id="speso-busta-casa">€ 450 / € 800</span>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-casa" style="width: 56%;"></div></div>
+          </div>
+        </div>
+
+        <div class="busta-card" id="btn-tab-spesa" onclick="switchBusta('spesa')">
+          <div class="busta-thumb" style="background-image: url('immagini/bg_finanze_hero.jpg');"></div>
+          <div class="busta-body">
+            <div class="busta-icon">🛒</div>
+            <h3 class="busta-title">Spesa & Alimentari</h3>
+            <span class="busta-speso" id="speso-busta-spesa">€ 280 / € 500</span>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-spesa" style="width: 56%;"></div></div>
+          </div>
+        </div>
+
+        <div class="busta-card" id="btn-tab-trasporti" onclick="switchBusta('trasporti')">
+          <div class="busta-thumb" style="background-image: url('immagini/bg_finanze_trasporti.jpg');"></div>
+          <div class="busta-body">
+            <div class="busta-icon">🚗</div>
+            <h3 class="busta-title">Auto & Trasporti</h3>
+            <span class="busta-speso" id="speso-busta-trasporti">€ 120 / € 250</span>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-trasporti" style="width: 48%;"></div></div>
+          </div>
+        </div>
+
+        <div class="busta-card" id="btn-tab-svago" onclick="switchBusta('svago')">
+          <div class="busta-thumb" style="background-image: url('immagini/bg_finanze_svago.jpg');"></div>
+          <div class="busta-body">
+            <div class="busta-icon">🍿</div>
+            <h3 class="busta-title">Svago & Stile di Vita</h3>
+            <span class="busta-speso" id="speso-busta-svago">€ 140 / € 300</span>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-svago" style="width: 46%;"></div></div>
+          </div>
+        </div>
+
+        <div class="busta-card" id="btn-tab-risparmio" onclick="switchBusta('risparmio')">
+          <div class="busta-thumb" style="background-image: url('immagini/bg_finanze_risparmio.jpg');"></div>
+          <div class="busta-body">
+            <div class="busta-icon">🛡️</div>
+            <h3 class="busta-title">Risparmio & Fondo</h3>
+            <span class="busta-speso" id="speso-busta-risparmio">€ 350 / € 400</span>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-risparmio" style="width: 87%;"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTENITORE ESPANSO DATI CON HERO VISIBILE -->
+      <div class="expanded-wrapper">
+        <div class="expanded-hero" id="expanded-hero" style="background-image: url('immagini/bg_finanze_casa.jpg');">
+          <div class="hero-content">
+            <h2 class="hero-title" id="hero-title">🏠 Casa & Utenze</h2>
+            <div class="badge-privacy" style="background: rgba(255,255,255,0.9); color: var(--basilico); font-weight: bold; padding: 6px 14px; border-radius: 20px;">🔒 Zero-Server 100% Locale</div>
+          </div>
+        </div>
+
+        <div class="expanded-content-body">
+          <div class="two-columns-grid">
+            <!-- COLONNA 1: MOVIMENTI DELLA CATEGORIA -->
+            <div class="sub-block">
+              <div class="sub-block-title">
+                <span>📋 Spese & Movimenti Registrati</span>
+                <button class="btn btn-outline" id="btn-add-quick-spesa">+ Aggiungi Spesa</button>
+              </div>
+              <div style="overflow-x: auto;">
+                <table class="table-movimenti">
+                  <thead>
+                    <tr>
+                      <th>Data</th>
+                      <th>Descrizione</th>
+                      <th>Conto</th>
+                      <th>Importo</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="movimenti-tbody">
+                    <!-- Rendered by JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- COLONNA 2: OBIETTIVI DI BUDGET & SPESE FISSE RICORRENTI -->
+            <div>
+              <div class="sub-block">
+                <div class="sub-block-title">
+                  <span>🎯 Obiettivo Budget Mensile</span>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 12px;">
+                  <label style="font-weight: 600; font-size: 0.9rem;">Budget (€):</label>
+                  <input type="number" id="input-budget-cat" style="padding: 6px 10px; border: 1px solid #ddd; border-radius: 6px; width: 120px; font-weight: bold;" value="800">
+                  <button class="btn btn-outline" onclick="saveCurrentBudget()">Aggiorna</button>
+                </div>
+                <p id="budget-desc-text" style="font-size: 0.85rem; color: #666; margin: 0; line-height: 1.4;">
+                  Hai speso il 56% del budget previsto per questa categoria. Ti restano € 350 spendibili.
+                </p>
+              </div>
+
+              <div class="sub-block">
+                <div class="sub-block-title">
+                  <span>⏰ Spese Fisse Ricorrenti</span>
+                  <button class="btn btn-outline" id="btn-add-spesa-fissa">+ Aggiungi Fissa</button>
+                </div>
+                <div id="spese-fisse-container">
+                  <!-- Rendered by JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modale Inserimento Spesa -->
+    <div class="modal-overlay" id="modal-spesa">
+      <div class="modal-content">
+        <h3 style="margin-top: 0;">➕ Nuova Spesa / Movimento</h3>
+        <div class="form-group">
+          <label>Descrizione</label>
+          <input type="text" id="spesa-desc" placeholder="Es: Spesa Conad / Carburante / Bolletta">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-group">
+            <label>Importo (€)</label>
+            <input type="number" step="0.01" id="spesa-importo" placeholder="0.00">
+          </div>
+          <div class="form-group">
+            <label>Data</label>
+            <input type="date" id="spesa-data">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Categoria (Busta)</label>
+          <select id="spesa-categoria">
+            <option value="casa">🏠 Casa & Utenze</option>
+            <option value="spesa">🛒 Spesa & Alimentari</option>
+            <option value="trasporti">🚗 Auto & Trasporti</option>
+            <option value="svago">🍿 Svago & Stile di Vita</option>
+            <option value="risparmio">🛡️ Risparmio & Investimenti</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Conto Addebito</label>
+          <select id="spesa-conto">
+            <!-- Populated via JS -->
+          </select>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+          <button class="btn btn-outline" id="btn-close-modal-spesa">Annulla</button>
+          <button class="btn btn-primary" id="btn-save-spesa">Registra Spesa</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Script di Gestione Finanze Personali -->
+    <script>
+      const STORAGE_KEY = 'APPUNIC_FINANZE_DATA';
+
+      let finanzeData = {
+        conti: [
+          { id: '1', nome: 'Conto Principale', saldo: 1850.00, icona: '🏦' },
+          { id: '2', nome: 'Carta Revolut / Hype', saldo: 340.00, icona: '💳' },
+          { id: '3', nome: 'Contanti', saldo: 160.00, icona: '💵' },
+          { id: '4', nome: 'Fondo Emergenza', saldo: 500.00, icona: '🛡️' }
+        ],
+        budget: {
+          casa: 800,
+          spesa: 500,
+          trasporti: 250,
+          svago: 300,
+          risparmio: 400
+        },
+        movimenti: [
+          { id: '1', data: '2026-08-20', desc: 'Bolletta Enel Luce', cat: 'casa', contoId: '1', importo: 95.40 },
+          { id: '2', data: '2026-08-22', desc: 'Supermercato Coop', cat: 'spesa', contoId: '2', importo: 68.50 },
+          { id: '3', data: '2026-08-23', desc: 'Pieno Benzina Eni', cat: 'trasporti', contoId: '2', importo: 55.00 },
+          { id: '4', data: '2026-08-24', desc: 'Pizzeria con amici', cat: 'svago', contoId: '3', importo: 32.00 },
+          { id: '5', data: '2026-08-25', desc: 'Accantonamento Risparmio', cat: 'risparmio', contoId: '1', importo: 100.00 }
+        ],
+        speseFisse: [
+          { id: '1', nome: 'Affitto / Mutuo', importo: 550, cat: 'casa', pagata: false },
+          { id: '2', nome: 'Assicurazione Auto', importo: 180, cat: 'trasporti', pagata: false },
+          { id: '3', nome: 'Abbonamento Internet Fibra', importo: 30, cat: 'casa', pagata: false },
+          { id: '4', nome: 'Palestra / Sport', importo: 60, cat: 'svago', pagata: false }
+        ]
+      };
+
+      let activeBusta = 'casa';
+
+      const bgImages = {
+        casa: 'immagini/bg_finanze_casa.jpg',
+        spesa: 'immagini/bg_finanze_hero.jpg',
+        trasporti: 'immagini/bg_finanze_trasporti.jpg',
+        svago: 'immagini/bg_finanze_svago.jpg',
+        risparmio: 'immagini/bg_finanze_risparmio.jpg'
+      };
+
+      const bustaTitles = {
+        casa: '🏠 Casa & Utenze',
+        spesa: '🛒 Spesa & Alimentari',
+        trasporti: '🚗 Auto & Trasporti',
+        svago: '🍿 Svago & Stile di Vita',
+        risparmio: '🛡️ Risparmio & Investimenti'
+      };
+
+      function loadData() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          try {
+            finanzeData = { ...finanzeData, ...JSON.parse(saved) };
+          } catch(e) { console.error(e); }
+        }
+      }
+
+      function saveData() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(finanzeData));
+        renderAll();
+      }
+
+      function switchBusta(busta) {
+        activeBusta = busta;
+        ['casa', 'spesa', 'trasporti', 'svago', 'risparmio'].forEach(b => {
+          document.getElementById(`btn-tab-${b}`)?.classList.remove('active');
+        });
+        document.getElementById(`btn-tab-${busta}`)?.classList.add('active');
+
+        const hero = document.getElementById('expanded-hero');
+        const title = document.getElementById('hero-title');
+        if (hero && bgImages[busta]) hero.style.backgroundImage = `url('${bgImages[busta]}')`;
+        if (title && bustaTitles[busta]) title.textContent = bustaTitles[busta];
+
+        renderMovimenti();
+        renderBudgetSection();
+      }
+
+      function renderConti() {
+        const cont = document.getElementById('conti-container');
+        const selectConto = document.getElementById('spesa-conto');
+        if (!cont) return;
+        cont.innerHTML = '';
+        if (selectConto) selectConto.innerHTML = '';
+
+        let saldoTotale = 0;
+
+        finanzeData.conti.forEach(c => {
+          saldoTotale += c.saldo;
+
+          const d = document.createElement('div');
+          d.className = 'conto-card';
+          d.innerHTML = `
+            <div class="conto-header">
+              <span class="conto-nome">${c.icona} ${c.nome}</span>
+            </div>
+            <div class="conto-saldo">€ ${c.saldo.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+          `;
+          cont.appendChild(d);
+
+          if (selectConto) {
+            const opt = document.createElement('option');
+            opt.value = c.id;
+            opt.textContent = `${c.icona} ${c.nome} (Disp: €${c.saldo.toFixed(2)})`;
+            selectConto.appendChild(opt);
+          }
+        });
+
+        // Calcola Spese Fisse non ancora pagate
+        let speseFisseTot = 0;
+        finanzeData.speseFisse.filter(f => !f.pagata).forEach(f => {
+          speseFisseTot += f.importo;
+        });
+
+        const saldoLibero = saldoTotale - speseFisseTot;
+
+        document.getElementById('kpi-saldo-totale').textContent = `€ ${saldoTotale.toLocaleString('it-IT', { minimumFractionDigits: 2 })}`;
+        document.getElementById('kpi-spese-fisse').textContent = `- € ${speseFisseTot.toLocaleString('it-IT', { minimumFractionDigits: 2 })}`;
+        document.getElementById('kpi-saldo-libero').textContent = `€ ${saldoLibero.toLocaleString('it-IT', { minimumFractionDigits: 2 })}`;
+      }
+
+      function renderBusteCards() {
+        ['casa', 'spesa', 'trasporti', 'svago', 'risparmio'].forEach(cat => {
+          const budget = finanzeData.budget[cat] || 1;
+          const speso = finanzeData.movimenti
+            .filter(m => m.cat === cat)
+            .reduce((sum, m) => sum + m.importo, 0);
+
+          const percent = Math.min(100, Math.round((speso / budget) * 100));
+
+          const textEl = document.getElementById(`speso-busta-${cat}`);
+          const fillEl = document.getElementById(`progress-${cat}`);
+
+          if (textEl) textEl.textContent = `€ ${speso.toFixed(0)} / € ${budget}`;
+          if (fillEl) {
+            fillEl.style.width = `${percent}%`;
+            if (percent > 90) fillEl.style.background = 'var(--rosso)';
+            else if (percent > 70) fillEl.style.background = 'var(--mandarino)';
+            else fillEl.style.background = 'var(--basilico)';
+          }
+        });
+      }
+
+      function renderMovimenti() {
+        const tbody = document.getElementById('movimenti-tbody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+
+        const movs = finanzeData.movimenti.filter(m => m.cat === activeBusta);
+        if (movs.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#888;">Nessun movimento in questa busta.</td></tr>';
+          return;
+        }
+
+        movs.forEach((m, idx) => {
+          const conto = finanzeData.conti.find(c => c.id === m.contoId)?.nome || 'Conto';
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${m.data}</td>
+            <td style="font-weight:600;">${m.desc}</td>
+            <td><span style="font-size:0.8rem; background:#eee; padding:2px 6px; border-radius:4px;">${conto}</span></td>
+            <td style="font-weight:bold; color:var(--rosso);">- € ${m.importo.toFixed(2)}</td>
+            <td><button class="btn btn-danger" onclick="deleteMovimento('${m.id}')">✕</button></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function renderBudgetSection() {
+        const inputBudget = document.getElementById('input-budget-cat');
+        const descText = document.getElementById('budget-desc-text');
+        const currBudget = finanzeData.budget[activeBusta] || 0;
+        if (inputBudget) inputBudget.value = currBudget;
+
+        const speso = finanzeData.movimenti
+          .filter(m => m.cat === activeBusta)
+          .reduce((sum, m) => sum + m.importo, 0);
+
+        const rimanente = currBudget - speso;
+        const percent = Math.round((speso / (currBudget || 1)) * 100);
+
+        if (descText) {
+          descText.innerHTML = `Hai speso il <strong>${percent}%</strong> del budget previsto. Ti restano <strong style="color:${rimanente >= 0 ? 'var(--basilico)' : 'var(--rosso)'}">€ ${rimanente.toFixed(2)}</strong> per questo mese.`;
+        }
+
+        // Spese fisse della categoria
+        const fisseCont = document.getElementById('spese-fisse-container');
+        if (fisseCont) {
+          fisseCont.innerHTML = '';
+          const fisse = finanzeData.speseFisse.filter(f => f.cat === activeBusta);
+          if (fisse.length === 0) {
+            fisseCont.innerHTML = '<p style="color:#888; font-size:0.85rem; margin:0;">Nessuna spesa fissa ricorrente per questa categoria.</p>';
+          } else {
+            fisse.forEach(f => {
+              const div = document.createElement('div');
+              div.style.display = 'flex';
+              div.style.justifyContent = 'space-between';
+              div.style.alignItems = 'center';
+              div.style.padding = '6px 0';
+              div.style.borderBottom = '1px solid #eee';
+              div.innerHTML = `
+                <div>
+                  <span style="font-weight:600; font-size:0.9rem;">${f.nome}</span>
+                  <span style="font-size:0.8rem; color:#888; margin-left:6px;">€ ${f.importo.toFixed(2)}</span>
+                </div>
+                <button class="btn btn-outline" style="padding:2px 8px; font-size:0.75rem;" onclick="toggleSpesaFissa('${f.id}')">
+                  ${f.pagata ? '✅ Pagata' : '⏳ Da pagare'}
+                </button>
+              `;
+              fisseCont.appendChild(div);
+            });
+          }
+        }
+      }
+
+      window.saveCurrentBudget = () => {
+        const val = parseFloat(document.getElementById('input-budget-cat').value);
+        if (!isNaN(val)) {
+          finanzeData.budget[activeBusta] = val;
+          saveData();
+        }
+      };
+
+      window.deleteMovimento = (id) => {
+        const movIndex = finanzeData.movimenti.findIndex(m => m.id === id);
+        if (movIndex > -1) {
+          const mov = finanzeData.movimenti[movIndex];
+          // Ripristina saldo conto
+          const conto = finanzeData.conti.find(c => c.id === mov.contoId);
+          if (conto) conto.saldo += mov.importo;
+
+          finanzeData.movimenti.splice(movIndex, 1);
+          saveData();
+        }
+      };
+
+      window.toggleSpesaFissa = (id) => {
+        const f = finanzeData.speseFisse.find(x => x.id === id);
+        if (f) {
+          f.pagata = !f.pagata;
+          saveData();
+        }
+      };
+
+      function renderAll() {
+        renderConti();
+        renderBusteCards();
+        renderMovimenti();
+        renderBudgetSection();
+      }
+
+      // Modal Handling
+      const modalSpesa = document.getElementById('modal-spesa');
+      document.getElementById('btn-open-modal-spesa')?.addEventListener('click', () => {
+        document.getElementById('spesa-data').value = new Date().toISOString().split('T')[0];
+        document.getElementById('spesa-categoria').value = activeBusta;
+        modalSpesa.style.display = 'flex';
+      });
+      document.getElementById('btn-add-quick-spesa')?.addEventListener('click', () => {
+        document.getElementById('spesa-data').value = new Date().toISOString().split('T')[0];
+        document.getElementById('spesa-categoria').value = activeBusta;
+        modalSpesa.style.display = 'flex';
+      });
+      document.getElementById('btn-close-modal-spesa')?.addEventListener('click', () => {
+        modalSpesa.style.display = 'none';
+      });
+
+      document.getElementById('btn-save-spesa')?.addEventListener('click', () => {
+        const desc = document.getElementById('spesa-desc').value.trim();
+        const importo = parseFloat(document.getElementById('spesa-importo').value);
+        const data = document.getElementById('spesa-data').value || new Date().toISOString().split('T')[0];
+        const cat = document.getElementById('spesa-categoria').value;
+        const contoId = document.getElementById('spesa-conto').value;
+
+        if (!desc || isNaN(importo) || importo <= 0) {
+          alert('Inserisci descrizione e importo valido.');
+          return;
+        }
+
+        // Scala importo dal conto
+        const conto = finanzeData.conti.find(c => c.id === contoId);
+        if (conto) {
+          conto.saldo -= importo;
+        }
+
+        finanzeData.movimenti.unshift({
+          id: Date.now().toString(),
+          data,
+          desc,
+          cat,
+          contoId,
+          importo
+        });
+
+        document.getElementById('spesa-desc').value = '';
+        document.getElementById('spesa-importo').value = '';
+        modalSpesa.style.display = 'none';
+
+        saveData();
+      });
+
+      // Aggiunta Conto
+      document.getElementById('btn-add-conto')?.addEventListener('click', () => {
+        const nome = prompt('Nome del nuovo conto o carta:');
+        if (nome) {
+          const saldo = parseFloat(prompt('Saldo iniziale (€):', '0')) || 0;
+          finanzeData.conti.push({
+            id: Date.now().toString(),
+            nome: nome,
+            saldo: saldo,
+            icona: '💳'
+          });
+          saveData();
+        }
+      });
+
+      // Aggiunta Spesa Fissa
+      document.getElementById('btn-add-spesa-fissa')?.addEventListener('click', () => {
+        const nome = prompt('Nome della spesa fissa ricorrente:');
+        if (nome) {
+          const importo = parseFloat(prompt('Importo mensile (€):', '50')) || 0;
+          finanzeData.speseFisse.push({
+            id: Date.now().toString(),
+            nome: nome,
+            importo: importo,
+            cat: activeBusta,
+            pagata: false
+          });
+          saveData();
+        }
+      });
+
+      // Import CSV
+      const fileInput = document.getElementById('file-csv-input');
+      document.getElementById('btn-import-csv')?.addEventListener('click', () => fileInput?.click());
+      fileInput?.addEventListener('change', (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const text = event.target?.result;
+          if (typeof text === 'string') {
+            const lines = text.split('\n');
+            let importati = 0;
+            lines.forEach((l, i) => {
+              if (i === 0 || !l.trim()) return;
+              const parts = l.split(/[,;\t]/);
+              if (parts.length >= 2) {
+                const desc = parts[1] || 'Spesa importata';
+                const impStr = parts[parts.length - 1].replace('€', '').replace(',', '.').trim();
+                const imp = Math.abs(parseFloat(impStr));
+                if (!isNaN(imp) && imp > 0) {
+                  finanzeData.movimenti.unshift({
+                    id: Date.now().toString() + Math.random(),
+                    data: new Date().toISOString().split('T')[0],
+                    desc: desc.trim(),
+                    cat: activeBusta,
+                    contoId: finanzeData.conti[0]?.id || '1',
+                    importo: imp
+                  });
+                  importati++;
+                }
+              }
+            });
+            alert(`✅ Importati con successo ${importati} movimenti in locale!`);
+            saveData();
+          }
+        };
+        reader.readAsText(file);
+      });
+
+      document.addEventListener('DOMContentLoaded', () => {
+        loadData();
+        renderAll();
+      });
+    </script>
+  </body>
+</html>
