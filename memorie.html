@@ -374,58 +374,51 @@
           </div>
         </div>
 
-        <!-- 2. Contatti Medici & Numeri di Emergenza -->
+        <!-- 2. Numeri di Emergenza (ICE) Dinamici -->
         <div class="sub-block">
           <div class="sub-block-title">
-            <span>🩺 Contatti Medici & Emergenza</span>
-            <button class="btn btn-outline" id="btn-add-specialista">+ Aggiungi Specialista</button>
+            <span>🚨 Numeri di Emergenza (ICE)</span>
+            <button class="btn btn-outline" id="btn-add-ice">+ Aggiungi Contatto Emergenza</button>
           </div>
-          
-          <div class="contacts-grid" id="contacts-container">
-            <!-- Emergenza Principale -->
-            <div class="contact-card" style="border-left: 4px solid var(--rosso);">
-              <div class="card-role" style="color: var(--rosso);">🚨 Contatto di Emergenza (ICE)</div>
-              <div class="contact-field">
-                <label>Nome / Relazione</label>
-                <input type="text" id="ice-nome" placeholder="Es: Moglie / Figlio / Fratello">
-              </div>
-              <div class="contact-field">
-                <label>Numero Telefonico</label>
-                <input type="tel" id="ice-tel" placeholder="Es: +39 340 1234567">
-              </div>
-            </div>
-
-            <!-- Medico Curante -->
-            <div class="contact-card" style="border-left: 4px solid var(--basilico);">
-              <div class="card-role" style="color: var(--basilico);">👨‍⚕️ Medico Curante (Base)</div>
-              <div class="contact-field">
-                <label>Nome Dottore</label>
-                <input type="text" id="doc-nome" placeholder="Es: Dott. Rossi">
-              </div>
-              <div class="contact-field">
-                <label>Telefono / Studio</label>
-                <input type="tel" id="doc-tel" placeholder="Es: 06 1234567">
-              </div>
-              <div class="contact-field">
-                <label>Orari / Indirizzo Ambulatorio</label>
-                <input type="text" id="doc-note" placeholder="Es: Lun-Ven 9:00 - 12:00, Via Roma 1">
-              </div>
-            </div>
-
-            <!-- Contenitore Specialisti Dinamici -->
-            <div id="specialisti-list" style="display: contents;"></div>
+          <div class="contacts-grid" id="ice-container">
+            <!-- Generato via JavaScript -->
           </div>
         </div>
 
-        <!-- 3. Note, Allergie e Avvertenze Speciali -->
+        <!-- 3. Medico Curante e Sostituti -->
+        <div class="sub-block">
+          <div class="sub-block-title">
+            <span>👨‍⚕️ Medico Curante & Medici di Base</span>
+            <button class="btn btn-outline" id="btn-add-medico">+ Aggiungi Medico</button>
+          </div>
+          <div class="contacts-grid" id="medici-container">
+            <!-- Generato via JavaScript -->
+          </div>
+        </div>
+
+        <!-- 4. Specialisti Dinamici -->
+        <div class="sub-block">
+          <div class="sub-block-title">
+            <span>🩺 Medici Specialisti</span>
+            <button class="btn btn-outline" id="btn-add-specialista">+ Aggiungi Specialista</button>
+          </div>
+          <div class="contacts-grid" id="specialisti-container">
+            <!-- Generato via JavaScript -->
+          </div>
+        </div>
+
+        <!-- 5. Note Mediche, Allergie & Intolleranze Dinamiche -->
         <div class="sub-block">
           <div class="sub-block-title">
             <span>📝 Note Mediche, Allergie & Intolleranze</span>
+            <button class="btn btn-outline" id="btn-add-nota">+ Aggiungi Blocco Note</button>
           </div>
-          <textarea class="notes-box" id="salute-note" placeholder="Es: Allergico a penicillina e acari. Gruppo sanguigno A+. Da evitare farmaci con acido acetilsalicilico..."></textarea>
+          <div id="note-container" style="display: flex; flex-direction: column; gap: 12px;">
+            <!-- Generato via JavaScript -->
+          </div>
         </div>
 
-        <!-- 4. Campi Personalizzati Dinamici -->
+        <!-- 6. Campi Personalizzati Dinamici -->
         <div class="sub-block">
           <div class="sub-block-title">
             <span>➕ Campi Personalizzati Aggiuntivi</span>
@@ -465,21 +458,27 @@
       </div>
     </div>
 
-    <!-- Logica di gestione Farmaci e Cartella Medica -->
+    <!-- Logica di gestione Farmaci e Cartella Medica Dinamica -->
     <script>
       const STORAGE_KEY = 'APPUNIC_MEMORIE_SALUTE';
 
-      // Struttura dati iniziale di default
+      // Struttura dati completamente dinamica ed espandibile
       let saluteData = {
         farmaci: [
           { id: '1', nome: 'Esempio: Cardioaspirina', dosaggio: '100 mg', orari: '1 volta al giorno dopo pranzo', note: 'Prescrizione cardiologo' }
         ],
-        ice: { nome: '', tel: '' },
-        medicoCurante: { nome: '', tel: '', note: '' },
+        emergenze: [
+          { id: '1', titolo: '🚨 Contatto di Emergenza (ICE)', nome: 'Moglie / Figlio', tel: '+39 340 1234567', note: 'Contattare in caso di urgenza' }
+        ],
+        medici: [
+          { id: '1', titolo: '👨‍⚕️ Medico Curante (Base)', nome: 'Dott. Rossi', tel: '06 1234567', note: 'Lun-Ven 9:00 - 12:00, Via Roma 1' }
+        ],
         specialisti: [
           { id: '1', titolo: 'Cardiologo', nome: 'Dott. Bianchi', tel: '333 1234567', note: 'Controllo annuale a Maggio' }
         ],
-        noteGenerali: '',
+        noteMediche: [
+          { id: '1', titolo: 'Allergie & Intolleranze', testo: 'Allergico a penicillina e acari. Gruppo sanguigno 0+.' }
+        ],
         campiPersonalizzati: [
           { id: '1', etichetta: 'Gruppo Sanguigno', valore: '0+' }
         ]
@@ -490,7 +489,20 @@
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
           try {
-            saluteData = { ...saluteData, ...JSON.parse(saved) };
+            const parsed = JSON.parse(saved);
+            
+            // Retrocompatibilità se c'erano vecchi campi ice/medicoCurante singoli
+            if (parsed.ice && !parsed.emergenze) {
+              parsed.emergenze = [{ id: '1', titolo: '🚨 Contatto di Emergenza (ICE)', nome: parsed.ice.nome || '', tel: parsed.ice.tel || '', note: '' }];
+            }
+            if (parsed.medicoCurante && !parsed.medici) {
+              parsed.medici = [{ id: '1', titolo: '👨‍⚕️ Medico Curante (Base)', nome: parsed.medicoCurante.nome || '', tel: parsed.medicoCurante.tel || '', note: parsed.medicoCurante.note || '' }];
+            }
+            if (parsed.noteGenerali && !parsed.noteMediche) {
+              parsed.noteMediche = [{ id: '1', titolo: 'Note & Allergie', testo: parsed.noteGenerali }];
+            }
+
+            saluteData = { ...saluteData, ...parsed };
           } catch (e) {
             console.error('Errore nel caricamento saluteData', e);
           }
@@ -498,25 +510,19 @@
       }
 
       function saveData() {
-        // Raccogli valori fissi
-        saluteData.ice.nome = document.getElementById('ice-nome').value;
-        saluteData.ice.tel = document.getElementById('ice-tel').value;
-        saluteData.medicoCurante.nome = document.getElementById('doc-nome').value;
-        saluteData.medicoCurante.tel = document.getElementById('doc-tel').value;
-        saluteData.medicoCurante.note = document.getElementById('doc-note').value;
-        saluteData.noteGenerali = document.getElementById('salute-note').value;
-
         localStorage.setItem(STORAGE_KEY, JSON.stringify(saluteData));
-        
         const status = document.getElementById('save-status');
-        status.textContent = '✅ Dati salvati in locale!';
-        status.style.opacity = '1';
-        setTimeout(() => { status.style.opacity = '0.8'; }, 1500);
+        if (status) {
+          status.textContent = '✅ Dati salvati in locale!';
+          status.style.opacity = '1';
+          setTimeout(() => { status.style.opacity = '0.8'; }, 1500);
+        }
       }
 
-      // Render Farmaci
+      // 1. RENDER FARMACI
       function renderFarmaci() {
         const tbody = document.getElementById('farmaci-tbody');
+        if (!tbody) return;
         tbody.innerHTML = '';
         if (saluteData.farmaci.length === 0) {
           tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #888;">Nessun farmaco registrato. Clicca su "+ Aggiungi Farmaco".</td></tr>';
@@ -526,38 +532,98 @@
         saluteData.farmaci.forEach((f, index) => {
           const tr = document.createElement('tr');
           tr.innerHTML = `
-            <td><input type="text" value="${f.nome || ''}" placeholder="Nome Farmaco" oninput="updateFarmaco(${index}, 'nome', this.value)"></td>
-            <td><input type="text" value="${f.dosaggio || ''}" placeholder="Es: 50mg / 1 cpr" oninput="updateFarmaco(${index}, 'dosaggio', this.value)"></td>
-            <td><input type="text" value="${f.orari || ''}" placeholder="Es: Mattina e Sera" oninput="updateFarmaco(${index}, 'orari', this.value)"></td>
-            <td><input type="text" value="${f.note || ''}" placeholder="Note / Note ricetta" oninput="updateFarmaco(${index}, 'note', this.value)"></td>
+            <td><input type="text" value="${f.nome || ''}" placeholder="Nome Farmaco" oninput="updateItem('farmaci', ${index}, 'nome', this.value)"></td>
+            <td><input type="text" value="${f.dosaggio || ''}" placeholder="Es: 50mg / 1 cpr" oninput="updateItem('farmaci', ${index}, 'dosaggio', this.value)"></td>
+            <td><input type="text" value="${f.orari || ''}" placeholder="Es: Mattina e Sera" oninput="updateItem('farmaci', ${index}, 'orari', this.value)"></td>
+            <td><input type="text" value="${f.note || ''}" placeholder="Note / Note ricetta" oninput="updateItem('farmaci', ${index}, 'note', this.value)"></td>
             <td style="text-align: center;">
-              <button class="btn btn-danger" onclick="deleteFarmaco(${index})" title="Elimina">🗑️</button>
+              <button class="btn btn-danger" onclick="deleteItem('farmaci', ${index})" title="Elimina">🗑️</button>
             </td>
           `;
           tbody.appendChild(tr);
         });
       }
 
-      window.updateFarmaco = (index, field, value) => {
-        saluteData.farmaci[index][field] = value;
+      // Helper generico per aggiornare ed eliminare
+      window.updateItem = (categoria, index, field, value) => {
+        saluteData[categoria][index][field] = value;
         saveData();
       };
 
-      window.deleteFarmaco = (index) => {
-        saluteData.farmaci.splice(index, 1);
-        renderFarmaci();
+      window.deleteItem = (categoria, index) => {
+        saluteData[categoria].splice(index, 1);
+        renderAll();
         saveData();
       };
 
-      document.getElementById('btn-add-farmaco').addEventListener('click', () => {
-        saluteData.farmaci.push({ id: Date.now().toString(), nome: '', dosaggio: '', orari: '', note: '' });
-        renderFarmaci();
-        saveData();
-      });
+      // 2. RENDER EMERGENZE
+      function renderEmergenze() {
+        const container = document.getElementById('ice-container');
+        if (!container) return;
+        container.innerHTML = '';
 
-      // Render Specialisti
+        saluteData.emergenze.forEach((e, index) => {
+          const div = document.createElement('div');
+          div.className = 'contact-card';
+          div.style.borderLeft = '4px solid var(--rosso)';
+          div.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <input type="text" value="${e.titolo || '🚨 Contatto di Emergenza'}" style="font-weight:bold; color:var(--rosso); border:1px solid #ddd; border-radius:4px; padding:3px 6px; font-size:0.9rem; width:80%;" oninput="updateItem('emergenze', ${index}, 'titolo', this.value)">
+              <button class="btn btn-danger" onclick="deleteItem('emergenze', ${index})" title="Rimuovi" style="padding:2px 6px;">✕</button>
+            </div>
+            <div class="contact-field">
+              <label>Nome / Relazione</label>
+              <input type="text" value="${e.nome || ''}" placeholder="Es: Moglie / Figlio / Fratello" oninput="updateItem('emergenze', ${index}, 'nome', this.value)">
+            </div>
+            <div class="contact-field">
+              <label>Numero Telefonico</label>
+              <input type="tel" value="${e.tel || ''}" placeholder="Es: +39 340 1234567" oninput="updateItem('emergenze', ${index}, 'tel', this.value)">
+            </div>
+            <div class="contact-field">
+              <label>Note / Istruzioni</label>
+              <input type="text" value="${e.note || ''}" placeholder="Es: Chiama subito in caso di bisogno" oninput="updateItem('emergenze', ${index}, 'note', this.value)">
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      }
+
+      // 3. RENDER MEDICI BASE
+      function renderMedici() {
+        const container = document.getElementById('medici-container');
+        if (!container) return;
+        container.innerHTML = '';
+
+        saluteData.medici.forEach((m, index) => {
+          const div = document.createElement('div');
+          div.className = 'contact-card';
+          div.style.borderLeft = '4px solid var(--basilico)';
+          div.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <input type="text" value="${m.titolo || '👨‍⚕️ Medico Curante'}" style="font-weight:bold; color:var(--basilico); border:1px solid #ddd; border-radius:4px; padding:3px 6px; font-size:0.9rem; width:80%;" oninput="updateItem('medici', ${index}, 'titolo', this.value)">
+              <button class="btn btn-danger" onclick="deleteItem('medici', ${index})" title="Rimuovi" style="padding:2px 6px;">✕</button>
+            </div>
+            <div class="contact-field">
+              <label>Nome Dottore</label>
+              <input type="text" value="${m.nome || ''}" placeholder="Es: Dott. Rossi" oninput="updateItem('medici', ${index}, 'nome', this.value)">
+            </div>
+            <div class="contact-field">
+              <label>Telefono / Studio</label>
+              <input type="tel" value="${m.tel || ''}" placeholder="Es: 06 1234567" oninput="updateItem('medici', ${index}, 'tel', this.value)">
+            </div>
+            <div class="contact-field">
+              <label>Orari / Indirizzo Ambulatorio</label>
+              <input type="text" value="${m.note || ''}" placeholder="Es: Lun-Ven 9:00 - 12:00, Via Roma 1" oninput="updateItem('medici', ${index}, 'note', this.value)">
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      }
+
+      // 4. RENDER SPECIALISTI
       function renderSpecialisti() {
-        const container = document.getElementById('specialisti-list');
+        const container = document.getElementById('specialisti-container');
+        if (!container) return;
         container.innerHTML = '';
 
         saluteData.specialisti.forEach((s, index) => {
@@ -566,82 +632,111 @@
           div.style.borderLeft = '4px solid var(--blu)';
           div.innerHTML = `
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-              <div class="card-role" style="color: var(--blu); margin-bottom:0;">
-                👨‍⚕️ <input type="text" value="${s.titolo || ''}" placeholder="Es: Cardiologo" style="font-weight:bold; border:1px solid #ddd; border-radius:4px; padding:3px 6px; font-size:0.9rem;" oninput="updateSpecialista(${index}, 'titolo', this.value)">
-              </div>
-              <button class="btn btn-danger" onclick="deleteSpecialista(${index})" title="Rimuovi specialista" style="padding:2px 6px;">✕</button>
+              <input type="text" value="${s.titolo || '🩺 Specialista'}" style="font-weight:bold; color:var(--blu); border:1px solid #ddd; border-radius:4px; padding:3px 6px; font-size:0.9rem; width:80%;" oninput="updateItem('specialisti', ${index}, 'titolo', this.value)">
+              <button class="btn btn-danger" onclick="deleteItem('specialisti', ${index})" title="Rimuovi" style="padding:2px 6px;">✕</button>
             </div>
             <div class="contact-field">
               <label>Nome Dottore</label>
-              <input type="text" value="${s.nome || ''}" placeholder="Es: Dott. Bianchi" oninput="updateSpecialista(${index}, 'nome', this.value)">
+              <input type="text" value="${s.nome || ''}" placeholder="Es: Dott. Bianchi" oninput="updateItem('specialisti', ${index}, 'nome', this.value)">
             </div>
             <div class="contact-field">
               <label>Telefono / Contatto</label>
-              <input type="tel" value="${s.tel || ''}" placeholder="Es: 06 987654" oninput="updateSpecialista(${index}, 'tel', this.value)">
+              <input type="tel" value="${s.tel || ''}" placeholder="Es: 06 987654" oninput="updateItem('specialisti', ${index}, 'tel', this.value)">
             </div>
             <div class="contact-field">
               <label>Note / Studio</label>
-              <input type="text" value="${s.note || ''}" placeholder="Es: Visita annuale" oninput="updateSpecialista(${index}, 'note', this.value)">
+              <input type="text" value="${s.note || ''}" placeholder="Es: Visita annuale" oninput="updateItem('specialisti', ${index}, 'note', this.value)">
             </div>
           `;
           container.appendChild(div);
         });
       }
 
-      window.updateSpecialista = (index, field, value) => {
-        saluteData.specialisti[index][field] = value;
-        saveData();
-      };
+      // 5. RENDER NOTE MEDICHE DINAMICHE
+      function renderNote() {
+        const container = document.getElementById('note-container');
+        if (!container) return;
+        container.innerHTML = '';
 
-      window.deleteSpecialista = (index) => {
-        saluteData.specialisti.splice(index, 1);
-        renderSpecialisti();
-        saveData();
-      };
+        saluteData.noteMediche.forEach((n, index) => {
+          const div = document.createElement('div');
+          div.style.background = 'white';
+          div.style.border = '1px solid #ddd';
+          div.style.borderRadius = '10px';
+          div.style.padding = '12px';
+          div.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <input type="text" value="${n.titolo || 'Note / Allergie'}" style="font-weight:bold; border:1px solid #ddd; border-radius:4px; padding:4px 8px; font-size:0.95rem; width:70%;" oninput="updateItem('noteMediche', ${index}, 'titolo', this.value)">
+              <button class="btn btn-danger" onclick="deleteItem('noteMediche', ${index})" title="Elimina Nota" style="padding:2px 6px;">✕</button>
+            </div>
+            <textarea class="notes-box" placeholder="Scrivi qui i dettagli..." oninput="updateItem('noteMediche', ${index}, 'testo', this.value)">${n.testo || ''}</textarea>
+          `;
+          container.appendChild(div);
+        });
+      }
 
-      document.getElementById('btn-add-specialista').addEventListener('click', () => {
-        saluteData.specialisti.push({ id: Date.now().toString(), titolo: 'Specialista', nome: '', tel: '', note: '' });
-        renderSpecialisti();
-        saveData();
-      });
-
-      // Render Campi Personalizzati
+      // 6. RENDER CAMPI PERSONALIZZATI
       function renderCustomFields() {
         const container = document.getElementById('custom-fields-container');
+        if (!container) return;
         container.innerHTML = '';
 
         saluteData.campiPersonalizzati.forEach((c, index) => {
           const div = document.createElement('div');
           div.className = 'custom-field-item';
           div.innerHTML = `
-            <input type="text" class="field-name" value="${c.etichetta || ''}" placeholder="Es: Gruppo Sanguigno" oninput="updateCustomField(${index}, 'etichetta', this.value)">
-            <input type="text" class="field-val" value="${c.valore || ''}" placeholder="Valore" oninput="updateCustomField(${index}, 'valore', this.value)">
-            <button class="btn btn-danger" onclick="deleteCustomField(${index})" title="Rimuovi" style="padding:3px 6px;">✕</button>
+            <input type="text" class="field-name" value="${c.etichetta || ''}" placeholder="Nome Campo" oninput="updateItem('campiPersonalizzati', ${index}, 'etichetta', this.value)">
+            <input type="text" class="field-val" value="${c.valore || ''}" placeholder="Valore" oninput="updateItem('campiPersonalizzati', ${index}, 'valore', this.value)">
+            <button class="btn btn-danger" onclick="deleteItem('campiPersonalizzati', ${index})" title="Rimuovi" style="padding:3px 6px;">✕</button>
           `;
           container.appendChild(div);
         });
       }
 
-      window.updateCustomField = (index, field, value) => {
-        saluteData.campiPersonalizzati[index][field] = value;
-        saveData();
-      };
-
-      window.deleteCustomField = (index) => {
-        saluteData.campiPersonalizzati.splice(index, 1);
+      function renderAll() {
+        renderFarmaci();
+        renderEmergenze();
+        renderMedici();
+        renderSpecialisti();
+        renderNote();
         renderCustomFields();
-        saveData();
-      };
+      }
 
-      document.getElementById('btn-add-custom-field').addEventListener('click', () => {
-        saluteData.campiPersonalizzati.push({ id: Date.now().toString(), etichetta: 'Nuovo Campo', valore: '' });
-        renderCustomFields();
+      // Event Listeners Aggiunta
+      document.getElementById('btn-add-farmaco')?.addEventListener('click', () => {
+        saluteData.farmaci.push({ id: Date.now().toString(), nome: '', dosaggio: '', orari: '', note: '' });
+        renderFarmaci();
         saveData();
       });
 
-      // Eventi di input per campi fissi
-      ['ice-nome', 'ice-tel', 'doc-nome', 'doc-tel', 'doc-note', 'salute-note'].forEach(id => {
-        document.getElementById(id)?.addEventListener('input', () => saveData());
+      document.getElementById('btn-add-ice')?.addEventListener('click', () => {
+        saluteData.emergenze.push({ id: Date.now().toString(), titolo: '🚨 Contatto Emergenza', nome: '', tel: '', note: '' });
+        renderEmergenze();
+        saveData();
+      });
+
+      document.getElementById('btn-add-medico')?.addEventListener('click', () => {
+        saluteData.medici.push({ id: Date.now().toString(), titolo: '👨‍⚕️ Medico di Base', nome: '', tel: '', note: '' });
+        renderMedici();
+        saveData();
+      });
+
+      document.getElementById('btn-add-specialista')?.addEventListener('click', () => {
+        saluteData.specialisti.push({ id: Date.now().toString(), titolo: '🩺 Specialista', nome: '', tel: '', note: '' });
+        renderSpecialisti();
+        saveData();
+      });
+
+      document.getElementById('btn-add-nota')?.addEventListener('click', () => {
+        saluteData.noteMediche.push({ id: Date.now().toString(), titolo: 'Nuova Nota / Allergia', testo: '' });
+        renderNote();
+        saveData();
+      });
+
+      document.getElementById('btn-add-custom-field')?.addEventListener('click', () => {
+        saluteData.campiPersonalizzati.push({ id: Date.now().toString(), etichetta: 'Nuovo Campo', valore: '' });
+        renderCustomFields();
+        saveData();
       });
 
       document.getElementById('btn-force-save')?.addEventListener('click', () => saveData());
@@ -649,17 +744,7 @@
       // Inizializzazione pagina
       document.addEventListener('DOMContentLoaded', () => {
         loadData();
-
-        document.getElementById('ice-nome').value = saluteData.ice.nome || '';
-        document.getElementById('ice-tel').value = saluteData.ice.tel || '';
-        document.getElementById('doc-nome').value = saluteData.medicoCurante.nome || '';
-        document.getElementById('doc-tel').value = saluteData.medicoCurante.tel || '';
-        document.getElementById('doc-note').value = saluteData.medicoCurante.note || '';
-        document.getElementById('salute-note').value = saluteData.noteGenerali || '';
-
-        renderFarmaci();
-        renderSpecialisti();
-        renderCustomFields();
+        renderAll();
       });
     </script>
   </body>
