@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Memorie e Salute — AppUnic</title>
-    <meta name="description" content="Il tuo diario personale zero-server. Salva farmaci abituali, dosaggi, contatti medici e memorie in totale privacy." />
+    <title>Memorie & Diario — AppUnic</title>
+    <meta name="description" content="Il tuo diario personale zero-server. Farmaci, luoghi, ristoranti e amicizie in totale privacy." />
     <link rel="canonical" href="https://www.appunic.com/" />
     <style>
       :root {
@@ -16,6 +16,7 @@
         --bordo: #E4DACA;
         --rosso: #e74c3c;
         --blu: #2980b9;
+        --viola: #8e44ad;
         --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       }
       body {
@@ -58,7 +59,7 @@
         opacity: 1;
       }
       .container {
-        max-width: 1000px;
+        max-width: 1200px;
         margin: 0 auto;
         padding: 2.5rem 1.5rem;
       }
@@ -72,57 +73,131 @@
         margin-bottom: 2.5rem;
       }
       
-      /* Pannello Soft Trasparente (Glassmorphism) */
-      .glass-panel {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.8);
-        border-radius: 24px;
-        padding: 2.5rem;
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.05);
-        margin-bottom: 3rem;
+      /* Griglia dei 4 Pulsantoni */
+      .pulsantoni-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
       }
-      
+      .pulsantone-card {
+        background: rgba(255, 255, 255, 0.85);
+        border: 2px solid transparent;
+        border-radius: 18px;
+        padding: 1.8rem;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+        cursor: pointer;
+        transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .pulsantone-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      }
+      .pulsantone-card.active {
+        border-color: var(--mandarino);
+        background: white;
+        box-shadow: 0 12px 35px rgba(255, 106, 43, 0.2);
+      }
+      .pulsantone-icon {
+        font-size: 2.2rem;
+        margin-bottom: 0.8rem;
+      }
+      .pulsantone-title {
+        font-size: 1.3rem;
+        font-weight: 800;
+        margin: 0 0 6px 0;
+      }
+      .pulsantone-desc {
+        font-size: 0.9rem;
+        color: #666;
+        margin: 0;
+        line-height: 1.4;
+      }
+      .pulsantone-badge {
+        display: inline-block;
+        font-size: 0.75rem;
+        font-weight: bold;
+        padding: 3px 10px;
+        border-radius: 12px;
+        margin-top: 15px;
+        align-self: flex-start;
+      }
+
+      /* Pannello Espanso con Sfondo Immagine e Vetro */
+      .expanded-wrapper {
+        position: relative;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.08);
+        margin-bottom: 3rem;
+        background-size: cover;
+        background-position: center;
+        transition: background-image 0.4s ease;
+      }
+      .expanded-glass {
+        background: rgba(255, 255, 255, 0.82);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        padding: 2.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+      }
+
       .section-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 1.5rem;
+        margin-bottom: 2rem;
         border-bottom: 2px solid rgba(0, 0, 0, 0.06);
-        padding-bottom: 1rem;
+        padding-bottom: 1.2rem;
       }
       .section-header h2 {
         margin: 0;
-        font-size: 1.5rem;
+        font-size: 1.7rem;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
         color: var(--inchiostro);
       }
       .badge-privacy {
         background: rgba(31, 122, 77, 0.12);
         color: var(--basilico);
-        padding: 6px 12px;
+        padding: 6px 14px;
         border-radius: 20px;
-        font-size: 0.8rem;
+        font-size: 0.85rem;
         font-weight: bold;
         display: flex;
         align-items: center;
-        gap: 5px;
+        gap: 6px;
       }
 
-      /* Griglie e Blocchi Form */
+      /* Layout a 2 Colonne */
+      .two-columns-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.8rem;
+      }
+      @media (max-width: 850px) {
+        .two-columns-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Blocchi Form */
       .sub-block {
-        background: rgba(255, 255, 255, 0.8);
-        border: 1px solid rgba(0, 0, 0, 0.05);
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(0, 0, 0, 0.07);
         border-radius: 16px;
-        padding: 1.5rem;
-        margin-bottom: 1.8rem;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+        padding: 1.4rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
       }
       .sub-block-title {
-        font-size: 1.15rem;
+        font-size: 1.1rem;
         font-weight: 700;
         margin-top: 0;
         margin-bottom: 1rem;
@@ -131,7 +206,7 @@
         justify-content: space-between;
       }
 
-      /* Tabella Farmaci */
+      /* Tabelle e Campi */
       .table-farmaci {
         width: 100%;
         border-collapse: collapse;
@@ -139,25 +214,25 @@
       }
       .table-farmaci th {
         text-align: left;
-        padding: 10px 12px;
+        padding: 8px 10px;
         background: rgba(0, 0, 0, 0.03);
         color: #555;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         font-weight: 600;
-        border-radius: 6px;
+        border-radius: 4px;
       }
       .table-farmaci td {
-        padding: 10px 12px;
+        padding: 8px 10px;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        font-size: 0.95rem;
       }
       .table-farmaci input {
         width: 100%;
-        padding: 6px 10px;
+        padding: 6px 8px;
         border: 1px solid #ddd;
         border-radius: 6px;
         box-sizing: border-box;
         font-family: inherit;
+        font-size: 0.88rem;
       }
 
       /* Bottoni */
@@ -165,12 +240,12 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        padding: 8px 16px;
+        padding: 7px 14px;
         border-radius: 8px;
         font-weight: bold;
         cursor: pointer;
         border: none;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         transition: all 0.2s ease;
       }
       .btn-primary {
@@ -181,93 +256,79 @@
         background: var(--mandarino-scuro);
       }
       .btn-outline {
-        background: transparent;
-        border: 1px solid #ccc;
+        background: white;
+        border: 1px solid #ddd;
         color: var(--inchiostro);
       }
       .btn-outline:hover {
-        background: white;
-        border-color: #999;
+        background: #f8f9fa;
+        border-color: #bbb;
       }
       .btn-danger {
         background: rgba(231, 76, 60, 0.1);
         color: var(--rosso);
-        padding: 6px 10px;
-        font-size: 0.85rem;
+        padding: 4px 8px;
+        font-size: 0.8rem;
       }
       .btn-danger:hover {
         background: var(--rosso);
         color: white;
       }
 
-      /* Griglia Contatti Medici */
-      .contacts-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 1.2rem;
-      }
+      /* Card Contatti */
       .contact-card {
         background: white;
-        border: 1px solid rgba(0, 0, 0, 0.07);
+        border: 1px solid rgba(0, 0, 0, 0.08);
         border-radius: 12px;
-        padding: 1.2rem;
-        position: relative;
-      }
-      .contact-card .card-role {
-        font-weight: bold;
-        font-size: 0.95rem;
-        color: var(--blu);
-        margin-bottom: 8px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
+        padding: 1rem;
+        margin-bottom: 10px;
       }
       .contact-field {
-        margin-bottom: 8px;
+        margin-bottom: 6px;
       }
       .contact-field label {
         display: block;
-        font-size: 0.75rem;
+        font-size: 0.72rem;
         color: #777;
         font-weight: 600;
         margin-bottom: 2px;
       }
       .contact-field input {
         width: 100%;
-        padding: 6px 10px;
+        padding: 6px 8px;
         border: 1px solid #ddd;
         border-radius: 6px;
-        font-size: 0.9rem;
+        font-size: 0.88rem;
         box-sizing: border-box;
       }
 
       /* Note & Allergie */
       textarea.notes-box {
         width: 100%;
-        min-height: 90px;
-        padding: 12px;
+        min-height: 80px;
+        padding: 10px;
         border: 1px solid #ddd;
         border-radius: 8px;
         font-family: inherit;
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         box-sizing: border-box;
         resize: vertical;
       }
 
-      /* Campi Personalizzati Aggiuntivi */
+      /* Campi Personalizzati */
       .custom-fields-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 1rem;
+        grid-template-columns: 1fr;
+        gap: 8px;
       }
       .custom-field-item {
         background: white;
-        padding: 10px 14px;
-        border-radius: 10px;
+        padding: 8px 12px;
+        border-radius: 8px;
         border: 1px solid #e0e0e0;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
       }
       .custom-field-item input {
         border: 1px solid #ddd;
@@ -275,52 +336,16 @@
         padding: 6px;
         font-size: 0.85rem;
       }
-      .custom-field-item input.field-name {
-        width: 40%;
-        font-weight: bold;
-      }
-      .custom-field-item input.field-val {
-        width: 50%;
-      }
+      .custom-field-item input.field-name { width: 40%; font-weight: bold; }
+      .custom-field-item input.field-val { width: 50%; }
 
-      /* Altre Sezioni Memorie */
-      .other-memories-title {
-        font-size: 1.4rem;
-        margin: 3rem 0 1.5rem 0;
-        color: #444;
-      }
-      .grid-memories {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 1.5rem;
-      }
-      .mini-card {
-        background: rgba(255, 255, 255, 0.6);
-        border: 1px solid rgba(0,0,0,0.06);
-        border-radius: 14px;
-        padding: 1.5rem;
-        position: relative;
-        overflow: hidden;
-      }
-      .mini-card h3 {
-        margin-top: 0;
-        font-size: 1.15rem;
-      }
-      .mini-card p {
-        font-size: 0.85rem;
-        color: #666;
-        margin-bottom: 0;
-      }
-      .card-coming-soon {
-        position: absolute;
-        top: 12px;
-        right: -25px;
-        background: #999;
-        color: white;
-        font-size: 0.65rem;
-        font-weight: bold;
-        padding: 3px 25px;
-        transform: rotate(45deg);
+      /* Sezioni Luoghi, Ristoranti, Amicizie */
+      .entry-card {
+        background: white;
+        border: 1px solid rgba(0,0,0,0.08);
+        border-radius: 12px;
+        padding: 1.2rem;
+        margin-bottom: 12px;
       }
     </style>
   </head>
@@ -340,177 +365,230 @@
     </nav>
 
     <div class="container">
-      <h1>Memorie & Salute 🧠</h1>
-      <p class="subtitle">Il tuo archivio personale e sanitario 100% Zero-Server. I tuoi dati sensibili rimangono solo su questo dispositivo.</p>
+      <h1>Memorie & Diario Personale 🧠</h1>
+      <p class="subtitle">Scegli una sezione per espandere i tuoi ricordi, terapie e note con privacy 100% Zero-Server.</p>
       
-      <!-- SEZIONE SOFT TRASPARENTE: FARMACI ABITUALI & CARTELLA MEDICA -->
-      <div class="glass-panel" id="settore-salute">
-        <div class="section-header">
-          <h2>💊 Farmaci Abituali & Cartella Medica</h2>
-          <div class="badge-privacy">🔒 Dati Protetti in Locale</div>
+      <!-- 4 PULSANTONI GRANDI -->
+      <div class="pulsantoni-grid">
+        <div class="pulsantone-card active" id="btn-tab-salute" onclick="switchSection('salute')">
+          <div>
+            <div class="pulsantone-icon">💊</div>
+            <h3 class="pulsantone-title">Farmaci & Salute</h3>
+            <p class="pulsantone-desc">Terapie, dosaggi, medico curante, contatti emergenza e allergie.</p>
+          </div>
+          <span class="pulsantone-badge" style="background: rgba(39, 174, 96, 0.15); color: var(--basilico);">🟢 ATTIVO</span>
         </div>
 
-        <!-- 1. Farmaci Abituali & Dosaggi -->
-        <div class="sub-block">
-          <div class="sub-block-title">
-            <span>📋 Elenco Farmaci & Terapie</span>
-            <button class="btn btn-outline" id="btn-add-farmaco">+ Aggiungi Farmaco</button>
+        <div class="pulsantone-card" id="btn-tab-luoghi" onclick="switchSection('luoghi')">
+          <div>
+            <div class="pulsantone-icon">🌍</div>
+            <h3 class="pulsantone-title">Luoghi Visitati</h3>
+            <p class="pulsantone-desc">Città, hotel, paesaggi e ricordi di viaggi indimenticabili.</p>
           </div>
-          <div style="overflow-x: auto;">
-            <table class="table-farmaci">
-              <thead>
-                <tr>
-                  <th style="width: 30%;">Farmaco</th>
-                  <th style="width: 20%;">Dosaggio</th>
-                  <th style="width: 25%;">Orari / Frequenza</th>
-                  <th style="width: 20%;">Note / Prescrizione</th>
-                  <th style="width: 5%;"></th>
-                </tr>
-              </thead>
-              <tbody id="farmaci-tbody">
-                <!-- Generato via JavaScript -->
-              </tbody>
-            </table>
-          </div>
+          <span class="pulsantone-badge" style="background: rgba(41, 128, 185, 0.15); color: var(--blu);">🔵 ATTIVO</span>
         </div>
 
-        <!-- 2. Numeri di Emergenza (ICE) Dinamici -->
-        <div class="sub-block">
-          <div class="sub-block-title">
-            <span>🚨 Numeri di Emergenza (ICE)</span>
-            <button class="btn btn-outline" id="btn-add-ice">+ Aggiungi Contatto Emergenza</button>
+        <div class="pulsantone-card" id="btn-tab-ristoranti" onclick="switchSection('ristoranti')">
+          <div>
+            <div class="pulsantone-icon">🍝</div>
+            <h3 class="pulsantone-title">Ristoranti</h3>
+            <p class="pulsantone-desc">I piatti più gustosi, prezzi, servizio e locali da ricordare.</p>
           </div>
-          <div class="contacts-grid" id="ice-container">
-            <!-- Generato via JavaScript -->
-          </div>
+          <span class="pulsantone-badge" style="background: rgba(231, 76, 60, 0.15); color: var(--rosso);">🔴 ATTIVO</span>
         </div>
 
-        <!-- 3. Medico Curante e Sostituti -->
-        <div class="sub-block">
-          <div class="sub-block-title">
-            <span>👨‍⚕️ Medico Curante & Medici di Base</span>
-            <button class="btn btn-outline" id="btn-add-medico">+ Aggiungi Medico</button>
+        <div class="pulsantone-card" id="btn-tab-amicizie" onclick="switchSection('amicizie')">
+          <div>
+            <div class="pulsantone-icon">👥</div>
+            <h3 class="pulsantone-title">Amicizie Recenti</h3>
+            <p class="pulsantone-desc">Nuovi incontri, passioni in comune, compleanni e note.</p>
           </div>
-          <div class="contacts-grid" id="medici-container">
-            <!-- Generato via JavaScript -->
-          </div>
-        </div>
-
-        <!-- 4. Specialisti Dinamici -->
-        <div class="sub-block">
-          <div class="sub-block-title">
-            <span>🩺 Medici Specialisti</span>
-            <button class="btn btn-outline" id="btn-add-specialista">+ Aggiungi Specialista</button>
-          </div>
-          <div class="contacts-grid" id="specialisti-container">
-            <!-- Generato via JavaScript -->
-          </div>
-        </div>
-
-        <!-- 5. Note Mediche, Allergie & Intolleranze Dinamiche -->
-        <div class="sub-block">
-          <div class="sub-block-title">
-            <span>📝 Note Mediche, Allergie & Intolleranze</span>
-            <button class="btn btn-outline" id="btn-add-nota">+ Aggiungi Blocco Note</button>
-          </div>
-          <div id="note-container" style="display: flex; flex-direction: column; gap: 12px;">
-            <!-- Generato via JavaScript -->
-          </div>
-        </div>
-
-        <!-- 6. Campi Personalizzati Dinamici -->
-        <div class="sub-block">
-          <div class="sub-block-title">
-            <span>➕ Campi Personalizzati Aggiuntivi</span>
-            <button class="btn btn-outline" id="btn-add-custom-field">+ Aggiungi Campo</button>
-          </div>
-          <div class="custom-fields-grid" id="custom-fields-container">
-            <!-- Generato via JavaScript -->
-          </div>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-          <span id="save-status" style="font-size: 0.9rem; color: var(--basilico); font-weight: bold;">✅ Dati salvati automaticamente in locale</span>
-          <button class="btn btn-primary" id="btn-force-save">Salva Modifiche</button>
+          <span class="pulsantone-badge" style="background: rgba(243, 156, 18, 0.15); color: #d35400;">🟡 ATTIVO</span>
         </div>
       </div>
 
-      <!-- ALTRE SEZIONI MEMORIE -->
-      <h2 class="other-memories-title">Altre Sezioni Memoria in Arrivo</h2>
-      <div class="grid-memories">
-        <div class="mini-card" style="border-top: 3px solid #3b82f6;">
-          <div class="card-coming-soon">IN ARRIVO</div>
-          <h3>🌍 Luoghi Visitati</h3>
-          <p>Città, musei, hotel o paesaggi che ti hanno colpito.</p>
-        </div>
-        
-        <div class="mini-card" style="border-top: 3px solid #ef4444;">
-          <div class="card-coming-soon">IN ARRIVO</div>
-          <h3>🍝 Ristoranti</h3>
-          <p>Cosa hai mangiato, piatti preferiti e ricordi gastronomici.</p>
-        </div>
-        
-        <div class="mini-card" style="border-top: 3px solid #f59e0b;">
-          <div class="card-coming-soon">IN ARRIVO</div>
-          <h3>👥 Amicizie Recenti</h3>
-          <p>Persone incontrate, passioni in comune e compleanni.</p>
+      <!-- CONTENITORE ESPANSO DINAMICO CON SFONDO GRAFICO -->
+      <div class="expanded-wrapper" id="expanded-wrapper" style="background-image: url('./immagini/bg_salute.jpg');">
+        <div class="expanded-glass">
+          
+          <!-- SEZIONE 1: FARMACI & SALUTE -->
+          <div id="section-salute" class="content-section">
+            <div class="section-header">
+              <h2>💊 Farmaci Abituali & Cartella Sanitaria</h2>
+              <div class="badge-privacy">🔒 Dati Protetti in Locale</div>
+            </div>
+
+            <div class="two-columns-grid">
+              <!-- COLONNA 1 -->
+              <div>
+                <!-- 1. Farmaci -->
+                <div class="sub-block">
+                  <div class="sub-block-title">
+                    <span>📋 Farmaci & Terapie</span>
+                    <button class="btn btn-outline" id="btn-add-farmaco">+ Aggiungi Farmaco</button>
+                  </div>
+                  <div style="overflow-x: auto;">
+                    <table class="table-farmaci">
+                      <thead>
+                        <tr>
+                          <th>Farmaco</th>
+                          <th>Dosaggio</th>
+                          <th>Orario</th>
+                          <th>Note</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody id="farmaci-tbody"></tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!-- 2. Numeri di Emergenza -->
+                <div class="sub-block">
+                  <div class="sub-block-title">
+                    <span>🚨 Numeri di Emergenza (ICE)</span>
+                    <button class="btn btn-outline" id="btn-add-ice">+ Aggiungi Contatto</button>
+                  </div>
+                  <div id="ice-container"></div>
+                </div>
+
+                <!-- 3. Note & Allergie -->
+                <div class="sub-block">
+                  <div class="sub-block-title">
+                    <span>📝 Note, Allergie & Intolleranze</span>
+                    <button class="btn btn-outline" id="btn-add-nota">+ Aggiungi Nota</button>
+                  </div>
+                  <div id="note-container"></div>
+                </div>
+              </div>
+
+              <!-- COLONNA 2 -->
+              <div>
+                <!-- 4. Medico Curante -->
+                <div class="sub-block">
+                  <div class="sub-block-title">
+                    <span>👨‍⚕️ Medico Curante & Base</span>
+                    <button class="btn btn-outline" id="btn-add-medico">+ Aggiungi Medico</button>
+                  </div>
+                  <div id="medici-container"></div>
+                </div>
+
+                <!-- 5. Specialisti -->
+                <div class="sub-block">
+                  <div class="sub-block-title">
+                    <span>🩺 Medici Specialisti</span>
+                    <button class="btn btn-outline" id="btn-add-specialista">+ Aggiungi Specialista</button>
+                  </div>
+                  <div id="specialisti-container"></div>
+                </div>
+
+                <!-- 6. Campi Personalizzati -->
+                <div class="sub-block">
+                  <div class="sub-block-title">
+                    <span>➕ Campi Personalizzati</span>
+                    <button class="btn btn-outline" id="btn-add-custom-field">+ Aggiungi Campo</button>
+                  </div>
+                  <div class="custom-fields-grid" id="custom-fields-container"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SEZIONE 2: LUOGHI VISITATI -->
+          <div id="section-luoghi" class="content-section" style="display: none;">
+            <div class="section-header">
+              <h2>🌍 I Miei Luoghi & Viaggi</h2>
+              <button class="btn btn-primary" id="btn-add-luogo">+ Aggiungi Luogo</button>
+            </div>
+            <div class="two-columns-grid" id="luoghi-container"></div>
+          </div>
+
+          <!-- SEZIONE 3: RISTORANTI -->
+          <div id="section-ristoranti" class="content-section" style="display: none;">
+            <div class="section-header">
+              <h2>🍝 Ristoranti & Esperienze Gastronomiche</h2>
+              <button class="btn btn-primary" id="btn-add-ristorante">+ Aggiungi Ristorante</button>
+            </div>
+            <div class="two-columns-grid" id="ristoranti-container"></div>
+          </div>
+
+          <!-- SEZIONE 4: AMICIZIE RECENTI -->
+          <div id="section-amicizie" class="content-section" style="display: none;">
+            <div class="section-header">
+              <h2>👥 Amicizie & Nuovi Incontri</h2>
+              <button class="btn btn-primary" id="btn-add-amicizia">+ Aggiungi Persona</button>
+            </div>
+            <div class="two-columns-grid" id="amicizie-container"></div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px; border-top: 1px solid rgba(0,0,0,0.06); padding-top: 15px;">
+            <span id="save-status" style="font-size: 0.9rem; color: var(--basilico); font-weight: bold;">✅ Dati salvati in locale</span>
+            <button class="btn btn-primary" id="btn-force-save">Salva Tutto</button>
+          </div>
+
         </div>
       </div>
     </div>
 
-    <!-- Logica di gestione Farmaci e Cartella Medica Dinamica -->
+    <!-- Script di gestione e navigazione a sezioni con sfondi IA -->
     <script>
-      const STORAGE_KEY = 'APPUNIC_MEMORIE_SALUTE';
+      const STORAGE_KEY = 'APPUNIC_MEMORIE_COMPLETE';
 
-      // Struttura dati completamente dinamica ed espandibile
-      let saluteData = {
-        farmaci: [
-          { id: '1', nome: 'Esempio: Cardioaspirina', dosaggio: '100 mg', orari: '1 volta al giorno dopo pranzo', note: 'Prescrizione cardiologo' }
+      let memorieData = {
+        salute: {
+          farmaci: [{ id: '1', nome: 'Cardioaspirina', dosaggio: '100 mg', orari: 'Dopo pranzo', note: 'Prescrizione medica' }],
+          emergenze: [{ id: '1', titolo: '🚨 Contatto ICE', nome: 'Moglie / Figlio', tel: '+39 340 1234567', note: 'Contattare in caso di bisogno' }],
+          medici: [{ id: '1', titolo: '👨‍⚕️ Medico Curante', nome: 'Dott. Rossi', tel: '06 1234567', note: 'Lun-Ven 9:00 - 12:00, Studio Via Roma' }],
+          specialisti: [{ id: '1', titolo: 'Cardiologo', nome: 'Dott. Bianchi', tel: '333 1234567', note: 'Controllo annuale a Maggio' }],
+          noteMediche: [{ id: '1', titolo: 'Allergie & Intolleranze', testo: 'Allergico a penicillina e acari. Gruppo sanguigno 0+.' }],
+          campiPersonalizzati: [{ id: '1', etichetta: 'Gruppo Sanguigno', valore: '0+' }]
+        },
+        luoghi: [
+          { id: '1', nome: 'Firenze', tipologia: 'Città d\'Arte', data: 'Giugno 2026', note: 'Visita alla Galleria degli Uffizi e Ponte Vecchio.' }
         ],
-        emergenze: [
-          { id: '1', titolo: '🚨 Contatto di Emergenza (ICE)', nome: 'Moglie / Figlio', tel: '+39 340 1234567', note: 'Contattare in caso di urgenza' }
+        ristoranti: [
+          { id: '1', nome: 'Osteria del Porto', citta: 'Genova', piatti: 'Trofie al pesto e fritto misto', voto: '⭐⭐⭐⭐⭐', note: 'Ottimo rapporto qualità/prezzo.' }
         ],
-        medici: [
-          { id: '1', titolo: '👨‍⚕️ Medico Curante (Base)', nome: 'Dott. Rossi', tel: '06 1234567', note: 'Lun-Ven 9:00 - 12:00, Via Roma 1' }
-        ],
-        specialisti: [
-          { id: '1', titolo: 'Cardiologo', nome: 'Dott. Bianchi', tel: '333 1234567', note: 'Controllo annuale a Maggio' }
-        ],
-        noteMediche: [
-          { id: '1', titolo: 'Allergie & Intolleranze', testo: 'Allergico a penicillina e acari. Gruppo sanguigno 0+.' }
-        ],
-        campiPersonalizzati: [
-          { id: '1', etichetta: 'Gruppo Sanguigno', valore: '0+' }
+        amicizie: [
+          { id: '1', nome: 'Marco', incontro: 'Palestra / Padel', interessi: 'Trading, Montagna, Tech', note: 'Compleanno il 14 Ottobre.' }
         ]
       };
 
-      // Caricamento da localStorage
+      const bgImages = {
+        salute: './immagini/bg_salute.jpg',
+        luoghi: './immagini/bg_luoghi.jpg',
+        ristoranti: './immagini/bg_ristoranti.jpg',
+        amicizie: './immagini/bg_amicizie.jpg'
+      };
+
+      window.switchSection = (section) => {
+        ['salute', 'luoghi', 'ristoranti', 'amicizie'].forEach(s => {
+          document.getElementById(`btn-tab-${s}`)?.classList.remove('active');
+          const sec = document.getElementById(`section-${s}`);
+          if (sec) sec.style.display = 'none';
+        });
+
+        document.getElementById(`btn-tab-${section}`)?.classList.add('active');
+        const activeSec = document.getElementById(`section-${section}`);
+        if (activeSec) activeSec.style.display = 'block';
+        
+        const wrapper = document.getElementById('expanded-wrapper');
+        if (wrapper && bgImages[section]) {
+          wrapper.style.backgroundImage = `url('${bgImages[section]}')`;
+        }
+      };
+
       function loadData() {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
           try {
-            const parsed = JSON.parse(saved);
-            
-            // Retrocompatibilità se c'erano vecchi campi ice/medicoCurante singoli
-            if (parsed.ice && !parsed.emergenze) {
-              parsed.emergenze = [{ id: '1', titolo: '🚨 Contatto di Emergenza (ICE)', nome: parsed.ice.nome || '', tel: parsed.ice.tel || '', note: '' }];
-            }
-            if (parsed.medicoCurante && !parsed.medici) {
-              parsed.medici = [{ id: '1', titolo: '👨‍⚕️ Medico Curante (Base)', nome: parsed.medicoCurante.nome || '', tel: parsed.medicoCurante.tel || '', note: parsed.medicoCurante.note || '' }];
-            }
-            if (parsed.noteGenerali && !parsed.noteMediche) {
-              parsed.noteMediche = [{ id: '1', titolo: 'Note & Allergie', testo: parsed.noteGenerali }];
-            }
-
-            saluteData = { ...saluteData, ...parsed };
-          } catch (e) {
-            console.error('Errore nel caricamento saluteData', e);
-          }
+            memorieData = { ...memorieData, ...JSON.parse(saved) };
+          } catch(e) { console.error(e); }
         }
       }
 
       function saveData() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(saluteData));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(memorieData));
         const status = document.getElementById('save-status');
         if (status) {
           status.textContent = '✅ Dati salvati in locale!';
@@ -519,232 +597,214 @@
         }
       }
 
-      // 1. RENDER FARMACI
-      function renderFarmaci() {
+      // RENDER SALUTE
+      function renderSalute() {
+        // Farmaci
         const tbody = document.getElementById('farmaci-tbody');
-        if (!tbody) return;
-        tbody.innerHTML = '';
-        if (saluteData.farmaci.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #888;">Nessun farmaco registrato. Clicca su "+ Aggiungi Farmaco".</td></tr>';
-          return;
+        if (tbody) {
+          tbody.innerHTML = '';
+          memorieData.salute.farmaci.forEach((f, idx) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td><input type="text" value="${f.nome||''}" placeholder="Farmaco" oninput="memorieData.salute.farmaci[${idx}].nome=this.value;saveData()"></td>
+              <td><input type="text" value="${f.dosaggio||''}" placeholder="Dosaggio" oninput="memorieData.salute.farmaci[${idx}].dosaggio=this.value;saveData()"></td>
+              <td><input type="text" value="${f.orari||''}" placeholder="Orario" oninput="memorieData.salute.farmaci[${idx}].orari=this.value;saveData()"></td>
+              <td><input type="text" value="${f.note||''}" placeholder="Note" oninput="memorieData.salute.farmaci[${idx}].note=this.value;saveData()"></td>
+              <td><button class="btn btn-danger" onclick="memorieData.salute.farmaci.splice(${idx},1);renderSalute();saveData()">✕</button></td>
+            `;
+            tbody.appendChild(tr);
+          });
         }
 
-        saluteData.farmaci.forEach((f, index) => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td><input type="text" value="${f.nome || ''}" placeholder="Nome Farmaco" oninput="updateItem('farmaci', ${index}, 'nome', this.value)"></td>
-            <td><input type="text" value="${f.dosaggio || ''}" placeholder="Es: 50mg / 1 cpr" oninput="updateItem('farmaci', ${index}, 'dosaggio', this.value)"></td>
-            <td><input type="text" value="${f.orari || ''}" placeholder="Es: Mattina e Sera" oninput="updateItem('farmaci', ${index}, 'orari', this.value)"></td>
-            <td><input type="text" value="${f.note || ''}" placeholder="Note / Note ricetta" oninput="updateItem('farmaci', ${index}, 'note', this.value)"></td>
-            <td style="text-align: center;">
-              <button class="btn btn-danger" onclick="deleteItem('farmaci', ${index})" title="Elimina">🗑️</button>
-            </td>
+        // Emergenze
+        const iceCont = document.getElementById('ice-container');
+        if (iceCont) {
+          iceCont.innerHTML = '';
+          memorieData.salute.emergenze.forEach((e, idx) => {
+            const d = document.createElement('div');
+            d.className = 'contact-card';
+            d.style.borderLeft = '4px solid var(--rosso)';
+            d.innerHTML = `
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                <input type="text" value="${e.titolo||'🚨 Emergenza'}" style="font-weight:bold; color:var(--rosso); border:1px solid #ddd; border-radius:4px; padding:2px 6px; font-size:0.85rem;" oninput="memorieData.salute.emergenze[${idx}].titolo=this.value;saveData()">
+                <button class="btn btn-danger" onclick="memorieData.salute.emergenze.splice(${idx},1);renderSalute();saveData()">✕</button>
+              </div>
+              <div class="contact-field"><label>Nome</label><input type="text" value="${e.nome||''}" oninput="memorieData.salute.emergenze[${idx}].nome=this.value;saveData()"></div>
+              <div class="contact-field"><label>Telefono</label><input type="tel" value="${e.tel||''}" oninput="memorieData.salute.emergenze[${idx}].tel=this.value;saveData()"></div>
+              <div class="contact-field"><label>Note</label><input type="text" value="${e.note||''}" oninput="memorieData.salute.emergenze[${idx}].note=this.value;saveData()"></div>
+            `;
+            iceCont.appendChild(d);
+          });
+        }
+
+        // Medici Base
+        const medCont = document.getElementById('medici-container');
+        if (medCont) {
+          medCont.innerHTML = '';
+          memorieData.salute.medici.forEach((m, idx) => {
+            const d = document.createElement('div');
+            d.className = 'contact-card';
+            d.style.borderLeft = '4px solid var(--basilico)';
+            d.innerHTML = `
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                <input type="text" value="${m.titolo||'👨‍⚕️ Medico Base'}" style="font-weight:bold; color:var(--basilico); border:1px solid #ddd; border-radius:4px; padding:2px 6px; font-size:0.85rem;" oninput="memorieData.salute.medici[${idx}].titolo=this.value;saveData()">
+                <button class="btn btn-danger" onclick="memorieData.salute.medici.splice(${idx},1);renderSalute();saveData()">✕</button>
+              </div>
+              <div class="contact-field"><label>Nome Dottore</label><input type="text" value="${m.nome||''}" oninput="memorieData.salute.medici[${idx}].nome=this.value;saveData()"></div>
+              <div class="contact-field"><label>Telefono</label><input type="tel" value="${m.tel||''}" oninput="memorieData.salute.medici[${idx}].tel=this.value;saveData()"></div>
+              <div class="contact-field"><label>Orari / Studio</label><input type="text" value="${m.note||''}" oninput="memorieData.salute.medici[${idx}].note=this.value;saveData()"></div>
+            `;
+            medCont.appendChild(d);
+          });
+        }
+
+        // Specialisti
+        const specCont = document.getElementById('specialisti-container');
+        if (specCont) {
+          specCont.innerHTML = '';
+          memorieData.salute.specialisti.forEach((s, idx) => {
+            const d = document.createElement('div');
+            d.className = 'contact-card';
+            d.style.borderLeft = '4px solid var(--blu)';
+            d.innerHTML = `
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                <input type="text" value="${s.titolo||'🩺 Specialista'}" style="font-weight:bold; color:var(--blu); border:1px solid #ddd; border-radius:4px; padding:2px 6px; font-size:0.85rem;" oninput="memorieData.salute.specialisti[${idx}].titolo=this.value;saveData()">
+                <button class="btn btn-danger" onclick="memorieData.salute.specialisti.splice(${idx},1);renderSalute();saveData()">✕</button>
+              </div>
+              <div class="contact-field"><label>Nome Dottore</label><input type="text" value="${s.nome||''}" oninput="memorieData.salute.specialisti[${idx}].nome=this.value;saveData()"></div>
+              <div class="contact-field"><label>Telefono</label><input type="tel" value="${s.tel||''}" oninput="memorieData.salute.specialisti[${idx}].tel=this.value;saveData()"></div>
+              <div class="contact-field"><label>Note / Studio</label><input type="text" value="${s.note||''}" oninput="memorieData.salute.specialisti[${idx}].note=this.value;saveData()"></div>
+            `;
+            specCont.appendChild(d);
+          });
+        }
+
+        // Note
+        const noteCont = document.getElementById('note-container');
+        if (noteCont) {
+          noteCont.innerHTML = '';
+          memorieData.salute.noteMediche.forEach((n, idx) => {
+            const d = document.createElement('div');
+            d.style.background = 'white';
+            d.style.border = '1px solid #ddd';
+            d.style.borderRadius = '10px';
+            d.style.padding = '10px';
+            d.style.marginBottom = '8px';
+            d.innerHTML = `
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                <input type="text" value="${n.titolo||'Nota'}" style="font-weight:bold; border:1px solid #ddd; border-radius:4px; padding:2px 6px; font-size:0.9rem; width:70%;" oninput="memorieData.salute.noteMediche[${idx}].titolo=this.value;saveData()">
+                <button class="btn btn-danger" onclick="memorieData.salute.noteMediche.splice(${idx},1);renderSalute();saveData()">✕</button>
+              </div>
+              <textarea class="notes-box" oninput="memorieData.salute.noteMediche[${idx}].testo=this.value;saveData()">${n.testo||''}</textarea>
+            `;
+            noteCont.appendChild(d);
+          });
+        }
+
+        // Campi Personalizzati
+        const customCont = document.getElementById('custom-fields-container');
+        if (customCont) {
+          customCont.innerHTML = '';
+          memorieData.salute.campiPersonalizzati.forEach((c, idx) => {
+            const d = document.createElement('div');
+            d.className = 'custom-field-item';
+            d.innerHTML = `
+              <input type="text" class="field-name" value="${c.etichetta||''}" placeholder="Nome Campo" oninput="memorieData.salute.campiPersonalizzati[${idx}].etichetta=this.value;saveData()">
+              <input type="text" class="field-val" value="${c.valore||''}" placeholder="Valore" oninput="memorieData.salute.campiPersonalizzati[${idx}].valore=this.value;saveData()">
+              <button class="btn btn-danger" onclick="memorieData.salute.campiPersonalizzati.splice(${idx},1);renderSalute();saveData()">✕</button>
+            `;
+            customCont.appendChild(d);
+          });
+        }
+      }
+
+      // RENDER LUOGHI
+      function renderLuoghi() {
+        const cont = document.getElementById('luoghi-container');
+        if (!cont) return;
+        cont.innerHTML = '';
+        memorieData.luoghi.forEach((l, idx) => {
+          const d = document.createElement('div');
+          d.className = 'entry-card';
+          d.style.borderLeft = '4px solid var(--blu)';
+          d.innerHTML = `
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+              <input type="text" value="${l.nome||''}" placeholder="Nome Luogo / Città" style="font-weight:bold; font-size:1.1rem; border:1px solid #ddd; border-radius:4px; padding:4px 8px; width:70%;" oninput="memorieData.luoghi[${idx}].nome=this.value;saveData()">
+              <button class="btn btn-danger" onclick="memorieData.luoghi.splice(${idx},1);renderLuoghi();saveData()">✕</button>
+            </div>
+            <div class="contact-field"><label>Tipologia</label><input type="text" value="${l.tipologia||''}" placeholder="Es: Hotel, Monumento, Gita" oninput="memorieData.luoghi[${idx}].tipologia=this.value;saveData()"></div>
+            <div class="contact-field"><label>Periodo / Data</label><input type="text" value="${l.data||''}" placeholder="Es: Luglio 2026" oninput="memorieData.luoghi[${idx}].data=this.value;saveData()"></div>
+            <div class="contact-field"><label>Ricordi & Note</label><textarea class="notes-box" oninput="memorieData.luoghi[${idx}].note=this.value;saveData()">${l.note||''}</textarea></div>
           `;
-          tbody.appendChild(tr);
+          cont.appendChild(d);
         });
       }
 
-      // Helper generico per aggiornare ed eliminare
-      window.updateItem = (categoria, index, field, value) => {
-        saluteData[categoria][index][field] = value;
-        saveData();
-      };
-
-      window.deleteItem = (categoria, index) => {
-        saluteData[categoria].splice(index, 1);
-        renderAll();
-        saveData();
-      };
-
-      // 2. RENDER EMERGENZE
-      function renderEmergenze() {
-        const container = document.getElementById('ice-container');
-        if (!container) return;
-        container.innerHTML = '';
-
-        saluteData.emergenze.forEach((e, index) => {
-          const div = document.createElement('div');
-          div.className = 'contact-card';
-          div.style.borderLeft = '4px solid var(--rosso)';
-          div.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-              <input type="text" value="${e.titolo || '🚨 Contatto di Emergenza'}" style="font-weight:bold; color:var(--rosso); border:1px solid #ddd; border-radius:4px; padding:3px 6px; font-size:0.9rem; width:80%;" oninput="updateItem('emergenze', ${index}, 'titolo', this.value)">
-              <button class="btn btn-danger" onclick="deleteItem('emergenze', ${index})" title="Rimuovi" style="padding:2px 6px;">✕</button>
+      // RENDER RISTORANTI
+      function renderRistoranti() {
+        const cont = document.getElementById('ristoranti-container');
+        if (!cont) return;
+        cont.innerHTML = '';
+        memorieData.ristoranti.forEach((r, idx) => {
+          const d = document.createElement('div');
+          d.className = 'entry-card';
+          d.style.borderLeft = '4px solid var(--rosso)';
+          d.innerHTML = `
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+              <input type="text" value="${r.nome||''}" placeholder="Nome Ristorante" style="font-weight:bold; font-size:1.1rem; border:1px solid #ddd; border-radius:4px; padding:4px 8px; width:70%;" oninput="memorieData.ristoranti[${idx}].nome=this.value;saveData()">
+              <button class="btn btn-danger" onclick="memorieData.ristoranti.splice(${idx},1);renderRistoranti();saveData()">✕</button>
             </div>
-            <div class="contact-field">
-              <label>Nome / Relazione</label>
-              <input type="text" value="${e.nome || ''}" placeholder="Es: Moglie / Figlio / Fratello" oninput="updateItem('emergenze', ${index}, 'nome', this.value)">
-            </div>
-            <div class="contact-field">
-              <label>Numero Telefonico</label>
-              <input type="tel" value="${e.tel || ''}" placeholder="Es: +39 340 1234567" oninput="updateItem('emergenze', ${index}, 'tel', this.value)">
-            </div>
-            <div class="contact-field">
-              <label>Note / Istruzioni</label>
-              <input type="text" value="${e.note || ''}" placeholder="Es: Chiama subito in caso di bisogno" oninput="updateItem('emergenze', ${index}, 'note', this.value)">
-            </div>
+            <div class="contact-field"><label>Città / Posizione</label><input type="text" value="${r.citta||''}" placeholder="Es: Firenze centro" oninput="memorieData.ristoranti[${idx}].citta=this.value;saveData()"></div>
+            <div class="contact-field"><label>Piatti Consigliati</label><input type="text" value="${r.piatti||''}" placeholder="Es: Bistecca alla fiorentina" oninput="memorieData.ristoranti[${idx}].piatti=this.value;saveData()"></div>
+            <div class="contact-field"><label>Voto</label><input type="text" value="${r.voto||'⭐⭐⭐⭐⭐'}" oninput="memorieData.ristoranti[${idx}].voto=this.value;saveData()"></div>
+            <div class="contact-field"><label>Note & Contatti</label><textarea class="notes-box" oninput="memorieData.ristoranti[${idx}].note=this.value;saveData()">${r.note||''}</textarea></div>
           `;
-          container.appendChild(div);
+          cont.appendChild(d);
         });
       }
 
-      // 3. RENDER MEDICI BASE
-      function renderMedici() {
-        const container = document.getElementById('medici-container');
-        if (!container) return;
-        container.innerHTML = '';
-
-        saluteData.medici.forEach((m, index) => {
-          const div = document.createElement('div');
-          div.className = 'contact-card';
-          div.style.borderLeft = '4px solid var(--basilico)';
-          div.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-              <input type="text" value="${m.titolo || '👨‍⚕️ Medico Curante'}" style="font-weight:bold; color:var(--basilico); border:1px solid #ddd; border-radius:4px; padding:3px 6px; font-size:0.9rem; width:80%;" oninput="updateItem('medici', ${index}, 'titolo', this.value)">
-              <button class="btn btn-danger" onclick="deleteItem('medici', ${index})" title="Rimuovi" style="padding:2px 6px;">✕</button>
+      // RENDER AMICIZIE
+      function renderAmicizie() {
+        const cont = document.getElementById('amicizie-container');
+        if (!cont) return;
+        cont.innerHTML = '';
+        memorieData.amicizie.forEach((a, idx) => {
+          const d = document.createElement('div');
+          d.className = 'entry-card';
+          d.style.borderLeft = '4px solid #d35400';
+          d.innerHTML = `
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+              <input type="text" value="${a.nome||''}" placeholder="Nome Amico/a" style="font-weight:bold; font-size:1.1rem; border:1px solid #ddd; border-radius:4px; padding:4px 8px; width:70%;" oninput="memorieData.amicizie[${idx}].nome=this.value;saveData()">
+              <button class="btn btn-danger" onclick="memorieData.amicizie.splice(${idx},1);renderAmicizie();saveData()">✕</button>
             </div>
-            <div class="contact-field">
-              <label>Nome Dottore</label>
-              <input type="text" value="${m.nome || ''}" placeholder="Es: Dott. Rossi" oninput="updateItem('medici', ${index}, 'nome', this.value)">
-            </div>
-            <div class="contact-field">
-              <label>Telefono / Studio</label>
-              <input type="tel" value="${m.tel || ''}" placeholder="Es: 06 1234567" oninput="updateItem('medici', ${index}, 'tel', this.value)">
-            </div>
-            <div class="contact-field">
-              <label>Orari / Indirizzo Ambulatorio</label>
-              <input type="text" value="${m.note || ''}" placeholder="Es: Lun-Ven 9:00 - 12:00, Via Roma 1" oninput="updateItem('medici', ${index}, 'note', this.value)">
-            </div>
+            <div class="contact-field"><label>Come / Dove vi siete conosciuti</label><input type="text" value="${a.incontro||''}" placeholder="Es: Evento Milano / Tennis" oninput="memorieData.amicizie[${idx}].incontro=this.value;saveData()"></div>
+            <div class="contact-field"><label>Passioni & Interessi in comune</label><input type="text" value="${a.interessi||''}" placeholder="Es: Trekking, Cinema" oninput="memorieData.amicizie[${idx}].interessi=this.value;saveData()"></div>
+            <div class="contact-field"><label>Note / Compleanno</label><textarea class="notes-box" oninput="memorieData.amicizie[${idx}].note=this.value;saveData()">${a.note||''}</textarea></div>
           `;
-          container.appendChild(div);
+          cont.appendChild(d);
         });
       }
 
-      // 4. RENDER SPECIALISTI
-      function renderSpecialisti() {
-        const container = document.getElementById('specialisti-container');
-        if (!container) return;
-        container.innerHTML = '';
+      // Add Buttons Listeners
+      document.getElementById('btn-add-farmaco')?.addEventListener('click', () => { memorieData.salute.farmaci.push({ id: Date.now().toString(), nome:'', dosaggio:'', orari:'', note:'' }); renderSalute(); saveData(); });
+      document.getElementById('btn-add-ice')?.addEventListener('click', () => { memorieData.salute.emergenze.push({ id: Date.now().toString(), titolo:'🚨 Contatto ICE', nome:'', tel:'', note:'' }); renderSalute(); saveData(); });
+      document.getElementById('btn-add-medico')?.addEventListener('click', () => { memorieData.salute.medici.push({ id: Date.now().toString(), titolo:'👨‍⚕️ Medico Base', nome:'', tel:'', note:'' }); renderSalute(); saveData(); });
+      document.getElementById('btn-add-specialista')?.addEventListener('click', () => { memorieData.salute.specialisti.push({ id: Date.now().toString(), titolo:'🩺 Specialista', nome:'', tel:'', note:'' }); renderSalute(); saveData(); });
+      document.getElementById('btn-add-nota')?.addEventListener('click', () => { memorieData.salute.noteMediche.push({ id: Date.now().toString(), titolo:'Nuova Nota', testo:'' }); renderSalute(); saveData(); });
+      document.getElementById('btn-add-custom-field')?.addEventListener('click', () => { memorieData.salute.campiPersonalizzati.push({ id: Date.now().toString(), etichetta:'Nuovo Campo', valore:'' }); renderSalute(); saveData(); });
 
-        saluteData.specialisti.forEach((s, index) => {
-          const div = document.createElement('div');
-          div.className = 'contact-card';
-          div.style.borderLeft = '4px solid var(--blu)';
-          div.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-              <input type="text" value="${s.titolo || '🩺 Specialista'}" style="font-weight:bold; color:var(--blu); border:1px solid #ddd; border-radius:4px; padding:3px 6px; font-size:0.9rem; width:80%;" oninput="updateItem('specialisti', ${index}, 'titolo', this.value)">
-              <button class="btn btn-danger" onclick="deleteItem('specialisti', ${index})" title="Rimuovi" style="padding:2px 6px;">✕</button>
-            </div>
-            <div class="contact-field">
-              <label>Nome Dottore</label>
-              <input type="text" value="${s.nome || ''}" placeholder="Es: Dott. Bianchi" oninput="updateItem('specialisti', ${index}, 'nome', this.value)">
-            </div>
-            <div class="contact-field">
-              <label>Telefono / Contatto</label>
-              <input type="tel" value="${s.tel || ''}" placeholder="Es: 06 987654" oninput="updateItem('specialisti', ${index}, 'tel', this.value)">
-            </div>
-            <div class="contact-field">
-              <label>Note / Studio</label>
-              <input type="text" value="${s.note || ''}" placeholder="Es: Visita annuale" oninput="updateItem('specialisti', ${index}, 'note', this.value)">
-            </div>
-          `;
-          container.appendChild(div);
-        });
-      }
-
-      // 5. RENDER NOTE MEDICHE DINAMICHE
-      function renderNote() {
-        const container = document.getElementById('note-container');
-        if (!container) return;
-        container.innerHTML = '';
-
-        saluteData.noteMediche.forEach((n, index) => {
-          const div = document.createElement('div');
-          div.style.background = 'white';
-          div.style.border = '1px solid #ddd';
-          div.style.borderRadius = '10px';
-          div.style.padding = '12px';
-          div.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-              <input type="text" value="${n.titolo || 'Note / Allergie'}" style="font-weight:bold; border:1px solid #ddd; border-radius:4px; padding:4px 8px; font-size:0.95rem; width:70%;" oninput="updateItem('noteMediche', ${index}, 'titolo', this.value)">
-              <button class="btn btn-danger" onclick="deleteItem('noteMediche', ${index})" title="Elimina Nota" style="padding:2px 6px;">✕</button>
-            </div>
-            <textarea class="notes-box" placeholder="Scrivi qui i dettagli..." oninput="updateItem('noteMediche', ${index}, 'testo', this.value)">${n.testo || ''}</textarea>
-          `;
-          container.appendChild(div);
-        });
-      }
-
-      // 6. RENDER CAMPI PERSONALIZZATI
-      function renderCustomFields() {
-        const container = document.getElementById('custom-fields-container');
-        if (!container) return;
-        container.innerHTML = '';
-
-        saluteData.campiPersonalizzati.forEach((c, index) => {
-          const div = document.createElement('div');
-          div.className = 'custom-field-item';
-          div.innerHTML = `
-            <input type="text" class="field-name" value="${c.etichetta || ''}" placeholder="Nome Campo" oninput="updateItem('campiPersonalizzati', ${index}, 'etichetta', this.value)">
-            <input type="text" class="field-val" value="${c.valore || ''}" placeholder="Valore" oninput="updateItem('campiPersonalizzati', ${index}, 'valore', this.value)">
-            <button class="btn btn-danger" onclick="deleteItem('campiPersonalizzati', ${index})" title="Rimuovi" style="padding:3px 6px;">✕</button>
-          `;
-          container.appendChild(div);
-        });
-      }
-
-      function renderAll() {
-        renderFarmaci();
-        renderEmergenze();
-        renderMedici();
-        renderSpecialisti();
-        renderNote();
-        renderCustomFields();
-      }
-
-      // Event Listeners Aggiunta
-      document.getElementById('btn-add-farmaco')?.addEventListener('click', () => {
-        saluteData.farmaci.push({ id: Date.now().toString(), nome: '', dosaggio: '', orari: '', note: '' });
-        renderFarmaci();
-        saveData();
-      });
-
-      document.getElementById('btn-add-ice')?.addEventListener('click', () => {
-        saluteData.emergenze.push({ id: Date.now().toString(), titolo: '🚨 Contatto Emergenza', nome: '', tel: '', note: '' });
-        renderEmergenze();
-        saveData();
-      });
-
-      document.getElementById('btn-add-medico')?.addEventListener('click', () => {
-        saluteData.medici.push({ id: Date.now().toString(), titolo: '👨‍⚕️ Medico di Base', nome: '', tel: '', note: '' });
-        renderMedici();
-        saveData();
-      });
-
-      document.getElementById('btn-add-specialista')?.addEventListener('click', () => {
-        saluteData.specialisti.push({ id: Date.now().toString(), titolo: '🩺 Specialista', nome: '', tel: '', note: '' });
-        renderSpecialisti();
-        saveData();
-      });
-
-      document.getElementById('btn-add-nota')?.addEventListener('click', () => {
-        saluteData.noteMediche.push({ id: Date.now().toString(), titolo: 'Nuova Nota / Allergia', testo: '' });
-        renderNote();
-        saveData();
-      });
-
-      document.getElementById('btn-add-custom-field')?.addEventListener('click', () => {
-        saluteData.campiPersonalizzati.push({ id: Date.now().toString(), etichetta: 'Nuovo Campo', valore: '' });
-        renderCustomFields();
-        saveData();
-      });
+      document.getElementById('btn-add-luogo')?.addEventListener('click', () => { memorieData.luoghi.push({ id: Date.now().toString(), nome:'', tipologia:'', data:'', note:'' }); renderLuoghi(); saveData(); });
+      document.getElementById('btn-add-ristorante')?.addEventListener('click', () => { memorieData.ristoranti.push({ id: Date.now().toString(), nome:'', citta:'', piatti:'', voto:'⭐⭐⭐⭐⭐', note:'' }); renderRistoranti(); saveData(); });
+      document.getElementById('btn-add-amicizia')?.addEventListener('click', () => { memorieData.amicizie.push({ id: Date.now().toString(), nome:'', incontro:'', interessi:'', note:'' }); renderAmicizie(); saveData(); });
 
       document.getElementById('btn-force-save')?.addEventListener('click', () => saveData());
 
-      // Inizializzazione pagina
       document.addEventListener('DOMContentLoaded', () => {
         loadData();
-        renderAll();
+        renderSalute();
+        renderLuoghi();
+        renderRistoranti();
+        renderAmicizie();
       });
     </script>
   </body>
