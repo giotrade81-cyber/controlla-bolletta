@@ -173,6 +173,33 @@
         color: #2980b9;
       }
 
+      /* Stili Badge Priorità */
+      .badge-priorita {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+      }
+      .badge-alta {
+        background: rgba(231, 76, 60, 0.12);
+        color: #c0392b;
+        border: 1px solid rgba(231, 76, 60, 0.3);
+      }
+      .badge-media {
+        background: rgba(243, 156, 18, 0.12);
+        color: #d35400;
+        border: 1px solid rgba(243, 156, 18, 0.3);
+      }
+      .badge-bassa {
+        background: rgba(39, 174, 96, 0.12);
+        color: #27ae60;
+        border: 1px solid rgba(39, 174, 96, 0.3);
+      }
+
       .actions {
         display: flex;
         gap: 12px;
@@ -267,7 +294,7 @@
       }
 
     </style>
-    <script type="module" crossorigin src="./assets/organizzazione-CrwzvDI4.js"></script>
+    <script type="module" crossorigin src="./assets/organizzazione-BGKh9AEx.js"></script>
     <link rel="modulepreload" crossorigin href="./assets/VoiceAssistant-DEED0c8y.js">
   </head>
   <body>
@@ -301,6 +328,7 @@
         <table>
           <thead>
             <tr>
+              <th>Priorità <span class="sort-icon">↑↓</span></th>
               <th>Scadenza <span class="sort-icon">↑↓</span></th>
               <th>Intestatario <span class="sort-icon">↑↓</span></th>
               <th>Conto <span class="sort-icon">↑↓</span></th>
@@ -321,6 +349,15 @@
         <h3 id="modal-title">Nuovo Task</h3>
         <input type="hidden" id="task-id">
         
+        <div class="form-group">
+          <label>Priorità</label>
+          <select id="task-priorita">
+            <option value="alta">🔴 Alta (Urgente)</option>
+            <option value="media" selected>🟡 Media (Standard)</option>
+            <option value="bassa">🟢 Bassa (Con calma)</option>
+          </select>
+        </div>
+
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
           <div class="form-group">
             <label>Data</label>
@@ -353,6 +390,6 @@
         </div>
       </div>
     </div>
-    
+    
   </body>
 </html>
