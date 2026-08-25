@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Memorie & Diario — AppUnic</title>
-    <meta name="description" content="Il tuo diario personale zero-server. Farmaci, luoghi, ristoranti e amicizie in totale privacy." />
+    <meta name="description" content="Il tuo diario personale zero-server. Farmaci, musica, luoghi, ristoranti e amicizie in totale privacy." />
     <link rel="canonical" href="https://www.appunic.com/" />
     <style>
       :root {
@@ -70,116 +70,124 @@
       .subtitle {
         font-size: 1.1rem;
         opacity: 0.8;
-        margin-bottom: 2.5rem;
+        margin-bottom: 2rem;
       }
       
-      /* Griglia dei 4 Pulsantoni */
+      /* Griglia dei 5 Pulsantoni Grandi */
       .pulsantoni-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.2rem;
+        margin-bottom: 2rem;
       }
       .pulsantone-card {
-        background: rgba(255, 255, 255, 0.85);
+        background: white;
         border: 2px solid transparent;
-        border-radius: 18px;
-        padding: 1.8rem;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+        border-radius: 16px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
         cursor: pointer;
         transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        position: relative;
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
       }
       .pulsantone-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
       }
       .pulsantone-card.active {
         border-color: var(--mandarino);
-        background: white;
-        box-shadow: 0 12px 35px rgba(255, 106, 43, 0.2);
+        box-shadow: 0 10px 30px rgba(255, 106, 43, 0.25);
+      }
+      .pulsantone-thumb {
+        height: 90px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+      }
+      .pulsantone-body {
+        padding: 1.2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        flex: 1;
       }
       .pulsantone-icon {
-        font-size: 2.2rem;
-        margin-bottom: 0.8rem;
+        font-size: 1.8rem;
+        margin-bottom: 0.4rem;
       }
       .pulsantone-title {
-        font-size: 1.3rem;
+        font-size: 1.15rem;
         font-weight: 800;
-        margin: 0 0 6px 0;
+        margin: 0 0 4px 0;
       }
       .pulsantone-desc {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         color: #666;
         margin: 0;
-        line-height: 1.4;
+        line-height: 1.35;
       }
       .pulsantone-badge {
         display: inline-block;
-        font-size: 0.75rem;
+        font-size: 0.72rem;
         font-weight: bold;
-        padding: 3px 10px;
-        border-radius: 12px;
-        margin-top: 15px;
+        padding: 3px 8px;
+        border-radius: 10px;
+        margin-top: 10px;
         align-self: flex-start;
       }
 
-      /* Pannello Espanso con Sfondo Immagine e Vetro */
+      /* Pannello Espanso con Hero Grafico Visibile e Dati a 2 Colonne */
       .expanded-wrapper {
-        position: relative;
-        border-radius: 24px;
+        border-radius: 20px;
         overflow: hidden;
-        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 15px 45px rgba(0, 0, 0, 0.08);
         margin-bottom: 3rem;
+        background: white;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+      }
+      .expanded-hero {
+        height: 180px;
         background-size: cover;
         background-position: center;
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        padding: 1.5rem 2rem;
         transition: background-image 0.4s ease;
       }
-      .expanded-glass {
-        background: rgba(255, 255, 255, 0.82);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        padding: 2.5rem;
-        border: 1px solid rgba(255, 255, 255, 0.8);
+      .expanded-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 100%);
       }
-
-      .section-header {
+      .hero-content {
+        position: relative;
+        z-index: 2;
+        color: white;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 2rem;
-        border-bottom: 2px solid rgba(0, 0, 0, 0.06);
-        padding-bottom: 1.2rem;
+        width: 100%;
       }
-      .section-header h2 {
+      .hero-title {
+        font-size: 1.8rem;
+        font-weight: 800;
         margin: 0;
-        font-size: 1.7rem;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        color: var(--inchiostro);
+        text-shadow: 0 2px 8px rgba(0,0,0,0.4);
       }
-      .badge-privacy {
-        background: rgba(31, 122, 77, 0.12);
-        color: var(--basilico);
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        gap: 6px;
+
+      .expanded-content-body {
+        padding: 2rem;
+        background: #faf8f5;
       }
 
       /* Layout a 2 Colonne */
       .two-columns-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 1.8rem;
+        gap: 1.5rem;
       }
       @media (max-width: 850px) {
         .two-columns-grid {
@@ -189,15 +197,15 @@
 
       /* Blocchi Form */
       .sub-block {
-        background: rgba(255, 255, 255, 0.9);
+        background: white;
         border: 1px solid rgba(0, 0, 0, 0.07);
-        border-radius: 16px;
-        padding: 1.4rem;
-        margin-bottom: 1.5rem;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        border-radius: 14px;
+        padding: 1.3rem;
+        margin-bottom: 1.3rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
       }
       .sub-block-title {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         font-weight: 700;
         margin-top: 0;
         margin-bottom: 1rem;
@@ -302,10 +310,10 @@
         box-sizing: border-box;
       }
 
-      /* Note & Allergie */
+      /* Note & Box */
       textarea.notes-box {
         width: 100%;
-        min-height: 80px;
+        min-height: 75px;
         padding: 10px;
         border: 1px solid #ddd;
         border-radius: 8px;
@@ -339,15 +347,50 @@
       .custom-field-item input.field-name { width: 40%; font-weight: bold; }
       .custom-field-item input.field-val { width: 50%; }
 
-      /* Sezioni Luoghi, Ristoranti, Amicizie */
+      /* Entry Card per Luoghi, Ristoranti, Musica, Amicizie */
       .entry-card {
         background: white;
         border: 1px solid rgba(0,0,0,0.08);
         border-radius: 12px;
         padding: 1.2rem;
         margin-bottom: 12px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.02);
+      }
+
+      /* Music Card Specifics */
+      .music-preview-box {
+        margin-top: 10px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #eee;
+        background: #000;
+        position: relative;
+        max-height: 180px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .music-preview-box img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+      }
+      .music-link-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 8px;
+        padding: 6px 12px;
+        background: #e74c3c;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: bold;
       }
     </style>
+    <script type="module" crossorigin src="./assets/VoiceAssistant-Clf6S8ew.js"></script>
+    <script type="module" crossorigin src="./assets/globalVoice-tp6Gybrb.js"></script>
   </head>
   <body>
     <!-- Navigazione Globale AppUnic -->
@@ -365,59 +408,75 @@
     </nav>
 
     <div class="container">
-      <h1>Memorie & Diario Personale 🧠</h1>
-      <p class="subtitle">Scegli una sezione per espandere i tuoi ricordi, terapie e note con privacy 100% Zero-Server.</p>
+      <h1>Memorie, Salute & Diario 🧠</h1>
+      <p class="subtitle">I tuoi ricordi, musica, terapie e viaggi salvati con privacy 100% Zero-Server.</p>
       
-      <!-- 4 PULSANTONI GRANDI -->
+      <!-- 5 PULSANTONI GRANDI CON IMMAGINI DI ANTEPRIMA -->
       <div class="pulsantoni-grid">
         <div class="pulsantone-card active" id="btn-tab-salute" onclick="switchSection('salute')">
-          <div>
+          <div class="pulsantone-thumb" style="background-image: url('immagini/bg_salute.jpg');"></div>
+          <div class="pulsantone-body">
             <div class="pulsantone-icon">💊</div>
             <h3 class="pulsantone-title">Farmaci & Salute</h3>
-            <p class="pulsantone-desc">Terapie, dosaggi, medico curante, contatti emergenza e allergie.</p>
+            <p class="pulsantone-desc">Terapie, dosaggi, medico e contatti emergenza.</p>
+            <span class="pulsantone-badge" style="background: rgba(39, 174, 96, 0.15); color: var(--basilico);">🟢 ATTIVO</span>
           </div>
-          <span class="pulsantone-badge" style="background: rgba(39, 174, 96, 0.15); color: var(--basilico);">🟢 ATTIVO</span>
+        </div>
+
+        <div class="pulsantone-card" id="btn-tab-musica" onclick="switchSection('musica')">
+          <div class="pulsantone-thumb" style="background-image: url('immagini/bg_musica.jpg');"></div>
+          <div class="pulsantone-body">
+            <div class="pulsantone-icon">🎵</div>
+            <h3 class="pulsantone-title">La Mia Musica</h3>
+            <p class="pulsantone-desc">Brani preferiti, link YouTube, Spotify e anteprime copertina.</p>
+            <span class="pulsantone-badge" style="background: rgba(142, 68, 173, 0.15); color: var(--viola);">🟣 ATTIVO</span>
+          </div>
         </div>
 
         <div class="pulsantone-card" id="btn-tab-luoghi" onclick="switchSection('luoghi')">
-          <div>
+          <div class="pulsantone-thumb" style="background-image: url('immagini/bg_luoghi.jpg');"></div>
+          <div class="pulsantone-body">
             <div class="pulsantone-icon">🌍</div>
             <h3 class="pulsantone-title">Luoghi Visitati</h3>
-            <p class="pulsantone-desc">Città, hotel, paesaggi e ricordi di viaggi indimenticabili.</p>
+            <p class="pulsantone-desc">Città, hotel, paesaggi e viaggi indimenticabili.</p>
+            <span class="pulsantone-badge" style="background: rgba(41, 128, 185, 0.15); color: var(--blu);">🔵 ATTIVO</span>
           </div>
-          <span class="pulsantone-badge" style="background: rgba(41, 128, 185, 0.15); color: var(--blu);">🔵 ATTIVO</span>
         </div>
 
         <div class="pulsantone-card" id="btn-tab-ristoranti" onclick="switchSection('ristoranti')">
-          <div>
+          <div class="pulsantone-thumb" style="background-image: url('immagini/bg_ristoranti.jpg');"></div>
+          <div class="pulsantone-body">
             <div class="pulsantone-icon">🍝</div>
             <h3 class="pulsantone-title">Ristoranti</h3>
-            <p class="pulsantone-desc">I piatti più gustosi, prezzi, servizio e locali da ricordare.</p>
+            <p class="pulsantone-desc">Piatti consigliati, voti, prezzi e ricordi culinari.</p>
+            <span class="pulsantone-badge" style="background: rgba(231, 76, 60, 0.15); color: var(--rosso);">🔴 ATTIVO</span>
           </div>
-          <span class="pulsantone-badge" style="background: rgba(231, 76, 60, 0.15); color: var(--rosso);">🔴 ATTIVO</span>
         </div>
 
         <div class="pulsantone-card" id="btn-tab-amicizie" onclick="switchSection('amicizie')">
-          <div>
+          <div class="pulsantone-thumb" style="background-image: url('immagini/bg_amicizie.jpg');"></div>
+          <div class="pulsantone-body">
             <div class="pulsantone-icon">👥</div>
             <h3 class="pulsantone-title">Amicizie Recenti</h3>
-            <p class="pulsantone-desc">Nuovi incontri, passioni in comune, compleanni e note.</p>
+            <p class="pulsantone-desc">Incontri, interessi in comune, compleanni e note.</p>
+            <span class="pulsantone-badge" style="background: rgba(243, 156, 18, 0.15); color: #d35400;">🟡 ATTIVO</span>
           </div>
-          <span class="pulsantone-badge" style="background: rgba(243, 156, 18, 0.15); color: #d35400;">🟡 ATTIVO</span>
         </div>
       </div>
 
-      <!-- CONTENITORE ESPANSO DINAMICO CON SFONDO GRAFICO -->
-      <div class="expanded-wrapper" id="expanded-wrapper" style="background-image: url('./immagini/bg_salute.jpg');">
-        <div class="expanded-glass">
+      <!-- CONTENITORE ESPANSO CON HERO GRAFICO E 2 COLONNE -->
+      <div class="expanded-wrapper" id="expanded-wrapper">
+        <div class="expanded-hero" id="expanded-hero" style="background-image: url('immagini/bg_salute.jpg');">
+          <div class="hero-content">
+            <h2 class="hero-title" id="hero-title">💊 Farmaci Abituali & Cartella Sanitaria</h2>
+            <div class="badge-privacy" style="background: rgba(255,255,255,0.9); color: var(--basilico); font-weight: bold; padding: 6px 14px; border-radius: 20px;">🔒 Zero-Server 100% Locale</div>
+          </div>
+        </div>
+
+        <div class="expanded-content-body">
           
           <!-- SEZIONE 1: FARMACI & SALUTE -->
           <div id="section-salute" class="content-section">
-            <div class="section-header">
-              <h2>💊 Farmaci Abituali & Cartella Sanitaria</h2>
-              <div class="badge-privacy">🔒 Dati Protetti in Locale</div>
-            </div>
-
             <div class="two-columns-grid">
               <!-- COLONNA 1 -->
               <div>
@@ -494,34 +553,43 @@
             </div>
           </div>
 
-          <!-- SEZIONE 2: LUOGHI VISITATI -->
+          <!-- SEZIONE 2: LA MIA MUSICA (CON ANTEPRIMA YOUTUBE / COPERTINE) -->
+          <div id="section-musica" class="content-section" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+              <p style="margin: 0; color: #666; font-size: 0.95rem;">Inserisci i tuoi brani o playlist. Incolla il link di YouTube o della piattaforma e l'anteprima si caricherà automaticamente!</p>
+              <button class="btn btn-primary" id="btn-add-musica">+ Aggiungi Brano / Playlist</button>
+            </div>
+            <div class="two-columns-grid" id="musica-container"></div>
+          </div>
+
+          <!-- SEZIONE 3: LUOGHI VISITATI -->
           <div id="section-luoghi" class="content-section" style="display: none;">
-            <div class="section-header">
-              <h2>🌍 I Miei Luoghi & Viaggi</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+              <p style="margin: 0; color: #666; font-size: 0.95rem;">Tieni traccia di città d'arte, vacanze, hotel e posti che hai amato.</p>
               <button class="btn btn-primary" id="btn-add-luogo">+ Aggiungi Luogo</button>
             </div>
             <div class="two-columns-grid" id="luoghi-container"></div>
           </div>
 
-          <!-- SEZIONE 3: RISTORANTI -->
+          <!-- SEZIONE 4: RISTORANTI -->
           <div id="section-ristoranti" class="content-section" style="display: none;">
-            <div class="section-header">
-              <h2>🍝 Ristoranti & Esperienze Gastronomiche</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+              <p style="margin: 0; color: #666; font-size: 0.95rem;">I tuoi ristoranti, trattorie preferite e piatti imperdibili.</p>
               <button class="btn btn-primary" id="btn-add-ristorante">+ Aggiungi Ristorante</button>
             </div>
             <div class="two-columns-grid" id="ristoranti-container"></div>
           </div>
 
-          <!-- SEZIONE 4: AMICIZIE RECENTI -->
+          <!-- SEZIONE 5: AMICIZIE RECENTI -->
           <div id="section-amicizie" class="content-section" style="display: none;">
-            <div class="section-header">
-              <h2>👥 Amicizie & Nuovi Incontri</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+              <p style="margin: 0; color: #666; font-size: 0.95rem;">Ricorda persone speciali, colleghi, passioni comuni e compleanni.</p>
               <button class="btn btn-primary" id="btn-add-amicizia">+ Aggiungi Persona</button>
             </div>
             <div class="two-columns-grid" id="amicizie-container"></div>
           </div>
 
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px; border-top: 1px solid rgba(0,0,0,0.06); padding-top: 15px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px; border-top: 1px solid rgba(0,0,0,0.08); padding-top: 15px;">
             <span id="save-status" style="font-size: 0.9rem; color: var(--basilico); font-weight: bold;">✅ Dati salvati in locale</span>
             <button class="btn btn-primary" id="btn-force-save">Salva Tutto</button>
           </div>
@@ -530,7 +598,7 @@
       </div>
     </div>
 
-    <!-- Script di gestione e navigazione a sezioni con sfondi IA -->
+    <!-- Script di gestione e navigazione a sezioni -->
     <script>
       const STORAGE_KEY = 'APPUNIC_MEMORIE_COMPLETE';
 
@@ -543,6 +611,9 @@
           noteMediche: [{ id: '1', titolo: 'Allergie & Intolleranze', testo: 'Allergico a penicillina e acari. Gruppo sanguigno 0+.' }],
           campiPersonalizzati: [{ id: '1', etichetta: 'Gruppo Sanguigno', valore: '0+' }]
         },
+        musica: [
+          { id: '1', titolo: 'Viva La Vida', artista: 'Coldplay', link: 'https://www.youtube.com/watch?v=dvgZkm1xWPE', genere: 'Pop Rock / Relax', note: 'Brano preferito per concentrazione e trading.' }
+        ],
         luoghi: [
           { id: '1', nome: 'Firenze', tipologia: 'Città d\'Arte', data: 'Giugno 2026', note: 'Visita alla Galleria degli Uffizi e Ponte Vecchio.' }
         ],
@@ -555,14 +626,31 @@
       };
 
       const bgImages = {
-        salute: './immagini/bg_salute.jpg',
-        luoghi: './immagini/bg_luoghi.jpg',
-        ristoranti: './immagini/bg_ristoranti.jpg',
-        amicizie: './immagini/bg_amicizie.jpg'
+        salute: 'immagini/bg_salute.jpg',
+        musica: 'immagini/bg_musica.jpg',
+        luoghi: 'immagini/bg_luoghi.jpg',
+        ristoranti: 'immagini/bg_ristoranti.jpg',
+        amicizie: 'immagini/bg_amicizie.jpg'
       };
 
+      const sectionTitles = {
+        salute: '💊 Farmaci Abituali & Cartella Sanitaria',
+        musica: '🎵 La Mia Musica & Playlist',
+        luoghi: '🌍 I Miei Luoghi & Viaggi',
+        ristoranti: '🍝 Ristoranti & Esperienze Gastronomiche',
+        amicizie: '👥 Amicizie & Nuovi Incontri'
+      };
+
+      // Utility estrazione ID YouTube
+      function getYouTubeVideoId(url) {
+        if (!url) return null;
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? match[2] : null;
+      }
+
       window.switchSection = (section) => {
-        ['salute', 'luoghi', 'ristoranti', 'amicizie'].forEach(s => {
+        ['salute', 'musica', 'luoghi', 'ristoranti', 'amicizie'].forEach(s => {
           document.getElementById(`btn-tab-${s}`)?.classList.remove('active');
           const sec = document.getElementById(`section-${s}`);
           if (sec) sec.style.display = 'none';
@@ -572,9 +660,13 @@
         const activeSec = document.getElementById(`section-${section}`);
         if (activeSec) activeSec.style.display = 'block';
         
-        const wrapper = document.getElementById('expanded-wrapper');
-        if (wrapper && bgImages[section]) {
-          wrapper.style.backgroundImage = `url('${bgImages[section]}')`;
+        const hero = document.getElementById('expanded-hero');
+        const title = document.getElementById('hero-title');
+        if (hero && bgImages[section]) {
+          hero.style.backgroundImage = `url('${bgImages[section]}')`;
+        }
+        if (title && sectionTitles[section]) {
+          title.textContent = sectionTitles[section];
         }
       };
 
@@ -583,6 +675,9 @@
         if (saved) {
           try {
             memorieData = { ...memorieData, ...JSON.parse(saved) };
+            if (!memorieData.musica) {
+              memorieData.musica = [{ id: '1', titolo: 'Viva La Vida', artista: 'Coldplay', link: 'https://www.youtube.com/watch?v=dvgZkm1xWPE', genere: 'Pop Rock', note: 'Brano preferito.' }];
+            }
           } catch(e) { console.error(e); }
         }
       }
@@ -597,7 +692,7 @@
         }
       }
 
-      // RENDER SALUTE
+      // 1. RENDER SALUTE
       function renderSalute() {
         // Farmaci
         const tbody = document.getElementById('farmaci-tbody');
@@ -718,7 +813,50 @@
         }
       }
 
-      // RENDER LUOGHI
+      // 2. RENDER MUSICA
+      function renderMusica() {
+        const cont = document.getElementById('musica-container');
+        if (!cont) return;
+        cont.innerHTML = '';
+        memorieData.musica.forEach((m, idx) => {
+          const ytId = getYouTubeVideoId(m.link);
+          let previewHtml = '';
+          if (ytId) {
+            previewHtml = `
+              <div class="music-preview-box">
+                <img src="https://img.youtube.com/vi/${ytId}/hqdefault.jpg" alt="Anteprima YouTube" onerror="this.style.display='none'">
+              </div>
+            `;
+          }
+
+          const d = document.createElement('div');
+          d.className = 'entry-card';
+          d.style.borderLeft = '4px solid var(--viola)';
+          d.innerHTML = `
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+              <input type="text" value="${m.titolo||''}" placeholder="Titolo Brano / Album" style="font-weight:bold; font-size:1.1rem; border:1px solid #ddd; border-radius:4px; padding:4px 8px; width:70%;" oninput="memorieData.musica[${idx}].titolo=this.value;saveData()">
+              <button class="btn btn-danger" onclick="memorieData.musica.splice(${idx},1);renderMusica();saveData()">✕</button>
+            </div>
+            <div class="contact-field"><label>Artista / Autore</label><input type="text" value="${m.artista||''}" placeholder="Es: Coldplay, Hans Zimmer..." oninput="memorieData.musica[${idx}].artista=this.value;saveData()"></div>
+            <div class="contact-field">
+              <label>Link Esterno (YouTube, Spotify, Apple Music...)</label>
+              <input type="url" value="${m.link||''}" placeholder="https://www.youtube.com/watch?v=..." oninput="memorieData.musica[${idx}].link=this.value;saveData();renderMusicaDebounced()">
+            </div>
+            ${previewHtml}
+            ${m.link ? `<div style="margin-top:8px;"><a href="${m.link}" target="_blank" rel="noopener noreferrer" class="music-link-btn">▶️ Ascolta Ora</a></div>` : ''}
+            <div class="contact-field" style="margin-top:8px;"><label>Genere / Note Personali</label><textarea class="notes-box" oninput="memorieData.musica[${idx}].note=this.value;saveData()">${m.note||''}</textarea></div>
+          `;
+          cont.appendChild(d);
+        });
+      }
+
+      let debounceTimer;
+      function renderMusicaDebounced() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => renderMusica(), 600);
+      }
+
+      // 3. RENDER LUOGHI
       function renderLuoghi() {
         const cont = document.getElementById('luoghi-container');
         if (!cont) return;
@@ -740,7 +878,7 @@
         });
       }
 
-      // RENDER RISTORANTI
+      // 4. RENDER RISTORANTI
       function renderRistoranti() {
         const cont = document.getElementById('ristoranti-container');
         if (!cont) return;
@@ -763,7 +901,7 @@
         });
       }
 
-      // RENDER AMICIZIE
+      // 5. RENDER AMICIZIE
       function renderAmicizie() {
         const cont = document.getElementById('amicizie-container');
         if (!cont) return;
@@ -793,6 +931,7 @@
       document.getElementById('btn-add-nota')?.addEventListener('click', () => { memorieData.salute.noteMediche.push({ id: Date.now().toString(), titolo:'Nuova Nota', testo:'' }); renderSalute(); saveData(); });
       document.getElementById('btn-add-custom-field')?.addEventListener('click', () => { memorieData.salute.campiPersonalizzati.push({ id: Date.now().toString(), etichetta:'Nuovo Campo', valore:'' }); renderSalute(); saveData(); });
 
+      document.getElementById('btn-add-musica')?.addEventListener('click', () => { memorieData.musica.push({ id: Date.now().toString(), titolo:'', artista:'', link:'', genere:'', note:'' }); renderMusica(); saveData(); });
       document.getElementById('btn-add-luogo')?.addEventListener('click', () => { memorieData.luoghi.push({ id: Date.now().toString(), nome:'', tipologia:'', data:'', note:'' }); renderLuoghi(); saveData(); });
       document.getElementById('btn-add-ristorante')?.addEventListener('click', () => { memorieData.ristoranti.push({ id: Date.now().toString(), nome:'', citta:'', piatti:'', voto:'⭐⭐⭐⭐⭐', note:'' }); renderRistoranti(); saveData(); });
       document.getElementById('btn-add-amicizia')?.addEventListener('click', () => { memorieData.amicizie.push({ id: Date.now().toString(), nome:'', incontro:'', interessi:'', note:'' }); renderAmicizie(); saveData(); });
@@ -802,6 +941,7 @@
       document.addEventListener('DOMContentLoaded', () => {
         loadData();
         renderSalute();
+        renderMusica();
         renderLuoghi();
         renderRistoranti();
         renderAmicizie();
