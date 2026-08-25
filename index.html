@@ -61,20 +61,19 @@
         border: 1px solid rgba(255, 255, 255, 0.5);
         border-radius: 20px;
         padding: 2rem;
-        text-decoration: none;
         color: var(--inchiostro);
         box-shadow: 0 8px 32px rgba(26, 23, 20, 0.05);
         transition: transform 0.2s ease, box-shadow 0.2s ease;
         display: flex;
         flex-direction: column;
+        cursor: default;
       }
       .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 40px rgba(26, 23, 20, 0.1);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 36px rgba(26, 23, 20, 0.08);
       }
       .card.disabled {
         opacity: 0.6;
-        pointer-events: none;
       }
       .card h2 {
         margin: 0 0 10px 0;
@@ -240,23 +239,23 @@
 
       
       <div class="grid">
-        <a href="./bollette.html" class="card">
+        <div class="card">
           <span class="status active">ATTIVO</span>
           <h2>Confronto Bollette</h2>
           <p>Verifica i conti di luce e gas e scopri se il tuo fornitore ti sta addebitando costi nascosti, senza mai inviare i tuoi dati a server esterni.</p>
           <div class="voice-example">
             <span>🎤</span> "Apri il confronto luce e gas"
           </div>
-        </a>
+        </div>
         
-        <a href="./spesasmart.html" class="card">
+        <div class="card">
           <span class="status active">ATTIVO</span>
           <h2>SpesaSmart</h2>
           <p>Fotografa lo scontrino e lascia che l'IA lo legga per te. Tieni traccia dei tuoi consumi alimentari in un cruscotto elegante.</p>
           <div class="voice-example">
             <span>🎤</span> "Aggiungi il latte e il pane alla lista della spesa"
           </div>
-        </a>
+        </div>
         
         <div class="card disabled">
           <span class="status soon">IN ARRIVO</span>
@@ -270,14 +269,14 @@
           <p>Diario alimentare, calcolo calorie e andamento del peso per mantenerti in forma senza condividere dati clinici.</p>
         </div>
 
-        <a href="./organizzazione.html" class="card">
+        <div class="card">
           <span class="status active">ATTIVO</span>
           <h2>Organizzazione</h2>
           <p>Agenda, To-Do list intelligenti e pianificazione per gestire al meglio le tue giornate.</p>
           <div class="voice-example">
             <span>🎤</span> "Ricordami di pagare l'F24 lunedì prossimo"
           </div>
-        </a>
+        </div>
       </div>
     </div>
   </body>
