@@ -629,7 +629,10 @@
       <div class="expanded-wrapper">
         <div class="expanded-hero" id="expanded-hero" style="background-image: url('immagini/bg_finanze_casa.jpg');">
           <div class="hero-content">
-            <h2 class="hero-title" id="hero-title">🏠 Casa & Utenze</h2>
+            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+              <h2 class="hero-title" id="hero-title">🏠 Casa & Utenze</h2>
+              <button class="btn btn-outline" style="background: rgba(255,255,255,0.85); font-size: 0.8rem; padding: 4px 10px;" onclick="openModalEditBusta(activeBusta)">✏️ Modifica Scheda</button>
+            </div>
             <div class="badge-privacy" style="background: rgba(255,255,255,0.9); color: var(--basilico); font-weight: bold; padding: 6px 14px; border-radius: 20px;">🔒 Zero-Server 100% Locale</div>
           </div>
         </div>
@@ -666,7 +669,7 @@
                 <div class="sub-block-title">
                   <span>🎯 Obiettivo Budget Mensile</span>
                   <div>
-                    <button class="btn btn-outline" id="btn-edit-current-busta" style="font-size: 0.75rem; margin-right: 5px;">Modifica Sfondo</button>
+                    <button class="btn btn-outline" onclick="openModalEditBusta(activeBusta)" style="font-size: 0.75rem; margin-right: 5px;">✏️ Modifica Scheda</button>
                     <button class="btn btn-danger" id="btn-delete-current-busta" style="font-size: 0.75rem;">Elimina Busta</button>
                   </div>
                 </div>
@@ -780,7 +783,7 @@
         <h3 style="margin-top: 0;">➕ Nuova Spesa / Movimento</h3>
         <div class="form-group">
           <label>Descrizione</label>
-          <input type="text" id="spesa-desc" placeholder="Es: Spesa Conad / Carburante / Farmacia">
+          <input type="text" id="spesa-desc" placeholder="Es: Spesa Bambino / Libri Scuola / Supermercato / Farmacia">
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
           <div class="form-group">
@@ -944,6 +947,7 @@
       const AVAILABLE_BACKGROUNDS = [
         { id: 'casa', name: 'Casa', url: 'immagini/bg_finanze_casa.jpg' },
         { id: 'spesa', name: 'Spesa', url: 'immagini/bg_finanze_hero.jpg' },
+        { id: 'bambini', name: 'Bambini', url: 'immagini/bg_amicizie.jpg' },
         { id: 'trasporti', name: 'Auto', url: 'immagini/bg_finanze_trasporti.jpg' },
         { id: 'farmaci', name: 'Farmaci', url: 'immagini/bg_finanze_farmaci.jpg' },
         { id: 'salute', name: 'Salute', url: 'immagini/bg_finanze_salute.jpg' },
@@ -969,6 +973,7 @@
         buste: [
           { id: 'casa', nome: 'Casa & Utenze', icona: '🏠', bg: 'immagini/bg_finanze_casa.jpg', budget: 0 },
           { id: 'spesa', nome: 'Spesa & Alimentari', icona: '🛒', bg: 'immagini/bg_finanze_hero.jpg', budget: 0 },
+          { id: 'bambini', nome: 'Bambini & Figli', icona: '👶', bg: 'immagini/bg_amicizie.jpg', budget: 0 },
           { id: 'trasporti', nome: 'Auto & Trasporti', icona: '🚗', bg: 'immagini/bg_finanze_trasporti.jpg', budget: 0 },
           { id: 'farmaci', nome: 'Farmaci & Terapie', icona: '💊', bg: 'immagini/bg_finanze_farmaci.jpg', budget: 0 },
           { id: 'salute', nome: 'Salute & Visite', icona: '⚕️', bg: 'immagini/bg_finanze_salute.jpg', budget: 0 },
@@ -985,7 +990,12 @@
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
           try {
-            finanzeData = { ...finanzeData, ...JSON.parse(saved) };
+            const parsed = JSON.parse(saved);
+            finanzeData = { ...finanzeData, ...parsed };
+            // Ensure bambini exists if not present
+            if (!finanzeData.buste.some(b => b.id === 'bambini')) {
+              finanzeData.buste.splice(2, 0, { id: 'bambini', nome: 'Bambini & Figli', icona: '👶', bg: 'immagini/bg_amicizie.jpg', budget: 0 });
+            }
           } catch(e) { console.error(e); }
         }
       }
@@ -1099,7 +1109,7 @@
         });
       }
 
-      // 3. RENDER BUSTE DI SPESA COMPONIBILI
+      // 3. RENDER BUSTE DI SPESA COMPONIBILI & MODIFICABILI
       function renderBuste() {
         const cont = document.getElementById('buste-container');
         const selectCat = document.getElementById('spesa-categoria');
@@ -1122,9 +1132,13 @@
           card.id = `btn-tab-${b.id}`;
           card.onclick = () => switchBusta(b.id);
           card.innerHTML = `
-            <div class="busta-thumb" style="background-image: url('${b.bg || 'immagini/bg_finanze_hero.jpg'}');"></div>
+            <div class="busta-thumb" style="background-image: url('${b.bg || 'immagini/bg_finanze_hero.jpg'}'); position:relative;">
+              <button style="position:absolute; top:6px; right:6px; background:rgba(255,255,255,0.9); border:none; border-radius:6px; padding:3px 6px; cursor:pointer; font-size:0.8rem; box-shadow:0 2px 5px rgba(0,0,0,0.2);" onclick="event.stopPropagation(); openModalEditBusta('${b.id}')" title="Modifica Scheda / Sfondo">✏️</button>
+            </div>
             <div class="busta-body">
-              <div class="busta-icon">${b.icona || '📦'}</div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="busta-icon">${b.icona || '📦'}</div>
+              </div>
               <h3 class="busta-title">${b.nome}</h3>
               <span class="busta-speso">€ ${speso.toFixed(0)} / € ${budget}</span>
               <div class="progress-bar-wrap">
@@ -1454,31 +1468,32 @@
       }
 
       const modalBusta = document.getElementById('modal-busta');
-      document.getElementById('btn-open-modal-busta')?.addEventListener('click', () => {
-        document.getElementById('modal-busta-title').textContent = '➕ Nuova Busta di Spesa';
-        document.getElementById('busta-edit-id').value = '';
-        document.getElementById('busta-input-nome').value = '';
-        document.getElementById('busta-input-icona').value = '📦';
-        document.getElementById('busta-input-budget').value = '0';
-        document.getElementById('busta-input-bg-custom').value = '';
-        selectedBgUrl = AVAILABLE_BACKGROUNDS[0].url;
+      window.openModalEditBusta = (id = null) => {
+        const targetId = id || activeBusta;
+        const b = finanzeData.buste.find(x => x.id === targetId);
+        if (b) {
+          document.getElementById('modal-busta-title').textContent = '✏️ Modifica Scheda & Budget';
+          document.getElementById('busta-edit-id').value = b.id;
+          document.getElementById('busta-input-nome').value = b.nome;
+          document.getElementById('busta-input-icona').value = b.icona || '📦';
+          document.getElementById('busta-input-budget').value = b.budget || 0;
+          document.getElementById('busta-input-bg-custom').value = b.bg || '';
+          selectedBgUrl = b.bg || AVAILABLE_BACKGROUNDS[0].url;
+        } else {
+          document.getElementById('modal-busta-title').textContent = '➕ Nuova Busta di Spesa';
+          document.getElementById('busta-edit-id').value = '';
+          document.getElementById('busta-input-nome').value = '';
+          document.getElementById('busta-input-icona').value = '📦';
+          document.getElementById('busta-input-budget').value = '0';
+          document.getElementById('busta-input-bg-custom').value = '';
+          selectedBgUrl = AVAILABLE_BACKGROUNDS[0].url;
+        }
         initBgPicker();
         modalBusta.style.display = 'flex';
-      });
+      };
 
-      document.getElementById('btn-edit-current-busta')?.addEventListener('click', () => {
-        const b = finanzeData.buste.find(x => x.id === activeBusta);
-        if (!b) return;
-        document.getElementById('modal-busta-title').textContent = '✏️ Modifica Busta / Sfondo';
-        document.getElementById('busta-edit-id').value = b.id;
-        document.getElementById('busta-input-nome').value = b.nome;
-        document.getElementById('busta-input-icona').value = b.icona || '📦';
-        document.getElementById('busta-input-budget').value = b.budget || 0;
-        document.getElementById('busta-input-bg-custom').value = b.bg || '';
-        selectedBgUrl = b.bg || AVAILABLE_BACKGROUNDS[0].url;
-        initBgPicker();
-        modalBusta.style.display = 'flex';
-      });
+      document.getElementById('btn-open-modal-busta')?.addEventListener('click', () => openModalEditBusta(null));
+      document.getElementById('btn-edit-current-busta')?.addEventListener('click', () => openModalEditBusta(activeBusta));
 
       document.getElementById('btn-close-modal-busta')?.addEventListener('click', () => {
         modalBusta.style.display = 'none';
