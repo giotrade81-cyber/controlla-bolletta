@@ -3,30 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Organizzazione e Agenda — AppUnic</title>
-    <meta
-      name="description"
-      content="La tua agenda intelligente 100% Zero-Server. Gestisci impegni e priorità solo sul tuo dispositivo."
-    />
+    <title>Tasks — AppUnic</title>
+    <meta name="description" content="Gestione Tasks" />
     <meta name="robots" content="index, follow" />
     <style>
       :root {
-        --carta: #FBF7EF;
-        --inchiostro: #1A1714;
-        --mandarino: #FF6A2B;
-        --basilico: #1F7A4D;
-        --bordo: #E4DACA;
+        --carta: #ffffff;
+        --inchiostro: #2c3e50;
+        --blu-scuro: #34495e;
+        --blu-chiaro: #ecf0f1;
+        --sfondo-riga: #fffdf5;
+        --oro: #d4a017;
+        --verde: #27ae60;
+        --rosso: #e74c3c;
+        --bordo: #e0e0e0;
         --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       }
       body {
         margin: 0;
         font-family: var(--sans);
-        background: linear-gradient(135deg, var(--carta) 0%, #fff0e6 100%);
+        background: #f8f9fa;
         color: var(--inchiostro);
         min-height: 100vh;
       }
       nav {
-        background: var(--inchiostro);
+        background: #1A1714;
         color: white;
         padding: 10px 24px;
         display: flex;
@@ -57,89 +58,147 @@
       nav a:hover {
         opacity: 1;
       }
-      .btn-personale {
-        margin-left: auto;
-        font-weight: bold;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 8px;
-        opacity: 1;
-      }
       
       .container {
-        max-width: 1200px;
+        max-width: 1400px;
         margin: 0 auto;
-        padding: 3rem 1.5rem;
-      }
-      h1 {
-        font-size: 2.5rem;
-        margin-bottom: 0.5rem;
-        text-align: center;
-      }
-      .subtitle {
-        text-align: center;
-        color: #666;
-        margin-bottom: 3rem;
-      }
-      
-      .dashboard {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
-      }
-      
-      .panel {
-        background: rgba(255, 255, 255, 0.65);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.6);
-        border-radius: 20px;
-        padding: 2rem;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
-      }
-      
-      .panel h2 {
-        margin-top: 0;
-        font-size: 1.4rem;
-        border-bottom: 2px solid var(--bordo);
-        padding-bottom: 10px;
-        margin-bottom: 1.5rem;
+        padding: 2rem 1.5rem;
       }
 
-      /* Stili CRUD */
-      .action-btns {
+      /* Header and Actions */
+      .header-actions {
         display: flex;
-        gap: 8px;
-        margin-top: 8px;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
       }
-      .btn-icon {
-        background: rgba(255,255,255,0.8);
-        border: 1px solid rgba(0,0,0,0.1);
-        border-radius: 4px;
-        padding: 5px 8px;
-        cursor: pointer;
-        font-size: 0.9rem;
-        transition: all 0.2s;
+      
+      .header-actions h1 {
+        font-size: 1.5rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #2c3e50;
       }
-      .btn-icon:hover {
-        background: white;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      }
+      
       .btn-nuovo {
-        display: inline-block;
-        background: var(--mandarino);
+        background: #34495e;
         color: white;
         border: none;
         padding: 10px 20px;
-        border-radius: 8px;
+        border-radius: 6px;
         font-weight: bold;
         cursor: pointer;
-        margin-bottom: 2rem;
-        font-size: 1rem;
-        box-shadow: 0 4px 15px rgba(255, 106, 43, 0.3);
-        transition: transform 0.2s;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
       }
       .btn-nuovo:hover {
-        transform: translateY(-2px);
+        background: #2c3e50;
+      }
+
+      /* Tabs */
+      .tabs {
+        display: inline-flex;
+        background: #ecf0f1;
+        padding: 4px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+      }
+      .tab {
+        padding: 6px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        color: #7f8c8d;
+        border: none;
+        background: transparent;
+        font-weight: 500;
+      }
+      .tab.active {
+        background: white;
+        color: #2c3e50;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      }
+
+      .info-text {
+        color: #95a5a6;
+        font-size: 0.85rem;
+        margin-bottom: 20px;
+      }
+
+      /* Table Styles */
+      .table-container {
+        background: white;
+        border-radius: 8px;
+        border: 1px solid var(--bordo);
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+      }
+      th {
+        background: #f1f4f6;
+        color: #7f8c8d;
+        font-weight: 500;
+        font-size: 0.85rem;
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--bordo);
+      }
+      th .sort-icon {
+        margin-left: 5px;
+        font-size: 0.8em;
+      }
+      td {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--bordo);
+        font-size: 0.9rem;
+      }
+      tr {
+        background: var(--sfondo-riga);
+      }
+      tr:hover {
+        background: #fffbe6;
+      }
+      
+      .col-scadenza {
+        color: var(--oro);
+        font-weight: 600;
+      }
+      .col-conto {
+        color: #2980b9;
+      }
+
+      .actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        justify-content: flex-end;
+      }
+      .action-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.1rem;
+        padding: 4px;
+        color: #95a5a6;
+        transition: color 0.2s;
+      }
+      .action-btn.check:hover { color: var(--verde); }
+      .action-btn.edit:hover { color: #3498db; }
+      .action-btn.copy:hover { color: #f39c12; }
+      .action-btn.delete:hover { color: var(--rosso); }
+      
+      .bell-notification {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: #7f8c8d;
+        font-size: 0.85rem;
       }
 
       /* Modale Glassmorphism */
@@ -154,15 +213,16 @@
         backdrop-filter: blur(4px);
       }
       .modal-content {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 20px;
+        background: white;
+        border-radius: 12px;
         padding: 2rem;
         width: 100%;
-        max-width: 400px;
+        max-width: 500px;
         box-shadow: 0 20px 60px rgba(0,0,0,0.15);
       }
       .modal-content h3 {
         margin-top: 0;
+        color: #2c3e50;
       }
       .form-group {
         margin-bottom: 15px;
@@ -170,104 +230,123 @@
       .form-group label {
         display: block;
         margin-bottom: 5px;
-        font-weight: bold;
+        font-weight: 500;
         font-size: 0.9rem;
+        color: #34495e;
       }
-      .form-group input {
+      .form-group input, .form-group select {
         width: 100%;
         padding: 10px;
         border: 1px solid #ccc;
-        border-radius: 8px;
+        border-radius: 6px;
         box-sizing: border-box;
       }
       .modal-actions {
         display: flex;
         justify-content: flex-end;
         gap: 10px;
-        margin-top: 20px;
+        margin-top: 25px;
       }
       .btn-cancel {
-        background: #eee;
+        background: #ecf0f1;
+        color: #7f8c8d;
         border: none;
-        padding: 8px 15px;
+        padding: 10px 18px;
         border-radius: 6px;
         cursor: pointer;
+        font-weight: 500;
       }
       .btn-save {
-        background: var(--basilico);
+        background: #34495e;
         color: white;
         border: none;
-        padding: 8px 15px;
+        padding: 10px 18px;
         border-radius: 6px;
         cursor: pointer;
         font-weight: bold;
       }
 
-      @media (max-width: 768px) {
-        .dashboard {
-          grid-template-columns: 1fr;
-        }
-      }
     </style>
-    <script type="module" crossorigin src="./assets/organizzazione-JbhYGcUR.js"></script>
+    <script type="module" crossorigin src="./assets/organizzazione-CrwzvDI4.js"></script>
     <link rel="modulepreload" crossorigin href="./assets/VoiceAssistant-DEED0c8y.js">
   </head>
   <body>
-    <nav style="background: var(--inchiostro, #1A1714); color: white; padding: 10px 24px; display: flex; gap: 20px; align-items: center; position: sticky; top: 0; z-index: 1000;">
-      <a href="./index.html" class="brand" style="font-weight: 800; font-size: 1.1rem; letter-spacing: 1px; color: white; text-decoration: none;">AppUnic</a>
+    <nav>
+      <a href="./index.html" class="brand">AppUnic</a>
       <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-        <a href="./bollette.html" style="color: white; text-decoration: none; font-weight: bold; opacity: 0.9;">Bollette</a>
-        <a href="./spesasmart.html" style="color: white; text-decoration: none; font-weight: bold; opacity: 0.9;">SpesaSmart</a>
-        <a href="./organizzazione.html" style="color: white; text-decoration: none; font-weight: bold; opacity: 0.9;">Organizzazione</a>
-        <a href="./memorie.html" style="color: white; text-decoration: none; font-weight: bold; opacity: 0.9;">Memorie</a>
-        <a href="#" style="color: white; text-decoration: none; font-weight: bold; opacity: 0.4; cursor: not-allowed;">Fisco</a>
-        <a href="#" style="color: white; text-decoration: none; font-weight: bold; opacity: 0.4; cursor: not-allowed;">Salute</a>
+        <a href="./bollette.html" style="font-weight: bold; opacity: 0.9;">Bollette</a>
+        <a href="./spesasmart.html" style="font-weight: bold; opacity: 0.9;">SpesaSmart</a>
+        <a href="./organizzazione.html" style="font-weight: bold; opacity: 1; background: rgba(255,255,255,0.2);">Organizzazione</a>
+        <a href="./memorie.html" style="font-weight: bold; opacity: 0.9;">Memorie</a>
+        <a href="#" style="font-weight: bold; opacity: 0.4; cursor: not-allowed;">Fisco</a>
+        <a href="#" style="font-weight: bold; opacity: 0.4; cursor: not-allowed;">Salute</a>
       </div>
-      <a href="./area-personale.html" style="margin-left: auto; color: white; text-decoration: none; padding: 5px 10px; font-weight: bold; background: rgba(255, 255, 255, 0.2); border-radius: 8px;">Area Personale</a>
+      <a href="./area-personale.html" style="margin-left: auto; padding: 5px 10px; font-weight: bold; background: rgba(255, 255, 255, 0.2); border-radius: 8px;">Area Personale</a>
     </nav>
     
     <div class="container">
-      <h1>Organizzazione & Agenda</h1>
-      <p class="subtitle">Il tuo assistente vocale intelligente per la produttività quotidiana.</p>
-      
-      <button class="btn-nuovo" id="btn-open-modal">+ Nuovo Promemoria</button>
+      <div class="header-actions">
+        <h1><span>✔️</span> Tasks</h1>
+        <button class="btn-nuovo" id="btn-open-modal">+ Nuovo Task</button>
+      </div>
 
-      <div id="app-organizzazione">
-        <!-- Contenuto generato da main.ts -->
-        <div class="dashboard">
-          <div class="panel">
-            <h2>🔥 Priorità di Oggi</h2>
-            <div id="lista-oggi">
-              <p style="color: #888;">Caricamento task...</p>
-            </div>
-          </div>
-          <div class="panel">
-            <h2>📅 Prossimamente</h2>
-            <div id="lista-prossimamente">
-              <p style="color: #888;">Caricamento task...</p>
-            </div>
-          </div>
-        </div>
+      <div class="tabs">
+        <button class="tab active" id="tab-attivi">Attivi</button>
+        <button class="tab" id="tab-completati">Completati</button>
+      </div>
+
+      <p class="info-text">I tasks scaduti da più di 30 giorni vengono completati automaticamente</p>
+      
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Scadenza <span class="sort-icon">↑↓</span></th>
+              <th>Intestatario <span class="sort-icon">↑↓</span></th>
+              <th>Conto <span class="sort-icon">↑↓</span></th>
+              <th>Descrizione</th>
+              <th style="width: 180px;">🔔</th>
+            </tr>
+          </thead>
+          <tbody id="tasks-tbody">
+            <!-- Rendered by main.ts -->
+          </tbody>
+        </table>
       </div>
     </div>
 
     <!-- Modale CRUD -->
     <div class="modal-overlay" id="task-modal">
       <div class="modal-content">
-        <h3 id="modal-title">Nuovo Promemoria</h3>
+        <h3 id="modal-title">Nuovo Task</h3>
         <input type="hidden" id="task-id">
-        <div class="form-group">
-          <label>Titolo (Cosa devi fare?)</label>
-          <input type="text" id="task-title" placeholder="Es: Pagare bolletta luce...">
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <div class="form-group">
+            <label>Data</label>
+            <input type="date" id="task-date">
+          </div>
+          <div class="form-group">
+            <label>Ora</label>
+            <input type="time" id="task-time">
+          </div>
         </div>
+
         <div class="form-group">
-          <label>Data di Scadenza</label>
-          <input type="date" id="task-date">
+          <label>Intestatario</label>
+          <input type="text" id="task-intestatario" placeholder="Es: Giuseppe">
         </div>
+        
         <div class="form-group">
-          <label>Ora (Opzionale)</label>
-          <input type="time" id="task-time">
+          <label>Conto</label>
+          <input type="text" id="task-conto" placeholder="Es: Sisal">
         </div>
+
+        <div class="form-group">
+          <label>Descrizione</label>
+          <input type="text" id="task-descrizione" placeholder="Es: dep almeno 25€...">
+        </div>
+        
         <div class="modal-actions">
           <button class="btn-cancel" id="btn-cancel-modal">Annulla</button>
           <button class="btn-save" id="btn-save-modal">Salva</button>

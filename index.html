@@ -129,6 +129,90 @@
       .btn-personale:hover {
         background: rgba(255, 255, 255, 0.3);
       }
+      
+      /* Stili Animazione Home */
+      .hero-animation {
+        position: relative;
+        width: 100%;
+        height: 450px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 2rem 0 4rem 0;
+      }
+      .hero-center {
+        position: relative;
+        font-size: 3.5rem;
+        font-weight: 900;
+        color: var(--inchiostro);
+        z-index: 10;
+        animation: popIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        padding: 20px 50px;
+        border-radius: 30px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+        border: 2px solid rgba(255, 255, 255, 0.9);
+        text-align: center;
+        background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,240,230,0.9) 100%);
+      }
+      .hero-center span {
+        display: block;
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: var(--mandarino);
+        margin-top: 5px;
+        letter-spacing: 1px;
+      }
+      .service-orb {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        background: white;
+        padding: 12px 20px;
+        border-radius: 30px;
+        font-weight: bold;
+        color: var(--inchiostro);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        border: 1px solid rgba(0,0,0,0.03);
+        opacity: 0;
+        margin-top: -22px; 
+        margin-left: -75px; 
+        text-align: center;
+        width: 150px;
+        box-sizing: border-box;
+        z-index: 5;
+      }
+      
+      .orb-1 { animation: popOrb1 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; animation-delay: 0.5s; color: #f39c12; }
+      .orb-2 { animation: popOrb2 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; animation-delay: 0.9s; color: #27ae60; }
+      .orb-3 { animation: popOrb3 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; animation-delay: 1.3s; color: #2980b9; }
+      .orb-4 { animation: popOrb4 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; animation-delay: 1.7s; color: #8e44ad; }
+      .orb-5 { animation: popOrb5 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; animation-delay: 2.1s; color: #e74c3c; }
+      .orb-6 { animation: popOrb6 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; animation-delay: 2.5s; color: #16a085; }
+
+      @keyframes popIn {
+        0% { opacity: 0; transform: scale(0.5); }
+        100% { opacity: 1; transform: scale(1); }
+      }
+      @keyframes popOrb1 { 100% { opacity: 1; transform: translate(0, -180px); } }
+      @keyframes popOrb2 { 100% { opacity: 1; transform: translate(170px, -90px); } }
+      @keyframes popOrb3 { 100% { opacity: 1; transform: translate(170px, 90px); } }
+      @keyframes popOrb4 { 100% { opacity: 1; transform: translate(0, 180px); } }
+      @keyframes popOrb5 { 100% { opacity: 1; transform: translate(-170px, 90px); } }
+      @keyframes popOrb6 { 100% { opacity: 1; transform: translate(-170px, -90px); } }
+
+      @media (max-width: 600px) {
+        .hero-animation { height: 350px; }
+        .hero-center { font-size: 2.5rem; padding: 15px 30px; }
+        @keyframes popOrb1 { 100% { opacity: 1; transform: translate(0, -140px); } }
+        @keyframes popOrb2 { 100% { opacity: 1; transform: translate(120px, -70px); } }
+        @keyframes popOrb3 { 100% { opacity: 1; transform: translate(120px, 70px); } }
+        @keyframes popOrb4 { 100% { opacity: 1; transform: translate(0, 140px); } }
+        @keyframes popOrb5 { 100% { opacity: 1; transform: translate(-120px, 70px); } }
+        @keyframes popOrb6 { 100% { opacity: 1; transform: translate(-120px, -70px); } }
+      }
     </style>
   </head>
   <body>
@@ -144,9 +228,24 @@
       </div>
       <a href="./area-personale.html" style="margin-left: auto; color: white; text-decoration: none; padding: 5px 10px; font-weight: bold; background: rgba(255, 255, 255, 0.2); border-radius: 8px;">Area Personale</a>
     </nav>
+    
     <div class="container">
-      <h1>L'Ecosistema Personale</h1>
-      <p class="subtitle">Tutti i tuoi strumenti intelligenti. 100% Zero-Server. Massima privacy.</p>
+      
+      <!-- Sezione Animata Hero -->
+      <div class="hero-animation">
+        <div class="service-orb orb-1">⚡ Bollette</div>
+        <div class="service-orb orb-2">🛒 SpesaSmart</div>
+        <div class="service-orb orb-3">✔️ Organizzazione</div>
+        <div class="service-orb orb-4">🧠 Memorie</div>
+        <div class="service-orb orb-5">⚖️ Fisco</div>
+        <div class="service-orb orb-6">⚕️ Salute</div>
+        
+        <div class="hero-center">
+          AppUnic
+          <span>L'Ecosistema Personale</span>
+        </div>
+      </div>
+
       
       <div class="grid">
         <a href="./bollette.html" class="card">
