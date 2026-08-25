@@ -388,6 +388,49 @@
         font-size: 0.85rem;
         font-weight: bold;
       }
+      /* Box Guida & Spiegazione */
+      .guide-box {
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid var(--bordo);
+        border-left: 5px solid var(--mandarino);
+        border-radius: 14px;
+        padding: 1.2rem 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      }
+      .guide-box-title {
+        font-size: 1.05rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 0.8rem;
+        color: var(--inchiostro);
+      }
+      .guide-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.2rem;
+      }
+      .guide-item {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+      }
+      .guide-item-icon {
+        font-size: 1.3rem;
+        line-height: 1;
+      }
+      .guide-item-text strong {
+        display: block;
+        font-size: 0.9rem;
+        margin-bottom: 2px;
+      }
+      .guide-item-text span {
+        font-size: 0.82rem;
+        color: #666;
+        line-height: 1.35;
+      }
     </style>
     <script type="module" crossorigin src="./assets/VoiceAssistant-CpTO9j7I.js"></script>
     <script type="module" crossorigin src="./assets/globalVoice-DNmjMw79.js"></script>
@@ -411,6 +454,43 @@
     <div class="container">
       <h1>Memorie, Salute & Diario 🧠</h1>
       <p class="subtitle">I tuoi ricordi, musica, terapie e viaggi salvati con privacy 100% Zero-Server.</p>
+      
+      <!-- BOX GUIDA: COSA PUOI FARE -->
+      <div class="guide-box">
+        <div class="guide-box-title">
+          <span>💡</span> Cosa puoi fare in questa sezione:
+        </div>
+        <div class="guide-grid">
+          <div class="guide-item">
+            <span class="guide-item-icon">💊</span>
+            <div class="guide-item-text">
+              <strong>Farmaci & Cartella Sanitaria</strong>
+              <span>Terapie abituali, orari di assunzione, medico curante, specialisti e contatti ICE di emergenza.</span>
+            </div>
+          </div>
+          <div class="guide-item">
+            <span class="guide-item-icon">🎵</span>
+            <div class="guide-item-text">
+              <strong>La Mia Musica & YouTube</strong>
+              <span>Incolla il link YouTube o Spotify dei tuoi brani preferiti: l'anteprima di copertina si genera da sola!</span>
+            </div>
+          </div>
+          <div class="guide-item">
+            <span class="guide-item-icon">🌍</span>
+            <div class="guide-item-text">
+              <strong>Luoghi & Viaggi</strong>
+              <span>Diario di bordo delle città visitate, monumenti, hotel e ricordi dei tuoi viaggi più belli.</span>
+            </div>
+          </div>
+          <div class="guide-item">
+            <span class="guide-item-icon">🍝</span>
+            <div class="guide-item-text">
+              <strong>Ristoranti & Amicizie</strong>
+              <span>Traccia locali con piatti consigliati e voti, e appunta date speciali o hobby delle persone importanti.</span>
+            </div>
+          </div>
+        </div>
+      </div>
       
       <!-- 5 PULSANTONI GRANDI CON IMMAGINI DI ANTEPRIMA -->
       <div class="pulsantoni-grid">

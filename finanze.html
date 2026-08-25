@@ -385,13 +385,48 @@
         margin-bottom: 4px;
         color: #555;
       }
-      .form-group input, .form-group select {
-        width: 100%;
-        padding: 8px 12px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        font-size: 0.95rem;
-        box-sizing: border-box;
+      /* Box Guida & Spiegazione */
+      .guide-box {
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid var(--bordo);
+        border-left: 5px solid var(--mandarino);
+        border-radius: 14px;
+        padding: 1.2rem 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      }
+      .guide-box-title {
+        font-size: 1.05rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 0.8rem;
+        color: var(--inchiostro);
+      }
+      .guide-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.2rem;
+      }
+      .guide-item {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+      }
+      .guide-item-icon {
+        font-size: 1.3rem;
+        line-height: 1;
+      }
+      .guide-item-text strong {
+        display: block;
+        font-size: 0.9rem;
+        margin-bottom: 2px;
+      }
+      .guide-item-text span {
+        font-size: 0.82rem;
+        color: #666;
+        line-height: 1.35;
       }
     </style>
     <script type="module" crossorigin src="./assets/VoiceAssistant-CpTO9j7I.js"></script>
@@ -423,6 +458,43 @@
           <button class="btn btn-outline" id="btn-import-csv">📥 Importa Estratto Conto</button>
           <input type="file" id="file-csv-input" accept=".csv,.txt" style="display: none;">
           <button class="btn btn-primary" id="btn-open-modal-spesa">+ Nuova Spesa</button>
+        </div>
+      </div>
+
+      <!-- BOX GUIDA: COSA PUOI FARE -->
+      <div class="guide-box">
+        <div class="guide-box-title">
+          <span>💡</span> Cosa puoi fare in questa sezione:
+        </div>
+        <div class="guide-grid">
+          <div class="guide-item">
+            <span class="guide-item-icon">🔮</span>
+            <div class="guide-item-text">
+              <strong>Saldo Libero a Fine Mese</strong>
+              <span>Visualizza in tempo reale quanti soldi ti rimangono al netto di tutte le spese fisse già previste.</span>
+            </div>
+          </div>
+          <div class="guide-item">
+            <span class="guide-item-icon">📊</span>
+            <div class="guide-item-text">
+              <strong>Buste di Budget (5 Categorie)</strong>
+              <span>Imposta un tetto di spesa mensile per Casa, Spesa, Auto, Svago e Risparmio con indicatori colorati.</span>
+            </div>
+          </div>
+          <div class="guide-item">
+            <span class="guide-item-icon">💳</span>
+            <div class="guide-item-text">
+              <strong>Gestione Multi-Conto</strong>
+              <span>Tieni traccia di conti bancari, carte ricaricabili e contanti scalando le spese in automatico.</span>
+            </div>
+          </div>
+          <div class="guide-item">
+            <span class="guide-item-icon">📥</span>
+            <div class="guide-item-text">
+              <strong>Import CSV & Assistente Vocale</strong>
+              <span>Carica il file della tua banca o detta a voce <em>"Ho speso 30 euro di benzina"</em> per salvare all'istante.</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -991,6 +1063,6 @@
         loadData();
         renderAll();
       });
-    </script>
+    </script>
   </body>
 </html>

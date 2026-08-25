@@ -293,6 +293,49 @@
         font-weight: bold;
       }
 
+      /* Box Guida & Spiegazione */
+      .guide-box {
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid var(--bordo);
+        border-left: 5px solid var(--mandarino);
+        border-radius: 14px;
+        padding: 1.2rem 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      }
+      .guide-box-title {
+        font-size: 1.05rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 0.8rem;
+        color: var(--inchiostro);
+      }
+      .guide-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.2rem;
+      }
+      .guide-item {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+      }
+      .guide-item-icon {
+        font-size: 1.3rem;
+        line-height: 1;
+      }
+      .guide-item-text strong {
+        display: block;
+        font-size: 0.9rem;
+        margin-bottom: 2px;
+      }
+      .guide-item-text span {
+        font-size: 0.82rem;
+        color: #666;
+        line-height: 1.35;
+      }
     </style>
     <script type="module" crossorigin src="./assets/organizzazione-8mXoQdN8.js"></script>
     <link rel="modulepreload" crossorigin href="./assets/VoiceAssistant-CpTO9j7I.js">
@@ -314,8 +357,45 @@
     
     <div class="container">
       <div class="header-actions">
-        <h1><span>✔️</span> Tasks</h1>
+        <h1><span>✔️</span> Tasks & Scadenze</h1>
         <button class="btn-nuovo" id="btn-open-modal">+ Nuovo Task</button>
+      </div>
+
+      <!-- BOX GUIDA: COSA PUOI FARE -->
+      <div class="guide-box">
+        <div class="guide-box-title">
+          <span>💡</span> Cosa puoi fare in questa sezione:
+        </div>
+        <div class="guide-grid">
+          <div class="guide-item">
+            <span class="guide-item-icon">🔴</span>
+            <div class="guide-item-text">
+              <strong>Priorità Automatica</strong>
+              <span>Organizza impegni e scadenze con ordine di urgenza (Alta, Media, Bassa) per non perdere tempo.</span>
+            </div>
+          </div>
+          <div class="guide-item">
+            <span class="guide-item-icon">⏰</span>
+            <div class="guide-item-text">
+              <strong>Scadenzario & Conti</strong>
+              <span>Associa data, ora e il conto bancario collegato (es. Sisal, Carta, Utenze) a ciascun promemoria.</span>
+            </div>
+          </div>
+          <div class="guide-item">
+            <span class="guide-item-icon">🔔</span>
+            <div class="guide-item-text">
+              <strong>Promemoria 24h & Archiviazione</strong>
+              <span>Avviso automatico di pre-scadenza. I task scaduti da oltre 30 giorni vengono archiviati da soli.</span>
+            </div>
+          </div>
+          <div class="guide-item">
+            <span class="guide-item-icon">🎤</span>
+            <div class="guide-item-text">
+              <strong>Creazione Vocale</strong>
+              <span>Dì semplicemente <em>"Ricordami di pagare l'F24 venerdì alle 10"</em> e il task si crea in un secondo.</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="tabs">
