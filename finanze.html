@@ -642,11 +642,22 @@
             <!-- COLONNA 1: MOVIMENTI DELLA BUSTA -->
             <div class="sub-block">
               <div class="sub-block-title">
-                <span>📋 Spese & Movimenti Registrati</span>
+                <span>📋 Spese & Movimenti</span>
                 <button class="btn btn-outline" id="btn-add-quick-spesa">+ Aggiungi Spesa</button>
               </div>
-              <div style="overflow-x: auto;">
-                <table class="table-movimenti">
+
+              <!-- BARRA RICERCA & FILTRI RAGGRUPPAMENTO -->
+              <div style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; align-items: center;">
+                <input type="text" id="movimenti-search" placeholder="🔍 Cerca (es: dentista, terapia)..." style="padding: 6px 10px; border-radius: 6px; border: 1px solid #ddd; font-size: 0.85rem; flex: 1; min-width: 140px;" oninput="renderMovimenti()">
+                <div style="display: flex; gap: 4px;">
+                  <button class="btn btn-outline active-filter-btn" id="btn-view-cron" style="font-size: 0.78rem; padding: 4px 8px;" onclick="setMovimentiView('cron')">📅 Data</button>
+                  <button class="btn btn-outline" id="btn-view-group" style="font-size: 0.78rem; padding: 4px 8px;" onclick="setMovimentiView('group')">🏷️ Per Frase / Voce</button>
+                  <button class="btn btn-outline" id="btn-view-importo" style="font-size: 0.78rem; padding: 4px 8px;" onclick="setMovimentiView('importo')">💰 Importo</button>
+                </div>
+              </div>
+
+              <div id="movimenti-container-view" style="overflow-x: auto;">
+                <table class="table-movimenti" id="table-movimenti-standard">
                   <thead>
                     <tr>
                       <th>Data</th>
@@ -660,6 +671,9 @@
                     <!-- Rendered by JS -->
                   </tbody>
                 </table>
+                <div id="movimenti-grouped-container" style="display: none;">
+                  <!-- Rendered by JS when group view is active -->
+                </div>
               </div>
             </div>
 
@@ -948,7 +962,7 @@
         { id: 'casa', name: 'Casa', url: 'immagini/bg_finanze_casa.jpg' },
         { id: 'spesa', name: 'Spesa', url: 'immagini/bg_finanze_hero.jpg' },
         { id: 'bambini', name: 'Bambini', url: 'immagini/bg_finanze_bambini.svg' },
-        { id: 'trasporti', name: 'Auto', url: 'immagini/bg_finanze_trasporti.jpg' },
+        { id: 'trasporti', name: 'Auto & Moto', url: 'immagini/bg_finanze_trasporti.jpg' },
         { id: 'farmaci', name: 'Farmaci', url: 'immagini/bg_finanze_farmaci.jpg' },
         { id: 'salute', name: 'Salute', url: 'immagini/bg_finanze_salute.jpg' },
         { id: 'tecnologia', name: 'Tech', url: 'immagini/bg_finanze_tecnologia.jpg' },
@@ -974,7 +988,7 @@
           { id: 'casa', nome: 'Casa & Utenze', icona: '🏠', bg: 'immagini/bg_finanze_casa.jpg', budget: 0 },
           { id: 'spesa', nome: 'Spesa & Alimentari', icona: '🛒', bg: 'immagini/bg_finanze_hero.jpg', budget: 0 },
           { id: 'bambini', nome: 'Bambini & Figli', icona: '👶', bg: 'immagini/bg_finanze_bambini.svg', budget: 0 },
-          { id: 'trasporti', nome: 'Auto & Trasporti', icona: '🚗', bg: 'immagini/bg_finanze_trasporti.jpg', budget: 0 },
+          { id: 'trasporti', nome: 'Auto & Moto', icona: '🚗', bg: 'immagini/bg_finanze_trasporti.jpg', budget: 0 },
           { id: 'farmaci', nome: 'Farmaci & Terapie', icona: '💊', bg: 'immagini/bg_finanze_farmaci.jpg', budget: 0 },
           { id: 'salute', nome: 'Salute & Visite', icona: '⚕️', bg: 'immagini/bg_finanze_salute.jpg', budget: 0 },
           { id: 'svago', nome: 'Svago & Stile di Vita', icona: '🍿', bg: 'immagini/bg_finanze_svago.jpg', budget: 0 },
@@ -1168,30 +1182,123 @@
         });
       }
 
-      // 4. RENDER MOVIMENTI
+      let currentMovView = 'cron';
+
+      window.setMovimentiView = (view) => {
+        currentMovView = view;
+        document.querySelectorAll('.active-filter-btn').forEach(b => b.classList.remove('active-filter-btn'));
+        if (view === 'cron') document.getElementById('btn-view-cron')?.classList.add('active-filter-btn');
+        if (view === 'group') document.getElementById('btn-view-group')?.classList.add('active-filter-btn');
+        if (view === 'importo') document.getElementById('btn-view-importo')?.classList.add('active-filter-btn');
+        renderMovimenti();
+      };
+
+      // 4. RENDER MOVIMENTI CON RAGGRUPPAMENTO PER FRASE E SUBTOTALI
       function renderMovimenti() {
         const tbody = document.getElementById('movimenti-tbody');
-        if (!tbody) return;
-        tbody.innerHTML = '';
+        const tableStandard = document.getElementById('table-movimenti-standard');
+        const groupedCont = document.getElementById('movimenti-grouped-container');
+        const searchInput = document.getElementById('movimenti-search');
+        const query = (searchInput?.value || '').toLowerCase().trim();
 
-        const movs = finanzeData.movimenti.filter(m => m.cat === activeBusta);
+        if (!tbody || !tableStandard || !groupedCont) return;
+
+        let movs = finanzeData.movimenti.filter(m => m.cat === activeBusta);
+
+        if (query) {
+          movs = movs.filter(m => m.desc.toLowerCase().includes(query));
+        }
+
         if (movs.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#888;">Nessun movimento in questa busta. Clicca "+ Aggiungi Spesa".</td></tr>';
+          tableStandard.style.display = 'table';
+          groupedCont.style.display = 'none';
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#888; padding: 1.5rem;">${query ? 'Nessuna spesa trovata per "' + query + '"' : 'Nessun movimento in questa busta. Clicca "+ Aggiungi Spesa".'}</td></tr>`;
           return;
         }
 
-        movs.forEach((m) => {
-          const conto = finanzeData.conti.find(c => c.id === m.contoId)?.nome || 'Conto';
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${m.data}</td>
-            <td style="font-weight:600;">${m.desc}</td>
-            <td><span style="font-size:0.8rem; background:#eee; padding:2px 6px; border-radius:4px;">${conto}</span></td>
-            <td style="font-weight:bold; color:var(--rosso);">- € ${m.importo.toFixed(2)}</td>
-            <td><button class="btn btn-danger" onclick="deleteMovimento('${m.id}')">✕</button></td>
-          `;
-          tbody.appendChild(tr);
-        });
+        if (currentMovView === 'group') {
+          // VISTA RAGGRUPPATA PER FRASE / VOCE CON SUBTOTALI
+          tableStandard.style.display = 'none';
+          groupedCont.style.display = 'block';
+          groupedCont.innerHTML = '';
+
+          // Raggruppa per descrizione (normalizzata a minuscolo per aggregazione intelligente)
+          const groups = {};
+          movs.forEach(m => {
+            const key = m.desc.trim();
+            if (!groups[key]) {
+              groups[key] = { items: [], totale: 0, nome: m.desc };
+            }
+            groups[key].items.push(m);
+            groups[key].totale += m.importo;
+          });
+
+          // Ordina i gruppi dal totale più alto al più basso
+          const sortedKeys = Object.keys(groups).sort((a,b) => groups[b].totale - groups[a].totale);
+
+          sortedKeys.forEach(k => {
+            const g = groups[k];
+            const div = document.createElement('div');
+            div.style.background = '#faf8f5';
+            div.style.border = '1px solid #e8e2d8';
+            div.style.borderRadius = '10px';
+            div.style.padding = '10px 14px';
+            div.style.marginBottom = '8px';
+
+            let itemsHtml = '';
+            g.items.forEach(item => {
+              const conto = finanzeData.conti.find(c => c.id === item.contoId)?.nome || 'Conto';
+              itemsHtml += `
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.83rem; color:#666; padding: 3px 0; border-top: 1px dashed #eee;">
+                  <span>📅 ${item.data} &nbsp;•&nbsp; 💳 ${conto}</span>
+                  <div style="display:flex; gap:8px; align-items:center;">
+                    <span style="font-weight:bold; color:var(--rosso);">- € ${item.importo.toFixed(2)}</span>
+                    <button class="btn-danger" style="padding:1px 5px; font-size:0.7rem; cursor:pointer;" onclick="deleteMovimento('${item.id}')">✕</button>
+                  </div>
+                </div>
+              `;
+            });
+
+            div.innerHTML = `
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
+                <div style="font-weight:800; font-size:0.95rem; color:var(--inchiostro);">
+                  🏷️ ${g.nome} <span style="font-size:0.78rem; font-weight:normal; color:#888;">(${g.items.length} ${g.items.length === 1 ? 'spesa' : 'spese'})</span>
+                </div>
+                <div style="font-weight:800; font-size:1.05rem; color:var(--rosso);">
+                  Totale: € ${g.totale.toFixed(2)}
+                </div>
+              </div>
+              <div>${itemsHtml}</div>
+            `;
+            groupedCont.appendChild(div);
+          });
+
+        } else {
+          // VISTA STANDARD: CRONOLOGICA O PER IMPORTO
+          tableStandard.style.display = 'table';
+          groupedCont.style.display = 'none';
+          tbody.innerHTML = '';
+
+          if (currentMovView === 'importo') {
+            movs.sort((a, b) => b.importo - a.importo);
+          } else {
+            // cronologico (data decrescente)
+            movs.sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime());
+          }
+
+          movs.forEach((m) => {
+            const conto = finanzeData.conti.find(c => c.id === m.contoId)?.nome || 'Conto';
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${m.data}</td>
+              <td style="font-weight:600;">${m.desc}</td>
+              <td><span style="font-size:0.8rem; background:#eee; padding:2px 6px; border-radius:4px;">${conto}</span></td>
+              <td style="font-weight:bold; color:var(--rosso);">- € ${m.importo.toFixed(2)}</td>
+              <td><button class="btn btn-danger" onclick="deleteMovimento('${m.id}')">✕</button></td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
       }
 
       // 5. RENDER BUDGET & SPESE FISSE PERSONALIZZABILI
