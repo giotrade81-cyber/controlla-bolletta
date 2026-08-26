@@ -1,604 +1,693 @@
 <!doctype html>
 <html lang="it">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Area Personale &amp; Licenze — AppUnic</title>
-    <meta name="description" content="Gestisci il tuo account, la verifica SMS, la licenza e l'abbonamento AppUnic." />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-      :root {
-        --carta: #FBF7EF;
-        --carta-2: #F3ECDD;
-        --inchiostro: #1A1714;
-        --inchiostro-tenue: #8A8178;
-        --mandarino: #FF6A2B;
-        --mandarino-scuro: #E24E12;
-        --basilico: #1F7A4D;
-        --foglia: #E2F1E6;
-        --blu: #2D68C4;
-        --bordo: #E4DACA;
-        --sans: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      }
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        font-family: var(--sans);
-        background: linear-gradient(135deg, var(--carta) 0%, #fff0e6 100%);
-        color: var(--inchiostro);
-        min-height: 100vh;
-        line-height: 1.5;
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Area Personale &amp; Licenze — AppUnic</title>
+  <meta name="description" content="Gestisci il tuo account, la verifica SMS, la licenza e l'abbonamento AppUnic." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --carta: #FBF7EF;
+      --carta-2: #F3ECDD;
+      --inchiostro: #1A1714;
+      --inchiostro-tenue: #8A8178;
+      --mandarino: #FF6A2B;
+      --mandarino-scuro: #E24E12;
+      --basilico: #1F7A4D;
+      --foglia: #E2F1E6;
+      --blu: #2D68C4;
+      --bordo: #E4DACA;
+      --sans: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      background: linear-gradient(135deg, var(--carta) 0%, #fff0e6 100%);
+      color: var(--inchiostro);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* Navigazione Globale AppUnic */
+    .appunic-nav {
+      background: var(--inchiostro, #1A1714);
+      color: white;
+      padding: 10px 24px;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .appunic-nav a {
+      color: white;
+      text-decoration: none;
+      padding: 5px 10px;
+    }
+
+    .appunic-nav .active {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: "Bricolage Grotesque", sans-serif;
+      letter-spacing: -0.02em;
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      margin-bottom: 0.4rem;
+      line-height: 1.1;
+    }
+
+    p.subtitle {
+      font-size: 1.05rem;
+      color: var(--inchiostro-tenue);
+      margin-bottom: 2.5rem;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: 20px;
+      padding: 2.2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.05);
+    }
+
+    .panel h2 {
+      margin-top: 0;
+      font-size: 1.55rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Tab Selector */
+    .tab-bar {
+      display: flex;
+      gap: 10px;
+      border-bottom: 2px solid var(--bordo);
+      margin-bottom: 1.5rem;
+      padding-bottom: 8px;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--inchiostro-tenue);
+      cursor: pointer;
+      padding: 6px 14px;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      color: var(--mandarino-scuro);
+      background: rgba(255, 106, 43, 0.1);
+    }
+
+    /* Form controls */
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--bordo);
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: inherit;
+      background: #fff;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--mandarino);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 22px;
+      border-radius: 10px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.15s, box-shadow 0.2s;
+      font-size: 0.95rem;
+    }
+
+    .btn-primary {
+      background: var(--mandarino);
+      color: white;
+      box-shadow: 0 4px 15px rgba(255, 106, 43, 0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 106, 43, 0.35);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--bordo);
+      color: var(--inchiostro);
+    }
+
+    .btn-outline:hover {
+      background: #f0ebe1;
+    }
+
+    .btn-blue {
+      background: #4285F4;
+      color: white;
+    }
+
+    .btn-success {
+      background: var(--basilico);
+      color: white;
+    }
+
+    /* Alert & Toast */
+    .sms-popup {
+      display: none;
+      background: #1A1714;
+      color: #fff;
+      padding: 14px 18px;
+      border-radius: 12px;
+      margin-bottom: 1.2rem;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+      border-left: 5px solid var(--mandarino);
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-6px);
       }
 
-      /* Navigazione Globale AppUnic */
-      .appunic-nav {
-        background: var(--inchiostro, #1A1714);
-        color: white;
-        padding: 10px 24px;
-        display: flex;
-        gap: 20px;
-        align-items: center;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
+      to {
+        opacity: 1;
+        transform: none;
       }
-      .appunic-nav a {
-        color: white;
-        text-decoration: none;
-        padding: 5px 10px;
-      }
-      .appunic-nav .active {
-        background: rgba(255,255,255,0.2);
-        border-radius: 6px;
-      }
+    }
 
+    /* Pricing Cards Grid */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.2rem;
+      margin-top: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .price-card {
+      background: #fff;
+      border: 2px solid var(--bordo);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+      transition: transform 0.2s, border-color 0.2s;
+      cursor: pointer;
+    }
+
+    .price-card:hover,
+    .price-card.selected {
+      border-color: var(--mandarino);
+      transform: translateY(-3px);
+    }
+
+    .price-card.featured {
+      border-color: var(--mandarino);
+      background: linear-gradient(180deg, #fffaf5 0%, #fff 100%);
+    }
+
+    .badge-featured {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--mandarino);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.05em;
+    }
+
+    .price-val {
+      font-family: "Space Mono", monospace;
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin: 10px 0 4px;
+      color: var(--inchiostro);
+    }
+
+    .price-period {
+      font-size: 0.85rem;
+      color: var(--inchiostro-tenue);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .status-active {
+      background: var(--foglia);
+      color: var(--basilico);
+    }
+
+    /* Responsiveness per Cellulari */
+    @media (max-width: 768px) {
       .container {
-        max-width: 960px;
-        margin: 0 auto;
-        padding: 3rem 1.5rem;
+        padding: 1.5rem 1rem;
       }
-      h1, h2, h3 {
-        font-family: "Bricolage Grotesque", sans-serif;
-        letter-spacing: -0.02em;
-      }
+
       h1 {
-        font-size: 2.4rem;
-        margin-bottom: 0.4rem;
-        line-height: 1.1;
-      }
-      p.subtitle {
-        font-size: 1.05rem;
-        color: var(--inchiostro-tenue);
-        margin-bottom: 2.5rem;
-      }
-      
-      .panel {
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.7);
-        border-radius: 20px;
-        padding: 2.2rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.05);
-      }
-      .panel h2 {
-        margin-top: 0;
-        font-size: 1.55rem;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      /* Tab Selector */
-      .tab-bar {
-        display: flex;
-        gap: 10px;
-        border-bottom: 2px solid var(--bordo);
-        margin-bottom: 1.5rem;
-        padding-bottom: 8px;
-      }
-      .tab-btn {
-        background: none;
-        border: none;
-        font-family: inherit;
-        font-size: 1rem;
-        font-weight: 700;
-        color: var(--inchiostro-tenue);
-        cursor: pointer;
-        padding: 6px 14px;
-        border-radius: 8px;
-        transition: all 0.2s;
-      }
-      .tab-btn.active {
-        color: var(--mandarino-scuro);
-        background: rgba(255, 106, 43, 0.1);
-      }
-
-      /* Form controls */
-      .form-group {
-        margin-bottom: 1.2rem;
-      }
-      label {
-        display: block;
-        font-weight: 700;
-        margin-bottom: 6px;
-        font-size: 0.9rem;
-      }
-      input[type="text"], input[type="tel"], input[type="email"], input[type="password"] {
-        width: 100%;
-        padding: 12px 14px;
-        border: 1.5px solid var(--bordo);
-        border-radius: 10px;
-        font-size: 1rem;
-        font-family: inherit;
-        background: #fff;
-        transition: border-color 0.2s;
-      }
-      input:focus {
-        outline: none;
-        border-color: var(--mandarino);
-      }
-
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        padding: 11px 22px;
-        border-radius: 10px;
-        font-weight: 700;
-        text-decoration: none;
-        cursor: pointer;
-        border: none;
-        transition: transform 0.15s, box-shadow 0.2s;
-        font-size: 0.95rem;
-      }
-      .btn-primary {
-        background: var(--mandarino);
-        color: white;
-        box-shadow: 0 4px 15px rgba(255, 106, 43, 0.25);
-      }
-      .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(255, 106, 43, 0.35);
-      }
-      .btn-outline {
-        background: transparent;
-        border: 1.5px solid var(--bordo);
-        color: var(--inchiostro);
-      }
-      .btn-outline:hover {
-        background: #f0ebe1;
-      }
-      .btn-blue {
-        background: #4285F4;
-        color: white;
-      }
-      .btn-success {
-        background: var(--basilico);
-        color: white;
-      }
-
-      /* Alert & Toast */
-      .sms-popup {
-        display: none;
-        background: #1A1714;
-        color: #fff;
-        padding: 14px 18px;
-        border-radius: 12px;
-        margin-bottom: 1.2rem;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.25);
-        border-left: 5px solid var(--mandarino);
-        animation: fadeIn 0.3s ease;
-      }
-      @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
-
-      /* Pricing Cards Grid */
-      .pricing-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 1.2rem;
-        margin-top: 1.5rem;
-        margin-bottom: 1.5rem;
-      }
-      .price-card {
-        background: #fff;
-        border: 2px solid var(--bordo);
-        border-radius: 16px;
-        padding: 1.5rem;
-        text-align: center;
-        position: relative;
-        transition: transform 0.2s, border-color 0.2s;
-        cursor: pointer;
-      }
-      .price-card:hover, .price-card.selected {
-        border-color: var(--mandarino);
-        transform: translateY(-3px);
-      }
-      .price-card.featured {
-        border-color: var(--mandarino);
-        background: linear-gradient(180deg, #fffaf5 0%, #fff 100%);
-      }
-      .badge-featured {
-        position: absolute;
-        top: -12px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: var(--mandarino);
-        color: white;
-        font-size: 0.75rem;
-        font-weight: 800;
-        padding: 3px 10px;
-        border-radius: 20px;
-        letter-spacing: 0.05em;
-      }
-      .price-val {
-        font-family: "Space Mono", monospace;
         font-size: 1.8rem;
-        font-weight: 800;
-        margin: 10px 0 4px;
-        color: var(--inchiostro);
-      }
-      .price-period {
-        font-size: 0.85rem;
-        color: var(--inchiostro-tenue);
       }
 
-      .status-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-weight: 700;
-        font-size: 0.85rem;
+      .appunic-nav {
+        flex-direction: row !important;
+        align-items: center !important;
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+        gap: 10px !important;
+        padding: 10px 14px !important;
+        scrollbar-width: none;
       }
-      .status-active {
-        background: var(--foglia);
-        color: var(--basilico);
+
+      .appunic-nav::-webkit-scrollbar {
+        display: none;
       }
-      
-      /* Responsiveness per Cellulari */
-      @media (max-width: 768px) {
-        .container {
-          padding: 1.5rem 1rem;
-        }
-        h1 {
-          font-size: 1.8rem;
-        }
-        .appunic-nav {
-          flex-direction: row !important;
-          align-items: center !important;
-          overflow-x: auto !important;
-          white-space: nowrap !important;
-          gap: 10px !important;
-          padding: 10px 14px !important;
-          scrollbar-width: none;
-        }
-        .appunic-nav::-webkit-scrollbar {
-          display: none;
-        }
-        .appunic-nav > div {
-          flex-direction: row !important;
-          flex-wrap: nowrap !important;
-          gap: 8px !important;
-          width: auto !important;
-        }
-        .appunic-nav a {
-          width: auto !important;
-          flex-shrink: 0 !important;
-          font-size: 0.85rem !important;
-          padding: 5px 10px !important;
-        }
-        .panel {
-          padding: 1.5rem;
-        }
-        .tab-bar {
-          flex-direction: column;
-          border-bottom: none;
-        }
-        .tab-btn {
-          margin-bottom: 8px;
-          border: 1px solid var(--bordo);
-        }
-        #form-registration > div:first-child {
-          grid-template-columns: 1fr !important;
-        }
-        .pricing-grid {
-          grid-template-columns: 1fr;
-        }
+
+      .appunic-nav>div {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 8px !important;
+        width: auto !important;
       }
-    </style>
-    <script type="module" crossorigin src="./assets/VoiceAssistant-iA-fUDu8.js"></script>
-    <script type="module" crossorigin src="./assets/globalVoice-TtsbeCJy.js"></script>
-  </head>
-  <body>
-    <!-- Navigazione Globale AppUnic -->
-    <nav style="background: var(--inchiostro, #1A1714); color: white; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000;">
-      <a href="./index.html" class="brand" style="font-weight: 800; font-size: 1.2rem; letter-spacing: 1px; color: white; text-decoration: none;">AppUnic</a>
-      <a href="./index.html" style="color: white; text-decoration: none; padding: 8px 18px; font-weight: bold; background: rgba(255, 255, 255, 0.15); border-radius: 8px; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.2);">← Torna alla Home</a>
-    </nav>
-    
-    <div class="container">
-      <h1>Area Personale &amp; Licenze</h1>
-      <p class="subtitle">Gestisci il tuo profilo, l'autenticazione SMS, l'abbonamento e la tua licenza AppUnic.</p>
-      
-      <!-- 1. PANNELLO AUTENTICAZIONE / REGISTRAZIONE CON SMS -->
-      <div class="panel" id="panel-auth">
-        <div id="auth-logged-view" style="display: none;">
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-            <div>
-              <h2 style="margin: 0;">👤 Bentornato, <span id="user-display-name">Utente</span></h2>
-              <p style="margin: 4px 0 0 0; color: #666; font-size: 0.95rem;">
-                Numero Verificato via SMS: <strong id="user-display-tel">+39 333 0000000</strong>
-                <span id="user-display-email-cont" style="margin-left: 12px; display: inline-block;">• Email: <strong id="user-display-email">-</strong></span>
-              </p>
-            </div>
-            <button class="btn btn-outline" onclick="logoutUser()">Disconnetti</button>
+
+      .appunic-nav a {
+        width: auto !important;
+        flex-shrink: 0 !important;
+        font-size: 0.85rem !important;
+        padding: 5px 10px !important;
+      }
+
+      .panel {
+        padding: 1.5rem;
+      }
+
+      .tab-bar {
+        flex-direction: column;
+        border-bottom: none;
+      }
+
+      .tab-btn {
+        margin-bottom: 8px;
+        border: 1px solid var(--bordo);
+      }
+
+      #form-registration>div:first-child {
+        grid-template-columns: 1fr !important;
+      }
+
+      .pricing-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <script type="module" crossorigin src="./assets/VoiceAssistant-iA-fUDu8.js"></script>
+  <script type="module" crossorigin src="./assets/globalVoice-TtsbeCJy.js"></script>
+</head>
+
+<body>
+  <!-- Navigazione Globale AppUnic -->
+  <nav
+    style="background: var(--inchiostro, #1A1714); color: white; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000;">
+    <a href="./index.html" class="brand"
+      style="font-weight: 800; font-size: 1.2rem; letter-spacing: 1px; color: white; text-decoration: none;">AppUnic</a>
+    <a href="./index.html"
+      style="color: white; text-decoration: none; padding: 8px 18px; font-weight: bold; background: rgba(255, 255, 255, 0.15); border-radius: 8px; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.2);">←
+      Torna alla Home</a>
+  </nav>
+
+  <div class="container">
+    <h1>Area Personale &amp; Licenze</h1>
+    <p class="subtitle">Gestisci il tuo profilo, l'autenticazione SMS, l'abbonamento e la tua licenza AppUnic.</p>
+
+    <!-- 1. PANNELLO AUTENTICAZIONE / REGISTRAZIONE CON SMS -->
+    <div class="panel" id="panel-auth">
+      <div id="auth-logged-view" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <h2 style="margin: 0;">👤 Bentornato, <span id="user-display-name">Utente</span></h2>
+            <p style="margin: 4px 0 0 0; color: #666; font-size: 0.95rem;">
+              Numero Verificato via SMS: <strong id="user-display-tel">+39 333 0000000</strong>
+              <span id="user-display-email-cont" style="margin-left: 12px; display: inline-block;">• Email: <strong
+                  id="user-display-email">-</strong></span>
+            </p>
           </div>
-        </div>
-
-        <div id="auth-forms-view">
-          <div class="tab-bar">
-            <button class="tab-btn active" id="tab-reg" onclick="switchAuthTab('reg')">📝 Registrati con Conferma Email (Gratis)</button>
-            <button class="tab-btn" id="tab-login" onclick="switchAuthTab('login')">🔐 Accedi</button>
-          </div>
-
-          <!-- FORM REGISTRAZIONE -->
-          <form id="form-registration" onsubmit="handleRegistrationSubmit(event)">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-              <div class="form-group">
-                <label>Nome</label>
-                <input type="text" id="reg-nome" placeholder="Mario" required />
-              </div>
-              <div class="form-group">
-                <label>Cognome</label>
-                <input type="text" id="reg-cognome" placeholder="Rossi" required />
-              </div>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-              <div class="form-group">
-                <label>Email (riceverai il link di conferma)</label>
-                <input type="email" id="reg-email" placeholder="mario.rossi@esempio.it" required />
-              </div>
-              <div class="form-group">
-                <label>Conferma Email</label>
-                <input type="email" id="reg-email-confirm" placeholder="mario.rossi@esempio.it" required />
-              </div>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-              <div class="form-group">
-                <label>Numero di Telefono</label>
-                <input type="tel" id="reg-tel" placeholder="+39 333 1234567" required />
-              </div>
-              <div class="form-group">
-                <label>Scegli Password</label>
-                <input type="password" id="reg-pass" placeholder="••••••••" required />
-              </div>
-            </div>
-
-            <!-- STATO EMAIL INVIATA -->
-            <div id="confirm-sent-step" style="display: none; background: #e2f1e6; border: 1px solid #bce1c5; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.2rem; text-align: center;">
-              <div style="font-size: 2.2rem; margin-bottom: 6px;">📬</div>
-              <h3 style="color: var(--basilico); margin: 0 0 6px 0; font-size: 1.15rem;">Email di conferma inviata!</h3>
-              <p style="margin: 0 0 12px 0; color: #1a1714; font-size: 0.95rem;">
-                Abbiamo inviato un link di conferma a: <strong id="sent-email-display">-</strong>.<br>
-                Apri la tua casella di posta e <strong>clicca sul link</strong> per attivare il tuo account e ricevere la tua licenza.
-              </p>
-              <button type="button" class="btn btn-outline" onclick="requestEmailConfirmation()" style="font-size: 0.85rem;">🔄 Invia di nuovo</button>
-            </div>
-
-            <div id="btn-request-email-cont">
-              <button type="button" class="btn btn-primary" onclick="requestEmailConfirmation()">✉️ Invia Link di Conferma via Email (Gratis)</button>
-            </div>
-          </form>
-
-          <!-- FORM LOGIN -->
-          <form id="form-login" style="display: none;" onsubmit="handleLoginSubmit(event)">
-            <div class="form-group">
-              <label>Email o Telefono</label>
-              <input type="text" id="login-identifier" placeholder="mario.rossi@esempio.it o +39 333..." required />
-            </div>
-            <div class="form-group">
-              <label>Password</label>
-              <input type="password" id="login-pass" placeholder="••••••••" required />
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
-              <a href="javascript:void(0)" onclick="openRecoverPassword()" style="color: var(--mandarino-scuro); font-size: 0.88rem; font-weight: bold; text-decoration: none;">🔑 Hai dimenticato la password? Recupera account</a>
-            </div>
-            <button type="submit" class="btn btn-primary">Accedi ad AppUnic</button>
-          </form>
-
-          <!-- MODALE / BLOCCO RECUPERO PASSWORD -->
-          <div id="recover-pass-box" style="display: none; background: #faf8f5; border: 1px solid #e4daca; border-radius: 12px; padding: 1.2rem; margin-top: 1rem;">
-            <h4 style="margin: 0 0 8px 0;">🔑 Richiesta Recupero Password via Email</h4>
-            <p style="font-size: 0.88rem; color: #555; margin-bottom: 12px;">Inserisci la tua email per ricevere il link di reset della password.</p>
-            <div style="display: flex; gap: 10px;">
-              <input type="email" id="recover-email" placeholder="mario.rossi@esempio.it" style="flex: 1;" />
-              <button type="button" class="btn btn-primary" onclick="sendRecoverEmail()">Invia Link Reset</button>
-              <button type="button" class="btn btn-outline" onclick="closeRecoverPassword()">Annulla</button>
-            </div>
-          </div>
+          <button class="btn btn-outline" onclick="logoutUser()">Disconnetti</button>
         </div>
       </div>
 
-      <!-- 2. PANNELLO STATO ABBONAMENTO & GESTIONE LICENZA -->
-      <div class="panel" id="panel-license">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 1.2rem;">
-          <h2 style="margin: 0;">💎 Licenza &amp; Abbonamento AppUnic</h2>
-          <span class="status-pill status-active" id="license-badge">🎁 Periodo di Prova Gratuito Attivo (Accesso Completo)</span>
+      <div id="auth-forms-view">
+        <div class="tab-bar">
+          <button class="tab-btn active" id="tab-reg" onclick="switchAuthTab('reg')">📝 Registrati con Conferma Email
+            (Gratis)</button>
+          <button class="tab-btn" id="tab-login" onclick="switchAuthTab('login')">🔐 Accedi</button>
         </div>
 
-        <p style="font-size: 0.95rem; color: #555; line-height: 1.5; margin-bottom: 1.5rem;">
-          AppUnic è una piattaforma avanzata in abbonamento. Al momento tutti i servizi (Bollette, SpesaSmart, Organizzazione, Memorie, Finanze) sono <strong>completamente sbloccati e gratuiti</strong>. Puoi collegare o riscattare una chiave di licenza acquistata dal nostro shop/piattaforma licenze.
-        </p>
-
-        <!-- RISCATTA CHIAVE DI LICENZA -->
-        <div style="background: #faf8f5; border: 1.5px solid #e4daca; border-radius: 14px; padding: 1.4rem; margin-bottom: 2rem;">
-          <h3 style="margin: 0 0 8px 0; font-size: 1.15rem;">🔑 Riscatta o Attiva Chiave di Licenza</h3>
-          <p style="font-size: 0.88rem; color: #666; margin-bottom: 12px;">Inserisci il codice di licenza generato dalla tua Dashboard Licenze:</p>
-          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <input type="text" id="license-key-input" placeholder="Es: APPU-9482-1049-8832" style="flex: 1; min-width: 220px; font-family: monospace; font-weight: bold; text-transform: uppercase;" />
-            <button class="btn btn-primary" onclick="activateLicenseKey()">Verifica &amp; Attiva Licenza</button>
+        <!-- FORM REGISTRAZIONE -->
+        <form id="form-registration" onsubmit="handleRegistrationSubmit(event)">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>Nome</label>
+              <input type="text" id="reg-nome" placeholder="Mario" required />
+            </div>
+            <div class="form-group">
+              <label>Cognome</label>
+              <input type="text" id="reg-cognome" placeholder="Rossi" required />
+            </div>
           </div>
-          <div id="license-feedback" style="margin-top: 8px; font-size: 0.88rem; font-weight: bold;"></div>
-        </div>
-
-        <!-- PIANI DI ABBONAMENTO (PREDISPOSIZIONE CHECKOUT / CARTE / PAYPAL) -->
-        <h3 style="margin: 0; font-size: 1.25rem;">📦 Piani di Abbonamento &amp; Checkout</h3>
-        <p style="font-size: 0.88rem; color: #666; margin-top: 4px;">Scegli il piano per abilitare i rinnovi automatici (struttura abilitata per Carte e PayPal):</p>
-
-        <div class="pricing-grid">
-          <!-- Piano Mensile -->
-          <div class="price-card" onclick="selectPlan('mensile', this)">
-            <h4 style="margin: 0; font-size: 1.1rem;">Mensile</h4>
-            <div class="price-val">€ 9,90</div>
-            <div class="price-period">al mese · disdici quando vuoi</div>
-            <ul style="list-style: none; padding: 0; margin: 15px 0 0; font-size: 0.82rem; color: #555; text-align: left; line-height: 1.7;">
-              <li>✓ Tutti i moduli sbloccati</li>
-              <li>✓ Assistente vocale AI</li>
-              <li>✓ Privacy Zero-Server</li>
-            </ul>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>Email (riceverai il link di conferma)</label>
+              <input type="email" id="reg-email" placeholder="mario.rossi@esempio.it" required />
+            </div>
+            <div class="form-group">
+              <label>Conferma Email</label>
+              <input type="email" id="reg-email-confirm" placeholder="mario.rossi@esempio.it" required />
+            </div>
           </div>
-
-          <!-- Piano Annuale (Featured) -->
-          <div class="price-card featured selected" onclick="selectPlan('annuale', this)">
-            <span class="badge-featured">PIÙ POPOLARE</span>
-            <h4 style="margin: 0; font-size: 1.1rem;">Annuale</h4>
-            <div class="price-val" style="color: var(--mandarino-scuro);">€ 79,00</div>
-            <div class="price-period">all'anno (risparmi 2 mesi)</div>
-            <ul style="list-style: none; padding: 0; margin: 15px 0 0; font-size: 0.82rem; color: #555; text-align: left; line-height: 1.7;">
-              <li>✓ Risparmio immediato di €40</li>
-              <li>✓ Priorità aggiornamenti</li>
-              <li>✓ Backup automatico locale</li>
-            </ul>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>Numero di Telefono</label>
+              <input type="tel" id="reg-tel" placeholder="+39 333 1234567" required />
+            </div>
+            <div class="form-group">
+              <label>Scegli Password</label>
+              <input type="password" id="reg-pass" placeholder="••••••••" required />
+            </div>
           </div>
 
-          <!-- Piano Lifetime -->
-          <div class="price-card" onclick="selectPlan('lifetime', this)">
-            <h4 style="margin: 0; font-size: 1.1rem;">A Vita (Lifetime)</h4>
-            <div class="price-val">€ 199,00</div>
-            <div class="price-period">una tantum · nessun rinnovo</div>
-            <ul style="list-style: none; padding: 0; margin: 15px 0 0; font-size: 0.82rem; color: #555; text-align: left; line-height: 1.7;">
-              <li>✓ Accesso per sempre</li>
-              <li>✓ Tutte le future app incluse</li>
-              <li>✓ Licenza VIP permanente</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- METODI DI PAGAMENTO & COUPON -->
-        <div style="background: #fff; border: 1.5px solid var(--bordo); border-radius: 14px; padding: 1.4rem;">
-          <h4 style="margin: 0 0 12px 0;">Metodo di Pagamento</h4>
-          <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 1.2rem;">
-            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer;">
-              <input type="radio" name="paymethod" value="card" checked style="accent-color: var(--mandarino);" />
-              <strong>💳 Carta di Credito / Debito (Stripe)</strong>
-            </label>
-            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer;">
-              <input type="radio" name="paymethod" value="paypal" style="accent-color: var(--mandarino);" />
-              <strong>🅿️ PayPal</strong>
-            </label>
+          <!-- STATO EMAIL INVIATA -->
+          <div id="confirm-sent-step"
+            style="display: none; background: #e2f1e6; border: 1px solid #bce1c5; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.2rem; text-align: center;">
+            <div style="font-size: 2.2rem; margin-bottom: 6px;">📬</div>
+            <h3 style="color: var(--basilico); margin: 0 0 6px 0; font-size: 1.15rem;">Email di conferma inviata!</h3>
+            <p style="margin: 0 0 12px 0; color: #1a1714; font-size: 0.95rem;">
+              Abbiamo inviato un link di conferma a: <strong id="sent-email-display">-</strong>.<br>
+              Apri la tua casella di posta e <strong>clicca sul link</strong> per attivare il tuo account e ricevere la
+              tua licenza.
+            </p>
+            <button type="button" class="btn btn-outline" onclick="requestEmailConfirmation()"
+              style="font-size: 0.85rem;">🔄 Invia di nuovo</button>
           </div>
 
-          <!-- CODICE SCONTO / COUPON COMPATIBILE CON DASHBOARD LICENZE -->
-          <div style="display: flex; gap: 10px; margin-bottom: 1.2rem; max-width: 400px;">
-            <input type="text" id="coupon-code" placeholder="Codice Coupon (es: PROMO20)" style="font-family: monospace; text-transform: uppercase;" />
-            <button class="btn btn-outline" onclick="applyCoupon()">Applica Sconto</button>
+          <div id="btn-request-email-cont">
+            <button type="button" class="btn btn-primary" onclick="requestEmailConfirmation()">✉️ Invia Link di Conferma
+              via Email (Gratis)</button>
           </div>
-          <div id="coupon-msg" style="font-size: 0.85rem; font-weight: bold; margin-bottom: 1rem;"></div>
+        </form>
 
-          <button class="btn btn-primary" style="font-size: 1.05rem; padding: 12px 28px;" onclick="startCheckout()">
-            🚀 Procedi al Pagamento &amp; Attiva Licenza
-          </button>
-          <span style="display: block; margin-top: 8px; font-size: 0.8rem; color: #888;">
-            * Nota: Al momento la piattaforma è in prova gratuita completa. Cliccando sblocchi subito la licenza senza alcun addebito!
-          </span>
-        </div>
-      </div>
+        <!-- FORM LOGIN -->
+        <form id="form-login" style="display: none;" onsubmit="handleLoginSubmit(event)">
+          <div class="form-group">
+            <label>Email o Telefono</label>
+            <input type="text" id="login-identifier" placeholder="mario.rossi@esempio.it o +39 333..." required />
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="login-pass" placeholder="••••••••" required />
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+            <a href="javascript:void(0)" onclick="openRecoverPassword()"
+              style="color: var(--mandarino-scuro); font-size: 0.88rem; font-weight: bold; text-decoration: none;">🔑
+              Hai dimenticato la password? Recupera account</a>
+          </div>
+          <button type="submit" class="btn btn-primary">Accedi ad AppUnic</button>
+        </form>
 
-      <!-- 3. SBLOCCA IL CERVELLO AVANZATO (GOOGLE GEMINI API KEY) -->
-      <div class="panel" id="panel-ai">
-        <h2>Sblocca il Cervello Avanzato 🧠</h2>
-        <p style="font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.5;">
-          AppUnic ha un suo riconoscitore vocale di base. Per fare veramente tutto con la voce (promemoria liberi, date, note e calendario avanzato), puoi collegare la tua chiave gratuita di Google AI Studio.<br><br>
-          Essendo un'app <strong>Zero-Server</strong>, la tua chiave resta salvata esclusivamente nel tuo dispositivo.
-        </p>
-        
-        <div style="background: rgba(255, 106, 43, 0.05); border: 1px solid rgba(255, 106, 43, 0.2); padding: 1.2rem; border-radius: 12px; margin-bottom: 1.5rem;">
-          <h4 style="margin: 0 0 10px 0; color: var(--mandarino-scuro);">Come ottenere la chiave gratuita:</h4>
-          <ol style="margin: 0; padding-left: 1.2rem; font-size: 0.9rem;">
-            <li>Vai su Google AI Studio.</li>
-            <li>Accedi con il tuo account Google e clicca <strong>"Create API Key"</strong>.</li>
-            <li>Incolla la chiave qui sotto e clicca Salva.</li>
-          </ol>
-          <div style="margin-top: 12px;">
-            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="btn btn-blue" style="font-size: 0.85rem; padding: 8px 16px;">
-              Vai a Google AI Studio ↗
-            </a>
+        <!-- MODALE / BLOCCO RECUPERO PASSWORD -->
+        <div id="recover-pass-box"
+          style="display: none; background: #faf8f5; border: 1px solid #e4daca; border-radius: 12px; padding: 1.2rem; margin-top: 1rem;">
+          <h4 style="margin: 0 0 8px 0;">🔑 Richiesta Recupero Password via Email</h4>
+          <p style="font-size: 0.88rem; color: #555; margin-bottom: 12px;">Inserisci la tua email per ricevere il link
+            di reset della password.</p>
+          <div style="display: flex; gap: 10px;">
+            <input type="email" id="recover-email" placeholder="mario.rossi@esempio.it" style="flex: 1;" />
+            <button type="button" class="btn btn-primary" onclick="sendRecoverEmail()">Invia Link Reset</button>
+            <button type="button" class="btn btn-outline" onclick="closeRecoverPassword()">Annulla</button>
           </div>
         </div>
-
-        <div class="form-group">
-          <label for="gemini-key">La tua Google Gemini API Key</label>
-          <input type="password" id="gemini-key" placeholder="AIzaSy..." autocomplete="off" spellcheck="false" />
-        </div>
-        <button id="btn-save-key" class="btn btn-primary">Salva e Attiva IA</button>
       </div>
     </div>
 
-    <script>
-      let currentOtpGenerated = '';
-      let selectedPlan = 'annuale';
+    <!-- 2. PANNELLO STATO ABBONAMENTO & GESTIONE LICENZA -->
+    <div class="panel" id="panel-license">
+      <div
+        style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 1.2rem;">
+        <h2 style="margin: 0;">💎 Licenza &amp; Abbonamento AppUnic</h2>
+        <span class="status-pill status-active" id="license-badge">🎁 Periodo di Prova Gratuito Attivo (Accesso
+          Completo)</span>
+      </div>
 
-      // Switch tra Registrazione e Login
-      function switchAuthTab(tab) {
-        document.getElementById('tab-reg').className = 'tab-btn' + (tab === 'reg' ? ' active' : '');
-        document.getElementById('tab-login').className = 'tab-btn' + (tab === 'login' ? ' active' : '');
-        document.getElementById('form-registration').style.display = (tab === 'reg' ? 'block' : 'none');
-        document.getElementById('form-login').style.display = (tab === 'login' ? 'block' : 'none');
-        document.getElementById('recover-pass-box').style.display = 'none';
+      <p style="font-size: 0.95rem; color: #555; line-height: 1.5; margin-bottom: 1.5rem;">
+        AppUnic è una piattaforma avanzata in abbonamento. Al momento tutti i servizi (Bollette, SpesaSmart,
+        Organizzazione, Memorie, Finanze) sono <strong>completamente sbloccati e gratuiti</strong>. Puoi collegare o
+        riscattare una chiave di licenza acquistata dal nostro shop/piattaforma licenze.
+      </p>
+
+      <!-- RISCATTA CHIAVE DI LICENZA -->
+      <div
+        style="background: #faf8f5; border: 1.5px solid #e4daca; border-radius: 14px; padding: 1.4rem; margin-bottom: 2rem;">
+        <h3 style="margin: 0 0 8px 0; font-size: 1.15rem;">🔑 Riscatta o Attiva Chiave di Licenza</h3>
+        <p style="font-size: 0.88rem; color: #666; margin-bottom: 12px;">Inserisci il codice di licenza generato dalla
+          tua Dashboard Licenze:</p>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <input type="text" id="license-key-input" placeholder="Es: APPU-9482-1049-8832"
+            style="flex: 1; min-width: 220px; font-family: monospace; font-weight: bold; text-transform: uppercase;" />
+          <button class="btn btn-primary" onclick="activateLicenseKey()">Verifica &amp; Attiva Licenza</button>
+        </div>
+        <div id="license-feedback" style="margin-top: 8px; font-size: 0.88rem; font-weight: bold;"></div>
+      </div>
+
+      <!-- PIANI DI ABBONAMENTO (PREDISPOSIZIONE CHECKOUT / CARTE / PAYPAL) -->
+      <h3 style="margin: 0; font-size: 1.25rem;">📦 Piani di Abbonamento &amp; Checkout</h3>
+      <p style="font-size: 0.88rem; color: #666; margin-top: 4px;">Scegli il piano per abilitare i rinnovi automatici
+        (struttura abilitata per Carte e PayPal):</p>
+
+      <div class="pricing-grid">
+        <!-- Piano Mensile -->
+        <div class="price-card" onclick="selectPlan('mensile', this)">
+          <h4 style="margin: 0; font-size: 1.1rem;">Mensile</h4>
+          <div class="price-val">€ 9,90</div>
+          <div class="price-period">al mese · disdici quando vuoi</div>
+          <ul
+            style="list-style: none; padding: 0; margin: 15px 0 0; font-size: 0.82rem; color: #555; text-align: left; line-height: 1.7;">
+            <li>✓ Tutti i moduli sbloccati</li>
+            <li>✓ Assistente vocale AI</li>
+            <li>✓ Privacy Zero-Server</li>
+          </ul>
+        </div>
+
+        <!-- Piano Annuale (Featured) -->
+        <div class="price-card featured selected" onclick="selectPlan('annuale', this)">
+          <span class="badge-featured">PIÙ POPOLARE</span>
+          <h4 style="margin: 0; font-size: 1.1rem;">Annuale</h4>
+          <div class="price-val" style="color: var(--mandarino-scuro);">€ 79,00</div>
+          <div class="price-period">all'anno (risparmi 2 mesi)</div>
+          <ul
+            style="list-style: none; padding: 0; margin: 15px 0 0; font-size: 0.82rem; color: #555; text-align: left; line-height: 1.7;">
+            <li>✓ Risparmio immediato di €40</li>
+            <li>✓ Priorità aggiornamenti</li>
+            <li>✓ Backup automatico locale</li>
+          </ul>
+        </div>
+
+        <!-- Piano Lifetime -->
+        <div class="price-card" onclick="selectPlan('lifetime', this)">
+          <h4 style="margin: 0; font-size: 1.1rem;">A Vita (Lifetime)</h4>
+          <div class="price-val">€ 199,00</div>
+          <div class="price-period">una tantum · nessun rinnovo</div>
+          <ul
+            style="list-style: none; padding: 0; margin: 15px 0 0; font-size: 0.82rem; color: #555; text-align: left; line-height: 1.7;">
+            <li>✓ Accesso per sempre</li>
+            <li>✓ Tutte le future app incluse</li>
+            <li>✓ Licenza VIP permanente</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- METODI DI PAGAMENTO & COUPON -->
+      <div style="background: #fff; border: 1.5px solid var(--bordo); border-radius: 14px; padding: 1.4rem;">
+        <h4 style="margin: 0 0 12px 0;">Metodo di Pagamento</h4>
+        <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 1.2rem;">
+          <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer;">
+            <input type="radio" name="paymethod" value="card" checked style="accent-color: var(--mandarino);" />
+            <strong>💳 Carta di Credito / Debito (Stripe)</strong>
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer;">
+            <input type="radio" name="paymethod" value="paypal" style="accent-color: var(--mandarino);" />
+            <strong>🅿️ PayPal</strong>
+          </label>
+        </div>
+
+        <!-- CODICE SCONTO / COUPON COMPATIBILE CON DASHBOARD LICENZE -->
+        <div style="display: flex; gap: 10px; margin-bottom: 1.2rem; max-width: 400px;">
+          <input type="text" id="coupon-code" placeholder="Codice Coupon (es: PROMO20)"
+            style="font-family: monospace; text-transform: uppercase;" />
+          <button class="btn btn-outline" onclick="applyCoupon()">Applica Sconto</button>
+        </div>
+        <div id="coupon-msg" style="font-size: 0.85rem; font-weight: bold; margin-bottom: 1rem;"></div>
+
+        <button class="btn btn-primary" style="font-size: 1.05rem; padding: 12px 28px;" onclick="startCheckout()">
+          🚀 Procedi al Pagamento &amp; Attiva Licenza
+        </button>
+        <span style="display: block; margin-top: 8px; font-size: 0.8rem; color: #888;">
+          * Nota: Al momento la piattaforma è in prova gratuita completa. Cliccando sblocchi subito la licenza senza
+          alcun addebito!
+        </span>
+      </div>
+    </div>
+
+    <!-- 3. SBLOCCA IL CERVELLO AVANZATO (GOOGLE GEMINI API KEY) -->
+    <div class="panel" id="panel-ai">
+      <h2>Sblocca il Cervello Avanzato 🧠</h2>
+      <p style="font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.5;">
+        AppUnic ha un suo riconoscitore vocale di base. Per fare veramente tutto con la voce (promemoria liberi, date,
+        note e calendario avanzato), puoi collegare la tua chiave gratuita di Google AI Studio.<br><br>
+        Essendo un'app <strong>Zero-Server</strong>, la tua chiave resta salvata esclusivamente nel tuo dispositivo.
+      </p>
+
+      <div
+        style="background: rgba(255, 106, 43, 0.05); border: 1px solid rgba(255, 106, 43, 0.2); padding: 1.2rem; border-radius: 12px; margin-bottom: 1.5rem;">
+        <h4 style="margin: 0 0 10px 0; color: var(--mandarino-scuro);">Come ottenere la chiave gratuita:</h4>
+        <ol style="margin: 0; padding-left: 1.2rem; font-size: 0.9rem;">
+          <li>Vai su Google AI Studio.</li>
+          <li>Accedi con il tuo account Google e clicca <strong>"Create API Key"</strong>.</li>
+          <li>Incolla la chiave qui sotto e clicca Salva.</li>
+        </ol>
+        <div style="margin-top: 12px;">
+          <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer"
+            class="btn btn-blue" style="font-size: 0.85rem; padding: 8px 16px;">
+            Vai a Google AI Studio ↗
+          </a>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="gemini-key">La tua Google Gemini API Key</label>
+        <input type="password" id="gemini-key" placeholder="AIzaSy..." autocomplete="off" spellcheck="false" />
+      </div>
+      <button id="btn-save-key" class="btn btn-primary">Salva e Attiva IA</button>
+    </div>
+  </div>
+
+  <script>
+    let currentOtpGenerated = '';
+    let selectedPlan = 'annuale';
+
+    // Switch tra Registrazione e Login
+    function switchAuthTab(tab) {
+      document.getElementById('tab-reg').className = 'tab-btn' + (tab === 'reg' ? ' active' : '');
+      document.getElementById('tab-login').className = 'tab-btn' + (tab === 'login' ? ' active' : '');
+      document.getElementById('form-registration').style.display = (tab === 'reg' ? 'block' : 'none');
+      document.getElementById('form-login').style.display = (tab === 'login' ? 'block' : 'none');
+      document.getElementById('recover-pass-box').style.display = 'none';
+    }
+
+    // Richiesta Invio Link di Conferma via Email
+    async function requestEmailConfirmation() {
+      const nome = document.getElementById('reg-nome').value.trim();
+      const cognome = document.getElementById('reg-cognome').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const emailConfirm = document.getElementById('reg-email-confirm').value.trim();
+      const tel = document.getElementById('reg-tel').value.trim();
+      const pass = document.getElementById('reg-pass').value.trim();
+
+      if (!nome || !cognome || !email || !emailConfirm || !pass) {
+        alert('Compila tutti i campi obbligatori (Nome, Cognome, Email, Conferma Email e Password).');
+        return;
       }
 
-      // Richiesta Invio Link di Conferma via Email
-      async function requestEmailConfirmation() {
-        const nome = document.getElementById('reg-nome').value.trim();
-        const cognome = document.getElementById('reg-cognome').value.trim();
-        const email = document.getElementById('reg-email').value.trim();
-        const emailConfirm = document.getElementById('reg-email-confirm').value.trim();
-        const tel = document.getElementById('reg-tel').value.trim();
-        const pass = document.getElementById('reg-pass').value.trim();
+      if (email.toLowerCase() !== emailConfirm.toLowerCase()) {
+        alert('⚠️ Le due email inserite non coincidono. Controlla che siano identiche prima di inviare.');
+        document.getElementById('reg-email-confirm').focus();
+        return;
+      }
 
-        if (!nome || !cognome || !email || !emailConfirm || !pass) {
-          alert('Compila tutti i campi obbligatori (Nome, Cognome, Email, Conferma Email e Password).');
-          return;
-        }
+      const btnCont = document.getElementById('btn-request-email-cont');
+      const oldBtnHtml = btnCont.innerHTML;
+      btnCont.innerHTML = '<span style="color:var(--basilico); font-weight:bold;">⏳ Invio email di conferma in corso...</span>';
 
-        if (email.toLowerCase() !== emailConfirm.toLowerCase()) {
-          alert('⚠️ Le due email inserite non coincidono. Controlla che siano identiche prima di inviare.');
-          document.getElementById('reg-email-confirm').focus();
-          return;
-        }
+      // Genera il link di attivazione sicuro
+      const tokenPayload = { nome, cognome, email, tel, time: Date.now() };
+      let token = '';
+      try {
+        token = btoa(unescape(encodeURIComponent(JSON.stringify(tokenPayload))));
+      } catch (e) {
+        token = btoa(JSON.stringify(tokenPayload));
+      }
+      const confirmUrl = window.location.origin + window.location.pathname + '?verify=1&token=' + encodeURIComponent(token);
 
-        const btnCont = document.getElementById('btn-request-email-cont');
-        const oldBtnHtml = btnCont.innerHTML;
-        btnCont.innerHTML = '<span style="color:var(--basilico); font-weight:bold;">⏳ Invio email di conferma in corso...</span>';
-
-        // Genera il link di attivazione sicuro
-        const tokenPayload = { nome, cognome, email, tel, time: Date.now() };
-        let token = '';
-        try {
-          token = btoa(unescape(encodeURIComponent(JSON.stringify(tokenPayload))));
-        } catch(e) {
-          token = btoa(JSON.stringify(tokenPayload));
-        }
-        const confirmUrl = window.location.origin + window.location.pathname + '?verify=1&token=' + encodeURIComponent(token);
-
-        // Invia l'email ufficiale AppUnic alla casella di posta dell'utente
-        const emailHtml = `
+      // Invia l'email ufficiale AppUnic alla casella di posta dell'utente
+      const emailHtml = `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
             <div style="background: #1A1714; color: #ffffff; padding: 24px; text-align: center;">
               <h1 style="margin: 0; font-size: 24px; letter-spacing: 1px;">AppUnic</h1>
@@ -627,29 +716,29 @@
           </div>
         `;
 
-        // Dispatch API ufficiale AppUnic
-        try {
-          fetch('./api/invia-conferma.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              from: 'AppUnic <noreply@appunic.com>',
-              nome: nome,
-              cognome: cognome,
-              email: email,
-              telefono: tel,
-              confirmUrl: confirmUrl,
-              html: emailHtml
-            })
-          }).catch(err => console.warn('PHP Mail:', err));
-        } catch (error) {
-          console.warn('Invio email backend:', error);
-        }
+      // Dispatch API ufficiale AppUnic su server Aruba (Tramite Sottodominio)
+      try {
+        fetch('https://api.appunic.com/api/invia-conferma.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            from: 'AppUnic <noreply@appunic.com>',
+            nome: nome,
+            cognome: cognome,
+            email: email,
+            telefono: tel,
+            confirmUrl: confirmUrl,
+            html: emailHtml
+          })
+        }).catch(err => console.warn('PHP Mail:', err));
+      } catch (error) {
+        console.warn('Invio email backend:', error);
+      }
 
-        // Mostra messaggio a schermo: NESSUN pulsante di conferma a schermo! L'utente deve aprire la mail.
-        document.getElementById('sent-email-display').textContent = email;
-        const confirmStep = document.getElementById('confirm-sent-step');
-        confirmStep.innerHTML = `
+      // Mostra messaggio a schermo: NESSUN pulsante di conferma a schermo! L'utente deve aprire la mail.
+      document.getElementById('sent-email-display').textContent = email;
+      const confirmStep = document.getElementById('confirm-sent-step');
+      confirmStep.innerHTML = `
           <div style="font-size: 2.4rem; margin-bottom: 8px;">📬</div>
           <h3 style="color: var(--basilico); margin: 0 0 8px 0; font-size: 1.25rem;">Email inviata con successo!</h3>
           <p style="margin: 0 0 14px 0; color: #1a1714; font-size: 0.98rem; line-height: 1.5;">
@@ -660,230 +749,231 @@
             <button type="button" class="btn btn-outline" onclick="location.reload()" style="font-size: 0.85rem;">← Torna al modulo</button>
           </div>
         `;
-        confirmStep.style.display = 'block';
-        btnCont.style.display = 'none';
-        alert('📩 Email inviata a ' + email + '!\nApri la tua casella di posta e clicca sul link ricevuto per completare la registrazione.');
-      }
+      confirmStep.style.display = 'block';
+      btnCont.style.display = 'none';
+      alert('📩 Email inviata a ' + email + '!\nApri la tua casella di posta e clicca sul link ricevuto per completare la registrazione.');
+    }
 
-      // Controllo automatico Link di Verifica nell'URL (?verify=1&token=...)
-      function checkEmailVerificationLink() {
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('verify') === '1' && urlParams.get('token')) {
+    // Controllo automatico Link di Verifica nell'URL (?verify=1&token=...)
+    function checkEmailVerificationLink() {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('verify') === '1' && urlParams.get('token')) {
+        try {
+          const rawParam = decodeURIComponent(urlParams.get('token'));
+          let jsonStr = '';
           try {
-            const rawParam = decodeURIComponent(urlParams.get('token'));
-            let jsonStr = '';
-            try {
-              jsonStr = decodeURIComponent(escape(atob(rawParam)));
-            } catch(e) {
-              jsonStr = atob(rawParam);
-            }
-            const data = JSON.parse(jsonStr);
-            if (data && data.email) {
-              const cleanPart = data.email.replace(/[^a-zA-Z0-9]/g, '').substring(0, 4).toUpperCase();
-              const randPart = Math.random().toString(36).substring(2, 6).toUpperCase();
-              const licenseKey = 'APPU-' + (cleanPart || 'USER') + '-' + randPart;
-
-              const userData = {
-                nome: data.nome || 'Utente',
-                cognome: data.cognome || '',
-                email: data.email,
-                tel: data.tel || '',
-                authenticated: true,
-                license: licenseKey,
-                verifiedAt: new Date().toISOString()
-              };
-
-              localStorage.setItem('APPUNIC_USER_AUTH', JSON.stringify(userData));
-              localStorage.setItem('APPUNIC_ACTIVE_LICENSE', licenseKey);
-
-              // Invia Email di Benvenuto completa con spiegazione Zero-Server
-              fetch('./api/invia-benvenuto.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  nome: userData.nome,
-                  cognome: userData.cognome,
-                  email: userData.email,
-                  telefono: userData.tel,
-                  license: licenseKey
-                })
-              }).catch(err => console.warn('Invio benvenuto:', err));
-
-              // Pulisce l'URL dai parametri di verifica
-              window.history.replaceState({}, document.title, window.location.pathname);
-
-              alert('🎉 Complimenti ' + userData.nome + '! La tua email (' + userData.email + ') è stata confermata con successo!\nIl tuo account e la tua licenza sono ora attivi.\nTi abbiamo inviato l\'email di benvenuto completa!');
-              renderUserState();
-            }
+            jsonStr = decodeURIComponent(escape(atob(rawParam)));
           } catch (e) {
-            console.error('Errore decodifica token:', e);
+            jsonStr = atob(rawParam);
           }
-        }
-      }
+          const data = JSON.parse(jsonStr);
+          if (data && data.email) {
+            const cleanPart = data.email.replace(/[^a-zA-Z0-9]/g, '').substring(0, 4).toUpperCase();
+            const randPart = Math.random().toString(36).substring(2, 6).toUpperCase();
+            const licenseKey = 'APPU-' + (cleanPart || 'USER') + '-' + randPart;
 
-      function handleLoginSubmit(e) {
-        e.preventDefault();
-        const identifier = document.getElementById('login-identifier').value.trim();
-        const pass = document.getElementById('login-pass').value.trim();
-        if (!identifier || !pass) return;
+            const userData = {
+              nome: data.nome || 'Utente',
+              cognome: data.cognome || '',
+              email: data.email,
+              tel: data.tel || '',
+              authenticated: true,
+              license: licenseKey,
+              verifiedAt: new Date().toISOString()
+            };
 
-        const isEmail = identifier.includes('@');
-        const user = {
-          nome: isEmail ? identifier.split('@')[0] : 'Utente',
-          email: isEmail ? identifier : '',
-          tel: !isEmail ? identifier : '',
-          authenticated: true
-        };
-        localStorage.setItem('APPUNIC_USER_AUTH', JSON.stringify(user));
-        alert('Accesso eseguito con successo!');
-        renderUserState();
-      }
+            localStorage.setItem('APPUNIC_USER_AUTH', JSON.stringify(userData));
+            localStorage.setItem('APPUNIC_ACTIVE_LICENSE', licenseKey);
 
-      function logoutUser() {
-        localStorage.removeItem('APPUNIC_USER_AUTH');
-        localStorage.removeItem('APPUNIC_ACTIVE_LICENSE');
-        renderUserState();
-      }
+            // Invia Email di Benvenuto completa con spiegazione Zero-Server
+            fetch('./api/invia-benvenuto.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                nome: userData.nome,
+                cognome: userData.cognome,
+                email: userData.email,
+                telefono: userData.tel,
+                license: licenseKey
+              })
+            }).catch(err => console.warn('Invio benvenuto:', err));
 
-      function openRecoverPassword() {
-        document.getElementById('recover-pass-box').style.display = 'block';
-      }
-      function closeRecoverPassword() {
-        document.getElementById('recover-pass-box').style.display = 'none';
-      }
-      function sendRecoverEmail() {
-        const email = document.getElementById('recover-email').value.trim();
-        if (!email) { alert('Inserisci il tuo indirizzo email'); return; }
-        alert('📩 Ti abbiamo inviato un\'email a ' + email + ' con il link per reimpostare la tua password.');
-        closeRecoverPassword();
-      }
+            // Pulisce l'URL dai parametri di verifica
+            window.history.replaceState({}, document.title, window.location.pathname);
 
-      function renderUserState() {
-        const saved = localStorage.getItem('APPUNIC_USER_AUTH');
-        const loggedView = document.getElementById('auth-logged-view');
-        const formsView = document.getElementById('auth-forms-view');
-        
-        const panelLicense = document.getElementById('panel-license');
-        const panelAI = document.getElementById('panel-ai');
-
-        if (saved) {
-          const user = JSON.parse(saved);
-          const fullName = [user.nome, user.cognome].filter(Boolean).join(' ') || 'Utente';
-          document.getElementById('user-display-name').textContent = fullName;
-          document.getElementById('user-display-tel').textContent = user.tel || '';
-          const emailCont = document.getElementById('user-display-email-cont');
-          const emailEl = document.getElementById('user-display-email');
-          if (user.email && emailEl) {
-            emailEl.textContent = user.email;
-            if (emailCont) emailCont.style.display = 'inline-block';
-          } else if (emailCont) {
-            emailCont.style.display = 'none';
+            alert('🎉 Complimenti ' + userData.nome + '! La tua email (' + userData.email + ') è stata confermata con successo!\nIl tuo account e la tua licenza sono ora attivi.\nTi abbiamo inviato l\'email di benvenuto completa!');
+            renderUserState();
           }
-
-          loggedView.style.display = 'block';
-          formsView.style.display = 'none';
-          
-          // MOSTRA i pannelli se loggato
-          if (panelLicense) panelLicense.style.display = 'block';
-          if (panelAI) panelAI.style.display = 'block';
-        } else {
-          loggedView.style.display = 'none';
-          formsView.style.display = 'block';
-          
-          // NASCONDI i pannelli se NON loggato
-          if (panelLicense) panelLicense.style.display = 'none';
-          if (panelAI) panelAI.style.display = 'none';
-        }
-
-        // Controlla Licenza
-        const lic = localStorage.getItem('APPUNIC_ACTIVE_LICENSE');
-        const badge = document.getElementById('license-badge');
-        if (lic) {
-          if(badge) {
-            badge.className = 'status-pill status-active';
-            badge.textContent = '💎 Licenza Attiva (' + lic + ')';
-          }
-        } else {
-          if(badge) {
-            badge.className = 'status-pill status-active';
-            badge.textContent = '🎁 Periodo di Prova Gratuito Attivo (Accesso Completo)';
-          }
+        } catch (e) {
+          console.error('Errore decodifica token:', e);
         }
       }
+    }
 
-      // Gestione Piani & Checkout
-      function selectPlan(plan, el) {
-        selectedPlan = plan;
-        document.querySelectorAll('.price-card').forEach(c => c.classList.remove('selected'));
-        el.classList.add('selected');
-      }
+    function handleLoginSubmit(e) {
+      e.preventDefault();
+      const identifier = document.getElementById('login-identifier').value.trim();
+      const pass = document.getElementById('login-pass').value.trim();
+      if (!identifier || !pass) return;
 
-      function applyCoupon() {
-        const code = document.getElementById('coupon-code').value.trim().toUpperCase();
-        const msg = document.getElementById('coupon-msg');
-        if (!code) { msg.textContent = ''; return; }
-
-        if (code === 'PROMO20' || code === 'APPUNIC50' || code === 'VIP100') {
-          msg.style.color = 'var(--basilico)';
-          msg.textContent = '✓ Coupon ' + code + ' applicato con successo! Sconto calcolato.';
-        } else {
-          msg.style.color = 'var(--mandarino-scuro)';
-          msg.textContent = '✕ Coupon non valido o scaduto.';
-        }
-      }
-
-      function startCheckout() {
-        const paymethod = document.querySelector('input[name="paymethod"]:checked')?.value;
-        const newLicense = 'APPU-' + Math.floor(1000 + Math.random()*9000) + '-' + Math.floor(1000 + Math.random()*9000);
-        localStorage.setItem('APPUNIC_ACTIVE_LICENSE', newLicense);
-        alert('🎉 Pagamento simulato con successo (' + paymethod.toUpperCase() + ')!\nLicenza attivata: ' + newLicense);
-        renderUserState();
-      }
-
-      function activateLicenseKey() {
-        const key = document.getElementById('license-key-input').value.trim().toUpperCase();
-        const feedback = document.getElementById('license-feedback');
-        if (!key) {
-          feedback.style.color = 'var(--mandarino-scuro)';
-          feedback.textContent = 'Inserisci un codice di licenza valido.';
-          return;
-        }
-
-        localStorage.setItem('APPUNIC_ACTIVE_LICENSE', key);
-        feedback.style.color = 'var(--basilico)';
-        feedback.textContent = '✓ Licenza ' + key + ' attivata con successo!';
-        renderUserState();
-      }
-
-      // Google Gemini API Key
-      const inputKey = document.getElementById('gemini-key');
-      const btnSaveKey = document.getElementById('btn-save-key');
-      const savedKey = localStorage.getItem('APPUNIC_GEMINI_KEY');
-      if (savedKey) inputKey.value = savedKey;
-
-      btnSaveKey?.addEventListener('click', () => {
-        const val = inputKey.value.trim();
-        if (val) {
-          localStorage.setItem('APPUNIC_GEMINI_KEY', val);
-          btnSaveKey.className = 'btn btn-success';
-          btnSaveKey.textContent = 'Chiave Salvata!';
-          setTimeout(() => {
-            btnSaveKey.className = 'btn btn-primary';
-            btnSaveKey.textContent = 'Salva e Attiva IA';
-          }, 2000);
-        } else {
-          localStorage.removeItem('APPUNIC_GEMINI_KEY');
-          btnSaveKey.textContent = 'Chiave Rimossa';
-          setTimeout(() => {
-            btnSaveKey.className = 'btn btn-primary';
-            btnSaveKey.textContent = 'Salva e Attiva IA';
-          }, 2000);
-        }
-      });
-
-      // Inizializza
-      checkEmailVerificationLink();
+      const isEmail = identifier.includes('@');
+      const user = {
+        nome: isEmail ? identifier.split('@')[0] : 'Utente',
+        email: isEmail ? identifier : '',
+        tel: !isEmail ? identifier : '',
+        authenticated: true
+      };
+      localStorage.setItem('APPUNIC_USER_AUTH', JSON.stringify(user));
+      alert('Accesso eseguito con successo!');
       renderUserState();
-    </script>
-  </body>
+    }
+
+    function logoutUser() {
+      localStorage.removeItem('APPUNIC_USER_AUTH');
+      localStorage.removeItem('APPUNIC_ACTIVE_LICENSE');
+      renderUserState();
+    }
+
+    function openRecoverPassword() {
+      document.getElementById('recover-pass-box').style.display = 'block';
+    }
+    function closeRecoverPassword() {
+      document.getElementById('recover-pass-box').style.display = 'none';
+    }
+    function sendRecoverEmail() {
+      const email = document.getElementById('recover-email').value.trim();
+      if (!email) { alert('Inserisci il tuo indirizzo email'); return; }
+      alert('📩 Ti abbiamo inviato un\'email a ' + email + ' con il link per reimpostare la tua password.');
+      closeRecoverPassword();
+    }
+
+    function renderUserState() {
+      const saved = localStorage.getItem('APPUNIC_USER_AUTH');
+      const loggedView = document.getElementById('auth-logged-view');
+      const formsView = document.getElementById('auth-forms-view');
+
+      const panelLicense = document.getElementById('panel-license');
+      const panelAI = document.getElementById('panel-ai');
+
+      if (saved) {
+        const user = JSON.parse(saved);
+        const fullName = [user.nome, user.cognome].filter(Boolean).join(' ') || 'Utente';
+        document.getElementById('user-display-name').textContent = fullName;
+        document.getElementById('user-display-tel').textContent = user.tel || '';
+        const emailCont = document.getElementById('user-display-email-cont');
+        const emailEl = document.getElementById('user-display-email');
+        if (user.email && emailEl) {
+          emailEl.textContent = user.email;
+          if (emailCont) emailCont.style.display = 'inline-block';
+        } else if (emailCont) {
+          emailCont.style.display = 'none';
+        }
+
+        loggedView.style.display = 'block';
+        formsView.style.display = 'none';
+
+        // MOSTRA i pannelli se loggato
+        if (panelLicense) panelLicense.style.display = 'block';
+        if (panelAI) panelAI.style.display = 'block';
+      } else {
+        loggedView.style.display = 'none';
+        formsView.style.display = 'block';
+
+        // NASCONDI i pannelli se NON loggato
+        if (panelLicense) panelLicense.style.display = 'none';
+        if (panelAI) panelAI.style.display = 'none';
+      }
+
+      // Controlla Licenza
+      const lic = localStorage.getItem('APPUNIC_ACTIVE_LICENSE');
+      const badge = document.getElementById('license-badge');
+      if (lic) {
+        if (badge) {
+          badge.className = 'status-pill status-active';
+          badge.textContent = '💎 Licenza Attiva (' + lic + ')';
+        }
+      } else {
+        if (badge) {
+          badge.className = 'status-pill status-active';
+          badge.textContent = '🎁 Periodo di Prova Gratuito Attivo (Accesso Completo)';
+        }
+      }
+    }
+
+    // Gestione Piani & Checkout
+    function selectPlan(plan, el) {
+      selectedPlan = plan;
+      document.querySelectorAll('.price-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    function applyCoupon() {
+      const code = document.getElementById('coupon-code').value.trim().toUpperCase();
+      const msg = document.getElementById('coupon-msg');
+      if (!code) { msg.textContent = ''; return; }
+
+      if (code === 'PROMO20' || code === 'APPUNIC50' || code === 'VIP100') {
+        msg.style.color = 'var(--basilico)';
+        msg.textContent = '✓ Coupon ' + code + ' applicato con successo! Sconto calcolato.';
+      } else {
+        msg.style.color = 'var(--mandarino-scuro)';
+        msg.textContent = '✕ Coupon non valido o scaduto.';
+      }
+    }
+
+    function startCheckout() {
+      const paymethod = document.querySelector('input[name="paymethod"]:checked')?.value;
+      const newLicense = 'APPU-' + Math.floor(1000 + Math.random() * 9000) + '-' + Math.floor(1000 + Math.random() * 9000);
+      localStorage.setItem('APPUNIC_ACTIVE_LICENSE', newLicense);
+      alert('🎉 Pagamento simulato con successo (' + paymethod.toUpperCase() + ')!\nLicenza attivata: ' + newLicense);
+      renderUserState();
+    }
+
+    function activateLicenseKey() {
+      const key = document.getElementById('license-key-input').value.trim().toUpperCase();
+      const feedback = document.getElementById('license-feedback');
+      if (!key) {
+        feedback.style.color = 'var(--mandarino-scuro)';
+        feedback.textContent = 'Inserisci un codice di licenza valido.';
+        return;
+      }
+
+      localStorage.setItem('APPUNIC_ACTIVE_LICENSE', key);
+      feedback.style.color = 'var(--basilico)';
+      feedback.textContent = '✓ Licenza ' + key + ' attivata con successo!';
+      renderUserState();
+    }
+
+    // Google Gemini API Key
+    const inputKey = document.getElementById('gemini-key');
+    const btnSaveKey = document.getElementById('btn-save-key');
+    const savedKey = localStorage.getItem('APPUNIC_GEMINI_KEY');
+    if (savedKey) inputKey.value = savedKey;
+
+    btnSaveKey?.addEventListener('click', () => {
+      const val = inputKey.value.trim();
+      if (val) {
+        localStorage.setItem('APPUNIC_GEMINI_KEY', val);
+        btnSaveKey.className = 'btn btn-success';
+        btnSaveKey.textContent = 'Chiave Salvata!';
+        setTimeout(() => {
+          btnSaveKey.className = 'btn btn-primary';
+          btnSaveKey.textContent = 'Salva e Attiva IA';
+        }, 2000);
+      } else {
+        localStorage.removeItem('APPUNIC_GEMINI_KEY');
+        btnSaveKey.textContent = 'Chiave Rimossa';
+        setTimeout(() => {
+          btnSaveKey.className = 'btn btn-primary';
+          btnSaveKey.textContent = 'Salva e Attiva IA';
+        }, 2000);
+      }
+    });
+
+    // Inizializza
+    checkEmailVerificationLink();
+    renderUserState();
+  </script>
+</body>
+
 </html>
