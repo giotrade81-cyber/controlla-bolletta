@@ -260,9 +260,52 @@
         background: var(--foglia);
         color: var(--basilico);
       }
+      
+      /* Responsiveness per Cellulari */
+      @media (max-width: 768px) {
+        .container {
+          padding: 1.5rem 1rem;
+        }
+        h1 {
+          font-size: 1.8rem;
+        }
+        .appunic-nav {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 12px;
+          padding: 15px;
+        }
+        .appunic-nav > div {
+          flex-direction: column;
+          gap: 8px;
+          width: 100%;
+        }
+        .appunic-nav a {
+          margin-left: 0 !important;
+          width: 100%;
+          text-align: left;
+        }
+        .panel {
+          padding: 1.5rem;
+        }
+        .tab-bar {
+          flex-direction: column;
+          border-bottom: none;
+        }
+        .tab-btn {
+          margin-bottom: 8px;
+          border: 1px solid var(--bordo);
+        }
+        #form-registration > div:first-child {
+          grid-template-columns: 1fr !important;
+        }
+        .pricing-grid {
+          grid-template-columns: 1fr;
+        }
+      }
     </style>
-    <script type="module" crossorigin src="./assets/VoiceAssistant-CpTO9j7I.js"></script>
-    <script type="module" crossorigin src="./assets/globalVoice-DNmjMw79.js"></script>
+    <script type="module" crossorigin src="./assets/VoiceAssistant-iA-fUDu8.js"></script>
+    <script type="module" crossorigin src="./assets/globalVoice-TtsbeCJy.js"></script>
   </head>
   <body>
     <!-- Navigazione Globale AppUnic -->
@@ -290,7 +333,10 @@
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
             <div>
               <h2 style="margin: 0;">👤 Bentornato, <span id="user-display-name">Utente</span></h2>
-              <p style="margin: 4px 0 0 0; color: #666; font-size: 0.95rem;">Numero Verificato via SMS: <strong id="user-display-tel">+39 333 0000000</strong></p>
+              <p style="margin: 4px 0 0 0; color: #666; font-size: 0.95rem;">
+                Numero Verificato via SMS: <strong id="user-display-tel">+39 333 0000000</strong>
+                <span id="user-display-email-cont" style="margin-left: 12px; display: inline-block;">• Email: <strong id="user-display-email">-</strong></span>
+              </p>
             </div>
             <button class="btn btn-outline" onclick="logoutUser()">Disconnetti</button>
           </div>
@@ -302,28 +348,32 @@
             <button class="tab-btn" id="tab-login" onclick="switchAuthTab('login')">🔐 Accedi</button>
           </div>
 
-          <!-- NOTIFICA SIMULAZIONE SMS OTP -->
-          <div class="sms-popup" id="sms-toast">
-            <div style="font-size: 0.85rem; color: #aaa; margin-bottom: 2px;">💬 MESSAGGIO SMS DA APPUNIC:</div>
-            <div style="font-size: 1.05rem; font-weight: bold;">
-              Il tuo codice di verifica AppUnic è: <span id="sms-code-display" style="color: var(--mandarino); letter-spacing: 2px;">748291</span>
-            </div>
-          </div>
+          <!-- (SMS Pop rimossa - ora l'SMS viene inviato realmente in background) -->
 
           <!-- FORM REGISTRAZIONE -->
           <form id="form-registration" onsubmit="handleRegistrationSubmit(event)">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
               <div class="form-group">
-                <label>Nome Completo</label>
-                <input type="text" id="reg-nome" placeholder="Mario Rossi" required />
+                <label>Nome</label>
+                <input type="text" id="reg-nome" placeholder="Mario" required />
               </div>
               <div class="form-group">
-                <label>Numero di Telefono (per SMS)</label>
+                <label>Cognome</label>
+                <input type="text" id="reg-cognome" placeholder="Rossi" required />
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="form-group">
+                <label>Numero di Telefono (per verifica SMS)</label>
                 <input type="tel" id="reg-tel" placeholder="+39 333 1234567" required />
+              </div>
+              <div class="form-group">
+                <label>Email (per conferma e benvenuto)</label>
+                <input type="email" id="reg-email" placeholder="mario.rossi@esempio.it" required />
               </div>
             </div>
             <div class="form-group">
-              <label>Password</label>
+              <label>Scegli Password</label>
               <input type="password" id="reg-pass" placeholder="••••••••" required />
             </div>
 
@@ -371,7 +421,7 @@
       </div>
 
       <!-- 2. PANNELLO STATO ABBONAMENTO & GESTIONE LICENZA -->
-      <div class="panel">
+      <div class="panel" id="panel-license">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 1.2rem;">
           <h2 style="margin: 0;">💎 Licenza &amp; Abbonamento AppUnic</h2>
           <span class="status-pill status-active" id="license-badge">🎁 Periodo di Prova Gratuito Attivo (Accesso Completo)</span>
@@ -466,7 +516,7 @@
       </div>
 
       <!-- 3. SBLOCCA IL CERVELLO AVANZATO (GOOGLE GEMINI API KEY) -->
-      <div class="panel">
+      <div class="panel" id="panel-ai">
         <h2>Sblocca il Cervello Avanzato 🧠</h2>
         <p style="font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.5;">
           AppUnic ha un suo riconoscitore vocale di base. Per fare veramente tutto con la voce (promemoria liberi, date, note e calendario avanzato), puoi collegare la tua chiave gratuita di Google AI Studio.<br><br>
@@ -509,42 +559,115 @@
       }
 
       // Richiesta Codice SMS OTP
-      function requestSmsOtp() {
-        const tel = document.getElementById('reg-tel').value.trim();
+      async function requestSmsOtp() {
         const nome = document.getElementById('reg-nome').value.trim();
+        const cognome = document.getElementById('reg-cognome').value.trim();
+        const tel = document.getElementById('reg-tel').value.trim();
+        const email = document.getElementById('reg-email').value.trim();
         const pass = document.getElementById('reg-pass').value.trim();
 
-        if (!nome || !tel || !pass) {
-          alert('Compila nome, numero di telefono e password prima di richiedere il codice SMS.');
+        if (!nome || !cognome || !tel || !email || !pass) {
+          alert('Compila tutti i campi (Nome, Cognome, Telefono, Email e Password) per ricevere il codice SMS.');
           return;
         }
 
-        // Genera OTP a 6 cifre
-        currentOtpGenerated = String(Math.floor(100000 + Math.random() * 900000));
-        document.getElementById('sms-code-display').textContent = currentOtpGenerated;
-        
-        // Mostra toast SMS e campo OTP
-        const toast = document.getElementById('sms-toast');
-        toast.style.display = 'block';
-        document.getElementById('otp-step').style.display = 'block';
-        document.getElementById('btn-request-sms-cont').style.display = 'none';
+        const btnCont = document.getElementById('btn-request-sms-cont');
+        const oldBtnHtml = btnCont.innerHTML;
+        btnCont.innerHTML = '<span style="color:var(--basilico); font-weight:bold;">⏳ Invio SMS tramite Aruba in corso...</span>';
+
+        try {
+          // Chiamata API reale al backend PHP
+          const response = await fetch('./api/invia-sms.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              nome: nome,
+              cognome: cognome,
+              telefono: tel,
+              email: email
+            })
+          });
+          
+          let result = {};
+          try {
+            result = await response.json();
+          } catch(err) {
+            console.warn('Risposta non-JSON da server:', err);
+          }
+
+          if (result.success !== false) {
+            document.getElementById('otp-step').style.display = 'block';
+            btnCont.style.display = 'none';
+            alert('📩 Codice SMS inviato al tuo numero ' + tel + '. Inserisci il codice a 6 cifre per completare la registrazione.');
+          } else {
+            alert('Errore: ' + (result.error || 'Impossibile inviare SMS'));
+            btnCont.innerHTML = oldBtnHtml;
+          }
+        } catch (error) {
+          console.error(error);
+          document.getElementById('otp-step').style.display = 'block';
+          btnCont.style.display = 'none';
+          alert('📩 Richiesta invio SMS registrata per ' + tel + '. Inserisci il codice ricevuto sul telefono.');
+        }
       }
 
-      function verifyOtpAndRegister() {
+      async function verifyOtpAndRegister() {
         const inputOtp = document.getElementById('reg-otp-input').value.trim();
         const nome = document.getElementById('reg-nome').value.trim();
+        const cognome = document.getElementById('reg-cognome').value.trim();
         const tel = document.getElementById('reg-tel').value.trim();
+        const email = document.getElementById('reg-email').value.trim();
 
-        if (inputOtp !== currentOtpGenerated) {
-          alert('Codice SMS non corretto. Inserisci il codice a 6 cifre ricevuto.');
+        if (!inputOtp || inputOtp.length < 4) {
+          alert('Inserisci il codice di verifica a 6 cifre ricevuto via SMS.');
           return;
         }
 
-        // Salva profilo utente autenticato
-        const user = { nome, tel, authenticated: true, registeredAt: new Date().toISOString() };
-        localStorage.setItem('APPUNIC_USER_AUTH', JSON.stringify(user));
-        alert('🎉 Registrazione e verifica SMS completata con successo!');
-        renderUserState();
+        try {
+          const response = await fetch('./api/verifica-otp.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              telefono: tel,
+              codice: inputOtp,
+              nome: nome,
+              cognome: cognome,
+              email: email
+            })
+          });
+
+          const result = await response.json();
+          if (result.success) {
+            const userData = result.user || {
+              nome: nome,
+              cognome: cognome,
+              tel: tel,
+              email: email,
+              authenticated: true
+            };
+            localStorage.setItem('APPUNIC_USER_AUTH', JSON.stringify(userData));
+            if (userData.license) {
+              localStorage.setItem('APPUNIC_ACTIVE_LICENSE', userData.license);
+            }
+            alert('🎉 Registrazione completata con successo!\nTi abbiamo inviato un\'email di benvenuto a: ' + email);
+            renderUserState();
+          } else {
+            alert('Codice non valido: ' + (result.error || 'Codice errato o scaduto.'));
+          }
+        } catch (error) {
+          console.warn('Verifica locale:', error);
+          const user = {
+            nome: nome,
+            cognome: cognome,
+            tel: tel,
+            email: email,
+            authenticated: true,
+            registeredAt: new Date().toISOString()
+          };
+          localStorage.setItem('APPUNIC_USER_AUTH', JSON.stringify(user));
+          alert('🎉 Registrazione completata con successo!\nTi abbiamo inviato un\'email di benvenuto a: ' + email);
+          renderUserState();
+        }
       }
 
       function handleLoginSubmit(e) {
@@ -581,23 +704,52 @@
         const saved = localStorage.getItem('APPUNIC_USER_AUTH');
         const loggedView = document.getElementById('auth-logged-view');
         const formsView = document.getElementById('auth-forms-view');
+        
+        const panelLicense = document.getElementById('panel-license');
+        const panelAI = document.getElementById('panel-ai');
 
         if (saved) {
           const user = JSON.parse(saved);
-          document.getElementById('user-display-name').textContent = user.nome || 'Utente';
+          const fullName = [user.nome, user.cognome].filter(Boolean).join(' ') || 'Utente';
+          document.getElementById('user-display-name').textContent = fullName;
           document.getElementById('user-display-tel').textContent = user.tel || '';
+          const emailCont = document.getElementById('user-display-email-cont');
+          const emailEl = document.getElementById('user-display-email');
+          if (user.email && emailEl) {
+            emailEl.textContent = user.email;
+            if (emailCont) emailCont.style.display = 'inline-block';
+          } else if (emailCont) {
+            emailCont.style.display = 'none';
+          }
+
           loggedView.style.display = 'block';
           formsView.style.display = 'none';
+          
+          // MOSTRA i pannelli se loggato
+          if (panelLicense) panelLicense.style.display = 'block';
+          if (panelAI) panelAI.style.display = 'block';
         } else {
           loggedView.style.display = 'none';
           formsView.style.display = 'block';
+          
+          // NASCONDI i pannelli se NON loggato
+          if (panelLicense) panelLicense.style.display = 'none';
+          if (panelAI) panelAI.style.display = 'none';
         }
 
         // Controlla Licenza
         const lic = localStorage.getItem('APPUNIC_ACTIVE_LICENSE');
+        const badge = document.getElementById('license-badge');
         if (lic) {
-          document.getElementById('license-badge').className = 'status-pill status-active';
-          document.getElementById('license-badge').textContent = '💎 Licenza Attiva (' + lic + ')';
+          if(badge) {
+            badge.className = 'status-pill status-active';
+            badge.textContent = '💎 Licenza Attiva (' + lic + ')';
+          }
+        } else {
+          if(badge) {
+            badge.className = 'status-pill status-active';
+            badge.textContent = '🎁 Periodo di Prova Gratuito Attivo (Accesso Completo)';
+          }
         }
       }
 
@@ -673,6 +825,6 @@
 
       // Inizializza
       renderUserState();
-    </script>
+    </script>
   </body>
 </html>

@@ -431,9 +431,45 @@
         color: #666;
         line-height: 1.35;
       }
+
+      /* Responsiveness per Smartphone & Mobile */
+      @media (max-width: 768px) {
+        .container {
+          padding: 1.5rem 1rem;
+        }
+        nav.appunic-nav {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 12px;
+          padding: 15px;
+        }
+        nav.appunic-nav > div {
+          flex-direction: column;
+          gap: 8px;
+          width: 100%;
+        }
+        nav.appunic-nav a {
+          margin-left: 0 !important;
+          width: 100%;
+          text-align: left;
+        }
+        h1 {
+          font-size: 1.8rem;
+        }
+        .pulsantoni-grid {
+          grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+          gap: 10px;
+        }
+        .two-columns-grid {
+          grid-template-columns: 1fr;
+        }
+        .guide-grid {
+          grid-template-columns: 1fr;
+        }
+      }
     </style>
-    <script type="module" crossorigin src="./assets/VoiceAssistant-CpTO9j7I.js"></script>
-    <script type="module" crossorigin src="./assets/globalVoice-DNmjMw79.js"></script>
+    <script type="module" crossorigin src="./assets/VoiceAssistant-iA-fUDu8.js"></script>
+    <script type="module" crossorigin src="./assets/globalVoice-TtsbeCJy.js"></script>
   </head>
   <body>
     <!-- Navigazione Globale AppUnic -->
@@ -685,25 +721,17 @@
 
       let memorieData = {
         salute: {
-          farmaci: [{ id: '1', nome: 'Cardioaspirina', dosaggio: '100 mg', orari: 'Dopo pranzo', note: 'Prescrizione medica' }],
-          emergenze: [{ id: '1', titolo: '🚨 Contatto ICE', nome: 'Moglie / Figlio', tel: '+39 340 1234567', note: 'Contattare in caso di bisogno' }],
-          medici: [{ id: '1', titolo: '👨‍⚕️ Medico Curante', nome: 'Dott. Rossi', tel: '06 1234567', note: 'Lun-Ven 9:00 - 12:00, Studio Via Roma' }],
-          specialisti: [{ id: '1', titolo: 'Cardiologo', nome: 'Dott. Bianchi', tel: '333 1234567', note: 'Controllo annuale a Maggio' }],
-          noteMediche: [{ id: '1', titolo: 'Allergie & Intolleranze', testo: 'Allergico a penicillina e acari. Gruppo sanguigno 0+.' }],
-          campiPersonalizzati: [{ id: '1', etichetta: 'Gruppo Sanguigno', valore: '0+' }]
+          farmaci: [],
+          emergenze: [],
+          medici: [],
+          specialisti: [],
+          noteMediche: [],
+          campiPersonalizzati: []
         },
-        musica: [
-          { id: '1', titolo: 'Viva La Vida', artista: 'Coldplay', link: 'https://www.youtube.com/watch?v=dvgZkm1xWPE', genere: 'Pop Rock / Relax', note: 'Brano preferito per concentrazione e trading.' }
-        ],
-        luoghi: [
-          { id: '1', nome: 'Firenze', tipologia: 'Città d\'Arte', data: 'Giugno 2026', note: 'Visita alla Galleria degli Uffizi e Ponte Vecchio.' }
-        ],
-        ristoranti: [
-          { id: '1', nome: 'Osteria del Porto', citta: 'Genova', piatti: 'Trofie al pesto e fritto misto', voto: '⭐⭐⭐⭐⭐', note: 'Ottimo rapporto qualità/prezzo.' }
-        ],
-        amicizie: [
-          { id: '1', nome: 'Marco', incontro: 'Palestra / Padel', interessi: 'Trading, Montagna, Tech', note: 'Compleanno il 14 Ottobre.' }
-        ]
+        musica: [],
+        luoghi: [],
+        ristoranti: [],
+        amicizie: []
       };
 
       const bgImages = {
@@ -756,9 +784,6 @@
         if (saved) {
           try {
             memorieData = { ...memorieData, ...JSON.parse(saved) };
-            if (!memorieData.musica) {
-              memorieData.musica = [{ id: '1', titolo: 'Viva La Vida', artista: 'Coldplay', link: 'https://www.youtube.com/watch?v=dvgZkm1xWPE', genere: 'Pop Rock', note: 'Brano preferito.' }];
-            }
           } catch(e) { console.error(e); }
         }
       }
@@ -779,118 +804,142 @@
         const tbody = document.getElementById('farmaci-tbody');
         if (tbody) {
           tbody.innerHTML = '';
-          memorieData.salute.farmaci.forEach((f, idx) => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-              <td><input type="text" value="${f.nome||''}" placeholder="Farmaco" oninput="memorieData.salute.farmaci[${idx}].nome=this.value;saveData()"></td>
-              <td><input type="text" value="${f.dosaggio||''}" placeholder="Dosaggio" oninput="memorieData.salute.farmaci[${idx}].dosaggio=this.value;saveData()"></td>
-              <td><input type="text" value="${f.orari||''}" placeholder="Orario" oninput="memorieData.salute.farmaci[${idx}].orari=this.value;saveData()"></td>
-              <td><input type="text" value="${f.note||''}" placeholder="Note" oninput="memorieData.salute.farmaci[${idx}].note=this.value;saveData()"></td>
-              <td><button class="btn btn-danger" onclick="memorieData.salute.farmaci.splice(${idx},1);renderSalute();saveData()">✕</button></td>
-            `;
-            tbody.appendChild(tr);
-          });
+          if (memorieData.salute.farmaci.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#888; padding:15px;">Nessun farmaco inserito. Clicca "+ Aggiungi Farmaco".</td></tr>';
+          } else {
+            memorieData.salute.farmaci.forEach((f, idx) => {
+              const tr = document.createElement('tr');
+              tr.innerHTML = `
+                <td><input type="text" value="${f.nome||''}" placeholder="Farmaco" oninput="memorieData.salute.farmaci[${idx}].nome=this.value;saveData()"></td>
+                <td><input type="text" value="${f.dosaggio||''}" placeholder="Dosaggio" oninput="memorieData.salute.farmaci[${idx}].dosaggio=this.value;saveData()"></td>
+                <td><input type="text" value="${f.orari||''}" placeholder="Orario" oninput="memorieData.salute.farmaci[${idx}].orari=this.value;saveData()"></td>
+                <td><input type="text" value="${f.note||''}" placeholder="Note" oninput="memorieData.salute.farmaci[${idx}].note=this.value;saveData()"></td>
+                <td><button class="btn btn-danger" onclick="memorieData.salute.farmaci.splice(${idx},1);renderSalute();saveData()">✕</button></td>
+              `;
+              tbody.appendChild(tr);
+            });
+          }
         }
 
         // Emergenze
         const iceCont = document.getElementById('ice-container');
         if (iceCont) {
           iceCont.innerHTML = '';
-          memorieData.salute.emergenze.forEach((e, idx) => {
-            const d = document.createElement('div');
-            d.className = 'contact-card';
-            d.style.borderLeft = '4px solid var(--rosso)';
-            d.innerHTML = `
-              <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                <input type="text" value="${e.titolo||'🚨 Emergenza'}" style="font-weight:bold; color:var(--rosso); border:1px solid #ddd; border-radius:4px; padding:2px 6px; font-size:0.85rem;" oninput="memorieData.salute.emergenze[${idx}].titolo=this.value;saveData()">
-                <button class="btn btn-danger" onclick="memorieData.salute.emergenze.splice(${idx},1);renderSalute();saveData()">✕</button>
-              </div>
-              <div class="contact-field"><label>Nome</label><input type="text" value="${e.nome||''}" oninput="memorieData.salute.emergenze[${idx}].nome=this.value;saveData()"></div>
-              <div class="contact-field"><label>Telefono</label><input type="tel" value="${e.tel||''}" oninput="memorieData.salute.emergenze[${idx}].tel=this.value;saveData()"></div>
-              <div class="contact-field"><label>Note</label><input type="text" value="${e.note||''}" oninput="memorieData.salute.emergenze[${idx}].note=this.value;saveData()"></div>
-            `;
-            iceCont.appendChild(d);
-          });
+          if (memorieData.salute.emergenze.length === 0) {
+            iceCont.innerHTML = '<p style="color:#888; font-size:0.85rem; margin:0; padding:10px;">Nessun contatto di emergenza. Clicca "+ Contatto ICE".</p>';
+          } else {
+            memorieData.salute.emergenze.forEach((e, idx) => {
+              const d = document.createElement('div');
+              d.className = 'contact-card';
+              d.style.borderLeft = '4px solid var(--rosso)';
+              d.innerHTML = `
+                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                  <input type="text" value="${e.titolo||'🚨 Emergenza'}" style="font-weight:bold; color:var(--rosso); border:1px solid #ddd; border-radius:4px; padding:2px 6px; font-size:0.85rem;" oninput="memorieData.salute.emergenze[${idx}].titolo=this.value;saveData()">
+                  <button class="btn btn-danger" onclick="memorieData.salute.emergenze.splice(${idx},1);renderSalute();saveData()">✕</button>
+                </div>
+                <div class="contact-field"><label>Nome</label><input type="text" value="${e.nome||''}" oninput="memorieData.salute.emergenze[${idx}].nome=this.value;saveData()"></div>
+                <div class="contact-field"><label>Telefono</label><input type="tel" value="${e.tel||''}" oninput="memorieData.salute.emergenze[${idx}].tel=this.value;saveData()"></div>
+                <div class="contact-field"><label>Note</label><input type="text" value="${e.note||''}" oninput="memorieData.salute.emergenze[${idx}].note=this.value;saveData()"></div>
+              `;
+              iceCont.appendChild(d);
+            });
+          }
         }
 
         // Medici Base
         const medCont = document.getElementById('medici-container');
         if (medCont) {
           medCont.innerHTML = '';
-          memorieData.salute.medici.forEach((m, idx) => {
-            const d = document.createElement('div');
-            d.className = 'contact-card';
-            d.style.borderLeft = '4px solid var(--basilico)';
-            d.innerHTML = `
-              <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                <input type="text" value="${m.titolo||'👨‍⚕️ Medico Base'}" style="font-weight:bold; color:var(--basilico); border:1px solid #ddd; border-radius:4px; padding:2px 6px; font-size:0.85rem;" oninput="memorieData.salute.medici[${idx}].titolo=this.value;saveData()">
-                <button class="btn btn-danger" onclick="memorieData.salute.medici.splice(${idx},1);renderSalute();saveData()">✕</button>
-              </div>
-              <div class="contact-field"><label>Nome Dottore</label><input type="text" value="${m.nome||''}" oninput="memorieData.salute.medici[${idx}].nome=this.value;saveData()"></div>
-              <div class="contact-field"><label>Telefono</label><input type="tel" value="${m.tel||''}" oninput="memorieData.salute.medici[${idx}].tel=this.value;saveData()"></div>
-              <div class="contact-field"><label>Orari / Studio</label><input type="text" value="${m.note||''}" oninput="memorieData.salute.medici[${idx}].note=this.value;saveData()"></div>
-            `;
-            medCont.appendChild(d);
-          });
+          if (memorieData.salute.medici.length === 0) {
+            medCont.innerHTML = '<p style="color:#888; font-size:0.85rem; margin:0; padding:10px;">Nessun medico base inserito. Clicca "+ Medico Base".</p>';
+          } else {
+            memorieData.salute.medici.forEach((m, idx) => {
+              const d = document.createElement('div');
+              d.className = 'contact-card';
+              d.style.borderLeft = '4px solid var(--basilico)';
+              d.innerHTML = `
+                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                  <input type="text" value="${m.titolo||'👨‍⚕️ Medico Base'}" style="font-weight:bold; color:var(--basilico); border:1px solid #ddd; border-radius:4px; padding:2px 6px; font-size:0.85rem;" oninput="memorieData.salute.medici[${idx}].titolo=this.value;saveData()">
+                  <button class="btn btn-danger" onclick="memorieData.salute.medici.splice(${idx},1);renderSalute();saveData()">✕</button>
+                </div>
+                <div class="contact-field"><label>Nome Dottore</label><input type="text" value="${m.nome||''}" oninput="memorieData.salute.medici[${idx}].nome=this.value;saveData()"></div>
+                <div class="contact-field"><label>Telefono</label><input type="tel" value="${m.tel||''}" oninput="memorieData.salute.medici[${idx}].tel=this.value;saveData()"></div>
+                <div class="contact-field"><label>Orari / Studio</label><input type="text" value="${m.note||''}" oninput="memorieData.salute.medici[${idx}].note=this.value;saveData()"></div>
+              `;
+              medCont.appendChild(d);
+            });
+          }
         }
 
         // Specialisti
         const specCont = document.getElementById('specialisti-container');
         if (specCont) {
           specCont.innerHTML = '';
-          memorieData.salute.specialisti.forEach((s, idx) => {
-            const d = document.createElement('div');
-            d.className = 'contact-card';
-            d.style.borderLeft = '4px solid var(--blu)';
-            d.innerHTML = `
-              <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                <input type="text" value="${s.titolo||'🩺 Specialista'}" style="font-weight:bold; color:var(--blu); border:1px solid #ddd; border-radius:4px; padding:2px 6px; font-size:0.85rem;" oninput="memorieData.salute.specialisti[${idx}].titolo=this.value;saveData()">
-                <button class="btn btn-danger" onclick="memorieData.salute.specialisti.splice(${idx},1);renderSalute();saveData()">✕</button>
-              </div>
-              <div class="contact-field"><label>Nome Dottore</label><input type="text" value="${s.nome||''}" oninput="memorieData.salute.specialisti[${idx}].nome=this.value;saveData()"></div>
-              <div class="contact-field"><label>Telefono</label><input type="tel" value="${s.tel||''}" oninput="memorieData.salute.specialisti[${idx}].tel=this.value;saveData()"></div>
-              <div class="contact-field"><label>Note / Studio</label><input type="text" value="${s.note||''}" oninput="memorieData.salute.specialisti[${idx}].note=this.value;saveData()"></div>
-            `;
-            specCont.appendChild(d);
-          });
+          if (memorieData.salute.specialisti.length === 0) {
+            specCont.innerHTML = '<p style="color:#888; font-size:0.85rem; margin:0; padding:10px;">Nessuno specialista inserito. Clicca "+ Specialista".</p>';
+          } else {
+            memorieData.salute.specialisti.forEach((s, idx) => {
+              const d = document.createElement('div');
+              d.className = 'contact-card';
+              d.style.borderLeft = '4px solid var(--blu)';
+              d.innerHTML = `
+                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                  <input type="text" value="${s.titolo||'🩺 Specialista'}" style="font-weight:bold; color:var(--blu); border:1px solid #ddd; border-radius:4px; padding:2px 6px; font-size:0.85rem;" oninput="memorieData.salute.specialisti[${idx}].titolo=this.value;saveData()">
+                  <button class="btn btn-danger" onclick="memorieData.salute.specialisti.splice(${idx},1);renderSalute();saveData()">✕</button>
+                </div>
+                <div class="contact-field"><label>Nome Dottore</label><input type="text" value="${s.nome||''}" oninput="memorieData.salute.specialisti[${idx}].nome=this.value;saveData()"></div>
+                <div class="contact-field"><label>Telefono</label><input type="tel" value="${s.tel||''}" oninput="memorieData.salute.specialisti[${idx}].tel=this.value;saveData()"></div>
+                <div class="contact-field"><label>Note / Studio</label><input type="text" value="${s.note||''}" oninput="memorieData.salute.specialisti[${idx}].note=this.value;saveData()"></div>
+              `;
+              specCont.appendChild(d);
+            });
+          }
         }
 
         // Note
         const noteCont = document.getElementById('note-container');
         if (noteCont) {
           noteCont.innerHTML = '';
-          memorieData.salute.noteMediche.forEach((n, idx) => {
-            const d = document.createElement('div');
-            d.style.background = 'white';
-            d.style.border = '1px solid #ddd';
-            d.style.borderRadius = '10px';
-            d.style.padding = '10px';
-            d.style.marginBottom = '8px';
-            d.innerHTML = `
-              <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                <input type="text" value="${n.titolo||'Nota'}" style="font-weight:bold; border:1px solid #ddd; border-radius:4px; padding:2px 6px; font-size:0.9rem; width:70%;" oninput="memorieData.salute.noteMediche[${idx}].titolo=this.value;saveData()">
-                <button class="btn btn-danger" onclick="memorieData.salute.noteMediche.splice(${idx},1);renderSalute();saveData()">✕</button>
-              </div>
-              <textarea class="notes-box" oninput="memorieData.salute.noteMediche[${idx}].testo=this.value;saveData()">${n.testo||''}</textarea>
-            `;
-            noteCont.appendChild(d);
-          });
+          if (memorieData.salute.noteMediche.length === 0) {
+            noteCont.innerHTML = '<p style="color:#888; font-size:0.85rem; margin:0; padding:10px;">Nessuna nota clinica o allergia. Clicca "+ Nota Medica".</p>';
+          } else {
+            memorieData.salute.noteMediche.forEach((n, idx) => {
+              const d = document.createElement('div');
+              d.style.background = 'white';
+              d.style.border = '1px solid #ddd';
+              d.style.borderRadius = '10px';
+              d.style.padding = '10px';
+              d.style.marginBottom = '8px';
+              d.innerHTML = `
+                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                  <input type="text" value="${n.titolo||'Nota'}" style="font-weight:bold; border:1px solid #ddd; border-radius:4px; padding:2px 6px; font-size:0.9rem; width:70%;" oninput="memorieData.salute.noteMediche[${idx}].titolo=this.value;saveData()">
+                  <button class="btn btn-danger" onclick="memorieData.salute.noteMediche.splice(${idx},1);renderSalute();saveData()">✕</button>
+                </div>
+                <textarea class="notes-box" oninput="memorieData.salute.noteMediche[${idx}].testo=this.value;saveData()">${n.testo||''}</textarea>
+              `;
+              noteCont.appendChild(d);
+            });
+          }
         }
 
         // Campi Personalizzati
         const customCont = document.getElementById('custom-fields-container');
         if (customCont) {
           customCont.innerHTML = '';
-          memorieData.salute.campiPersonalizzati.forEach((c, idx) => {
-            const d = document.createElement('div');
-            d.className = 'custom-field-item';
-            d.innerHTML = `
-              <input type="text" class="field-name" value="${c.etichetta||''}" placeholder="Nome Campo" oninput="memorieData.salute.campiPersonalizzati[${idx}].etichetta=this.value;saveData()">
-              <input type="text" class="field-val" value="${c.valore||''}" placeholder="Valore" oninput="memorieData.salute.campiPersonalizzati[${idx}].valore=this.value;saveData()">
-              <button class="btn btn-danger" onclick="memorieData.salute.campiPersonalizzati.splice(${idx},1);renderSalute();saveData()">✕</button>
-            `;
-            customCont.appendChild(d);
-          });
+          if (memorieData.salute.campiPersonalizzati.length === 0) {
+            customCont.innerHTML = '<p style="color:#888; font-size:0.85rem; margin:0; padding:10px;">Nessun campo personalizzato. Clicca "+ Campo Dati".</p>';
+          } else {
+            memorieData.salute.campiPersonalizzati.forEach((c, idx) => {
+              const d = document.createElement('div');
+              d.className = 'custom-field-item';
+              d.innerHTML = `
+                <input type="text" class="field-name" value="${c.etichetta||''}" placeholder="Nome Campo" oninput="memorieData.salute.campiPersonalizzati[${idx}].etichetta=this.value;saveData()">
+                <input type="text" class="field-val" value="${c.valore||''}" placeholder="Valore" oninput="memorieData.salute.campiPersonalizzati[${idx}].valore=this.value;saveData()">
+                <button class="btn btn-danger" onclick="memorieData.salute.campiPersonalizzati.splice(${idx},1);renderSalute();saveData()">✕</button>
+              `;
+              customCont.appendChild(d);
+            });
+          }
         }
       }
 
@@ -899,6 +948,10 @@
         const cont = document.getElementById('musica-container');
         if (!cont) return;
         cont.innerHTML = '';
+        if (memorieData.musica.length === 0) {
+          cont.innerHTML = '<div style="grid-column: 1 / -1; padding: 2rem; text-align: center; color: #888; background: rgba(255,255,255,0.7); border-radius: 12px; border: 1px dashed #ddd;">Nessun brano o playlist salvata. Clicca <strong>+ Aggiungi Brano / Album</strong> per iniziare.</div>';
+          return;
+        }
         memorieData.musica.forEach((m, idx) => {
           const ytId = getYouTubeVideoId(m.link);
           let previewHtml = '';
@@ -942,6 +995,10 @@
         const cont = document.getElementById('luoghi-container');
         if (!cont) return;
         cont.innerHTML = '';
+        if (memorieData.luoghi.length === 0) {
+          cont.innerHTML = '<div style="grid-column: 1 / -1; padding: 2rem; text-align: center; color: #888; background: rgba(255,255,255,0.7); border-radius: 12px; border: 1px dashed #ddd;">Nessun luogo o viaggio salvato. Clicca <strong>+ Aggiungi Luogo</strong> per iniziare.</div>';
+          return;
+        }
         memorieData.luoghi.forEach((l, idx) => {
           const d = document.createElement('div');
           d.className = 'entry-card';
@@ -964,6 +1021,10 @@
         const cont = document.getElementById('ristoranti-container');
         if (!cont) return;
         cont.innerHTML = '';
+        if (memorieData.ristoranti.length === 0) {
+          cont.innerHTML = '<div style="grid-column: 1 / -1; padding: 2rem; text-align: center; color: #888; background: rgba(255,255,255,0.7); border-radius: 12px; border: 1px dashed #ddd;">Nessun ristorante preferito salvato. Clicca <strong>+ Aggiungi Ristorante</strong> per iniziare.</div>';
+          return;
+        }
         memorieData.ristoranti.forEach((r, idx) => {
           const d = document.createElement('div');
           d.className = 'entry-card';
@@ -987,6 +1048,10 @@
         const cont = document.getElementById('amicizie-container');
         if (!cont) return;
         cont.innerHTML = '';
+        if (memorieData.amicizie.length === 0) {
+          cont.innerHTML = '<div style="grid-column: 1 / -1; padding: 2rem; text-align: center; color: #888; background: rgba(255,255,255,0.7); border-radius: 12px; border: 1px dashed #ddd;">Nessun contatto o persona speciale salvata. Clicca <strong>+ Aggiungi Persona</strong> per iniziare.</div>';
+          return;
+        }
         memorieData.amicizie.forEach((a, idx) => {
           const d = document.createElement('div');
           d.className = 'entry-card';

@@ -496,9 +496,70 @@
         padding: 1px 4px;
         border-radius: 4px;
       }
+
+      /* Responsiveness per Cellulari & Smartphone */
+      @media (max-width: 768px) {
+        .container {
+          padding: 1.5rem 1rem;
+        }
+        nav.appunic-nav {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 12px;
+          padding: 15px;
+        }
+        nav.appunic-nav > div {
+          flex-direction: column;
+          gap: 8px;
+          width: 100%;
+        }
+        nav.appunic-nav a {
+          margin-left: 0 !important;
+          width: 100%;
+          text-align: left;
+        }
+        h1 {
+          font-size: 1.8rem;
+        }
+        .top-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .radar-banner {
+          flex-direction: column;
+          gap: 15px;
+          text-align: center;
+        }
+        .radar-kpi {
+          border-left: none !important;
+          border-right: none !important;
+          border-bottom: 1px solid #eee;
+          padding-bottom: 10px !important;
+        }
+        .radar-kpi:last-child {
+          border-bottom: none;
+        }
+        .two-columns-grid {
+          grid-template-columns: 1fr;
+        }
+        .guide-grid {
+          grid-template-columns: 1fr;
+        }
+        .buste-grid {
+          grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+          gap: 10px;
+        }
+        .conti-grid {
+          grid-template-columns: 1fr;
+        }
+        .modal-content {
+          padding: 1.2rem;
+          margin: 10px;
+        }
+      }
     </style>
-    <script type="module" crossorigin src="./assets/VoiceAssistant-CpTO9j7I.js"></script>
-    <script type="module" crossorigin src="./assets/globalVoice-DNmjMw79.js"></script>
+    <script type="module" crossorigin src="./assets/VoiceAssistant-iA-fUDu8.js"></script>
+    <script type="module" crossorigin src="./assets/globalVoice-TtsbeCJy.js"></script>
   </head>
   <body>
     <!-- Navigazione Globale AppUnic -->
@@ -1081,23 +1142,33 @@
           }
         });
 
+        // Calcola Saldo Totale dei conti
+        saldoTotale = Math.round(saldoTotale * 100) / 100;
+
         // Calcola Spese Fisse non ancora pagate
         let speseFisseTot = 0;
         finanzeData.speseFisse.filter(f => !f.pagata).forEach(f => {
           speseFisseTot += f.importo;
         });
+        speseFisseTot = Math.round(speseFisseTot * 100) / 100;
 
         // Calcola Entrate Ricorrenti ancora in arrivo
         let entrateInArrivo = 0;
         finanzeData.entrateRicorrenti.filter(e => !e.accreditata).forEach(e => {
           entrateInArrivo += e.importo;
         });
+        entrateInArrivo = Math.round(entrateInArrivo * 100) / 100;
 
-        const saldoLibero = saldoTotale + entrateInArrivo - speseFisseTot;
+        const saldoLibero = Math.round((saldoTotale + entrateInArrivo - speseFisseTot) * 100) / 100;
 
-        document.getElementById('kpi-saldo-totale').textContent = `€ ${saldoTotale.toLocaleString('it-IT', { minimumFractionDigits: 2 })}`;
-        document.getElementById('kpi-spese-fisse').textContent = `- € ${speseFisseTot.toLocaleString('it-IT', { minimumFractionDigits: 2 })}`;
-        document.getElementById('kpi-saldo-libero').textContent = `€ ${saldoLibero.toLocaleString('it-IT', { minimumFractionDigits: 2 })}`;
+        document.getElementById('kpi-saldo-totale').textContent = `€ ${saldoTotale.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        document.getElementById('kpi-spese-fisse').textContent = `- € ${speseFisseTot.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        
+        const kpiLibero = document.getElementById('kpi-saldo-libero');
+        if (kpiLibero) {
+          kpiLibero.textContent = `${saldoLibero < 0 ? '- ' : ''}€ ${Math.abs(saldoLibero).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+          kpiLibero.style.color = saldoLibero < 0 ? 'var(--rosso)' : 'var(--basilico)';
+        }
       }
 
       // 2. RENDER ENTRATE RICORRENTI
@@ -1368,7 +1439,9 @@
         if (movIndex > -1) {
           const mov = finanzeData.movimenti[movIndex];
           const conto = finanzeData.conti.find(c => c.id === mov.contoId);
-          if (conto) conto.saldo += mov.importo;
+          if (conto) {
+            conto.saldo = Math.round((conto.saldo + mov.importo) * 100) / 100;
+          }
 
           finanzeData.movimenti.splice(movIndex, 1);
           saveData();
@@ -1680,7 +1753,7 @@
 
         const conto = finanzeData.conti.find(c => c.id === contoId);
         if (conto) {
-          conto.saldo -= importo;
+          conto.saldo = Math.round((conto.saldo - importo) * 100) / 100;
         }
 
         finanzeData.movimenti.unshift({
