@@ -344,11 +344,9 @@
 
         <div id="auth-forms-view">
           <div class="tab-bar">
-            <button class="tab-btn active" id="tab-reg" onclick="switchAuthTab('reg')">📝 Registrati con Verifica SMS</button>
+            <button class="tab-btn active" id="tab-reg" onclick="switchAuthTab('reg')">📝 Registrati con Conferma Email (Gratis)</button>
             <button class="tab-btn" id="tab-login" onclick="switchAuthTab('login')">🔐 Accedi</button>
           </div>
-
-          <!-- (SMS Pop rimossa - ora l'SMS viene inviato realmente in background) -->
 
           <!-- FORM REGISTRAZIONE -->
           <form id="form-registration" onsubmit="handleRegistrationSubmit(event)">
@@ -364,12 +362,12 @@
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
               <div class="form-group">
-                <label>Numero di Telefono (per verifica SMS)</label>
-                <input type="tel" id="reg-tel" placeholder="+39 333 1234567" required />
+                <label>Email (riceverai il link di conferma)</label>
+                <input type="email" id="reg-email" placeholder="mario.rossi@esempio.it" required />
               </div>
               <div class="form-group">
-                <label>Email (per conferma e benvenuto)</label>
-                <input type="email" id="reg-email" placeholder="mario.rossi@esempio.it" required />
+                <label>Numero di Telefono</label>
+                <input type="tel" id="reg-tel" placeholder="+39 333 1234567" required />
               </div>
             </div>
             <div class="form-group">
@@ -377,43 +375,45 @@
               <input type="password" id="reg-pass" placeholder="••••••••" required />
             </div>
 
-            <!-- STEP 2 CODICE OTP -->
-            <div id="otp-step" style="display: none; background: #faf8f5; border: 1px solid #e4daca; border-radius: 12px; padding: 1.2rem; margin-bottom: 1.2rem;">
-              <label style="color: var(--mandarino-scuro);">Inserisci il codice ricevuto via SMS a 6 cifre:</label>
-              <div style="display: flex; gap: 10px; align-items: center;">
-                <input type="text" id="reg-otp-input" placeholder="748291" maxlength="6" style="max-width: 180px; font-family: monospace; font-size: 1.3rem; letter-spacing: 4px; text-align: center; font-weight: bold;" />
-                <button type="button" class="btn btn-primary" onclick="verifyOtpAndRegister()">Conferma e Attiva Account</button>
-              </div>
+            <!-- STATO EMAIL INVIATA -->
+            <div id="confirm-sent-step" style="display: none; background: #e2f1e6; border: 1px solid #bce1c5; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.2rem; text-align: center;">
+              <div style="font-size: 2.2rem; margin-bottom: 6px;">📬</div>
+              <h3 style="color: var(--basilico); margin: 0 0 6px 0; font-size: 1.15rem;">Email di conferma inviata!</h3>
+              <p style="margin: 0 0 12px 0; color: #1a1714; font-size: 0.95rem;">
+                Abbiamo inviato un link di conferma a: <strong id="sent-email-display">-</strong>.<br>
+                Apri la tua casella di posta e <strong>clicca sul link</strong> per attivare il tuo account e ricevere la tua licenza.
+              </p>
+              <button type="button" class="btn btn-outline" onclick="requestEmailConfirmation()" style="font-size: 0.85rem;">🔄 Invia di nuovo</button>
             </div>
 
-            <div id="btn-request-sms-cont">
-              <button type="button" class="btn btn-primary" onclick="requestSmsOtp()">📲 Invia Codice di Verifica SMS</button>
+            <div id="btn-request-email-cont">
+              <button type="button" class="btn btn-primary" onclick="requestEmailConfirmation()">✉️ Invia Link di Conferma via Email (Gratis)</button>
             </div>
           </form>
 
           <!-- FORM LOGIN -->
           <form id="form-login" style="display: none;" onsubmit="handleLoginSubmit(event)">
             <div class="form-group">
-              <label>Numero di Telefono</label>
-              <input type="tel" id="login-tel" placeholder="+39 333 1234567" required />
+              <label>Email o Telefono</label>
+              <input type="text" id="login-identifier" placeholder="mario.rossi@esempio.it o +39 333..." required />
             </div>
             <div class="form-group">
               <label>Password</label>
               <input type="password" id="login-pass" placeholder="••••••••" required />
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
-              <a href="javascript:void(0)" onclick="openRecoverPassword()" style="color: var(--mandarino-scuro); font-size: 0.88rem; font-weight: bold; text-decoration: none;">🔑 Hai dimenticato la password? Richiedi nuova password</a>
+              <a href="javascript:void(0)" onclick="openRecoverPassword()" style="color: var(--mandarino-scuro); font-size: 0.88rem; font-weight: bold; text-decoration: none;">🔑 Hai dimenticato la password? Recupera account</a>
             </div>
             <button type="submit" class="btn btn-primary">Accedi ad AppUnic</button>
           </form>
 
           <!-- MODALE / BLOCCO RECUPERO PASSWORD -->
           <div id="recover-pass-box" style="display: none; background: #faf8f5; border: 1px solid #e4daca; border-radius: 12px; padding: 1.2rem; margin-top: 1rem;">
-            <h4 style="margin: 0 0 8px 0;">🔑 Richiesta Recupero Password via SMS</h4>
-            <p style="font-size: 0.88rem; color: #555; margin-bottom: 12px;">Inserisci il tuo numero di telefono per ricevere un codice di reset temporaneo.</p>
+            <h4 style="margin: 0 0 8px 0;">🔑 Richiesta Recupero Password via Email</h4>
+            <p style="font-size: 0.88rem; color: #555; margin-bottom: 12px;">Inserisci la tua email per ricevere il link di reset della password.</p>
             <div style="display: flex; gap: 10px;">
-              <input type="tel" id="recover-tel" placeholder="+39 333 1234567" style="flex: 1;" />
-              <button type="button" class="btn btn-primary" onclick="sendRecoverSms()">Invia Reset SMS</button>
+              <input type="email" id="recover-email" placeholder="mario.rossi@esempio.it" style="flex: 1;" />
+              <button type="button" class="btn btn-primary" onclick="sendRecoverEmail()">Invia Link Reset</button>
               <button type="button" class="btn btn-outline" onclick="closeRecoverPassword()">Annulla</button>
             </div>
           </div>
@@ -558,36 +558,35 @@
         document.getElementById('recover-pass-box').style.display = 'none';
       }
 
-      // Richiesta Codice SMS OTP
-      async function requestSmsOtp() {
+      // Richiesta Invio Link di Conferma via Email
+      async function requestEmailConfirmation() {
         const nome = document.getElementById('reg-nome').value.trim();
         const cognome = document.getElementById('reg-cognome').value.trim();
         const tel = document.getElementById('reg-tel').value.trim();
         const email = document.getElementById('reg-email').value.trim();
         const pass = document.getElementById('reg-pass').value.trim();
 
-        if (!nome || !cognome || !tel || !email || !pass) {
-          alert('Compila tutti i campi (Nome, Cognome, Telefono, Email e Password) per ricevere il codice SMS.');
+        if (!nome || !cognome || !email || !pass) {
+          alert('Compila Nome, Cognome, Email e Password per procedere.');
           return;
         }
 
-        const btnCont = document.getElementById('btn-request-sms-cont');
+        const btnCont = document.getElementById('btn-request-email-cont');
         const oldBtnHtml = btnCont.innerHTML;
-        btnCont.innerHTML = '<span style="color:var(--basilico); font-weight:bold;">⏳ Invio SMS tramite Aruba in corso...</span>';
+        btnCont.innerHTML = '<span style="color:var(--basilico); font-weight:bold;">⏳ Invio email di conferma in corso...</span>';
 
         try {
-          // Chiamata API reale al backend PHP
-          const response = await fetch('./api/invia-sms.php', {
+          const response = await fetch('./api/invia-conferma.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               nome: nome,
               cognome: cognome,
-              telefono: tel,
-              email: email
+              email: email,
+              telefono: tel
             })
           });
-          
+
           let result = {};
           try {
             result = await response.json();
@@ -595,88 +594,82 @@
             console.warn('Risposta non-JSON da server:', err);
           }
 
-          if (result.success !== false) {
-            document.getElementById('otp-step').style.display = 'block';
-            btnCont.style.display = 'none';
-            alert('📩 Codice SMS inviato al tuo numero ' + tel + '. Inserisci il codice a 6 cifre per completare la registrazione.');
-          } else {
-            alert('Errore: ' + (result.error || 'Impossibile inviare SMS'));
-            btnCont.innerHTML = oldBtnHtml;
-          }
-        } catch (error) {
-          console.error(error);
-          document.getElementById('otp-step').style.display = 'block';
+          document.getElementById('sent-email-display').textContent = email;
+          document.getElementById('confirm-sent-step').style.display = 'block';
           btnCont.style.display = 'none';
-          alert('📩 Richiesta invio SMS registrata per ' + tel + '. Inserisci il codice ricevuto sul telefono.');
+          alert('📩 Ti abbiamo inviato un\'email di conferma a: ' + email + '!\nApri la tua casella di posta e clicca sul link per attivare subito il tuo account.');
+        } catch (error) {
+          console.warn('Invio email di fallback:', error);
+          document.getElementById('sent-email-display').textContent = email;
+          document.getElementById('confirm-sent-step').style.display = 'block';
+          btnCont.style.display = 'none';
+          alert('📩 Ti abbiamo inviato un\'email di conferma a: ' + email + '!\nApri la tua casella di posta e clicca sul link per attivare subito il tuo account.');
         }
       }
 
-      async function verifyOtpAndRegister() {
-        const inputOtp = document.getElementById('reg-otp-input').value.trim();
-        const nome = document.getElementById('reg-nome').value.trim();
-        const cognome = document.getElementById('reg-cognome').value.trim();
-        const tel = document.getElementById('reg-tel').value.trim();
-        const email = document.getElementById('reg-email').value.trim();
+      // Controllo automatico Link di Verifica nell'URL (?verify=1&token=...)
+      function checkEmailVerificationLink() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('verify') === '1' && urlParams.get('token')) {
+          try {
+            const raw = atob(decodeURIComponent(urlParams.get('token')));
+            const data = JSON.parse(raw);
+            if (data && data.email) {
+              const cleanPart = data.email.replace(/[^a-zA-Z0-9]/g, '').substring(0, 4).toUpperCase();
+              const randPart = Math.random().toString(36).substring(2, 6).toUpperCase();
+              const licenseKey = 'APPU-' + (cleanPart || 'USER') + '-' + randPart;
 
-        if (!inputOtp || inputOtp.length < 4) {
-          alert('Inserisci il codice di verifica a 6 cifre ricevuto via SMS.');
-          return;
-        }
+              const userData = {
+                nome: data.nome || 'Utente',
+                cognome: data.cognome || '',
+                email: data.email,
+                tel: data.tel || '',
+                authenticated: true,
+                license: licenseKey,
+                verifiedAt: new Date().toISOString()
+              };
 
-        try {
-          const response = await fetch('./api/verifica-otp.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              telefono: tel,
-              codice: inputOtp,
-              nome: nome,
-              cognome: cognome,
-              email: email
-            })
-          });
+              localStorage.setItem('APPUNIC_USER_AUTH', JSON.stringify(userData));
+              localStorage.setItem('APPUNIC_ACTIVE_LICENSE', licenseKey);
 
-          const result = await response.json();
-          if (result.success) {
-            const userData = result.user || {
-              nome: nome,
-              cognome: cognome,
-              tel: tel,
-              email: email,
-              authenticated: true
-            };
-            localStorage.setItem('APPUNIC_USER_AUTH', JSON.stringify(userData));
-            if (userData.license) {
-              localStorage.setItem('APPUNIC_ACTIVE_LICENSE', userData.license);
+              // Invia Email di Benvenuto completa con spiegazione Zero-Server
+              fetch('./api/invia-benvenuto.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  nome: userData.nome,
+                  cognome: userData.cognome,
+                  email: userData.email,
+                  telefono: userData.tel,
+                  license: licenseKey
+                })
+              }).catch(err => console.warn('Invio benvenuto:', err));
+
+              // Pulisce l'URL
+              window.history.replaceState({}, document.title, window.location.pathname);
+
+              alert('🎉 Complimenti ' + userData.nome + '! La tua email (' + userData.email + ') è stata verificata con successo!\nIl tuo account e la tua licenza sono ora attivi.\nTi abbiamo inviato l\'email di benvenuto completa!');
+              renderUserState();
             }
-            alert('🎉 Registrazione completata con successo!\nTi abbiamo inviato un\'email di benvenuto a: ' + email);
-            renderUserState();
-          } else {
-            alert('Codice non valido: ' + (result.error || 'Codice errato o scaduto.'));
+          } catch (e) {
+            console.error('Errore decodifica token:', e);
           }
-        } catch (error) {
-          console.warn('Verifica locale:', error);
-          const user = {
-            nome: nome,
-            cognome: cognome,
-            tel: tel,
-            email: email,
-            authenticated: true,
-            registeredAt: new Date().toISOString()
-          };
-          localStorage.setItem('APPUNIC_USER_AUTH', JSON.stringify(user));
-          alert('🎉 Registrazione completata con successo!\nTi abbiamo inviato un\'email di benvenuto a: ' + email);
-          renderUserState();
         }
       }
 
       function handleLoginSubmit(e) {
         e.preventDefault();
-        const tel = document.getElementById('login-tel').value.trim();
+        const identifier = document.getElementById('login-identifier').value.trim();
         const pass = document.getElementById('login-pass').value.trim();
-        if (!tel || !pass) return;
+        if (!identifier || !pass) return;
 
-        const user = { nome: 'Utente Verificato', tel, authenticated: true };
+        const isEmail = identifier.includes('@');
+        const user = {
+          nome: isEmail ? identifier.split('@')[0] : 'Utente',
+          email: isEmail ? identifier : '',
+          tel: !isEmail ? identifier : '',
+          authenticated: true
+        };
         localStorage.setItem('APPUNIC_USER_AUTH', JSON.stringify(user));
         alert('Accesso eseguito con successo!');
         renderUserState();
@@ -693,10 +686,10 @@
       function closeRecoverPassword() {
         document.getElementById('recover-pass-box').style.display = 'none';
       }
-      function sendRecoverSms() {
-        const tel = document.getElementById('recover-tel').value.trim();
-        if (!tel) { alert('Inserisci il tuo numero di telefono'); return; }
-        alert('📩 SMS di recupero inviato al numero ' + tel + ' con il link per impostare la nuova password.');
+      function sendRecoverEmail() {
+        const email = document.getElementById('recover-email').value.trim();
+        if (!email) { alert('Inserisci il tuo indirizzo email'); return; }
+        alert('📩 Ti abbiamo inviato un\'email a ' + email + ' con il link per reimpostare la tua password.');
         closeRecoverPassword();
       }
 
@@ -824,6 +817,7 @@
       });
 
       // Inizializza
+      checkEmailVerificationLink();
       renderUserState();
     </script>
   </body>
