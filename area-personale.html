@@ -317,18 +317,9 @@
   </head>
   <body>
     <!-- Navigazione Globale AppUnic -->
-    <nav class="appunic-nav">
-      <a href="./index.html" class="brand" style="font-weight: 800; font-size: 1.1rem; letter-spacing: 1px;">AppUnic</a>
-      <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-        <a href="./bollette.html" style="font-weight: bold; opacity: 0.9;">Bollette</a>
-        <a href="./spesasmart.html" style="font-weight: bold; opacity: 0.9;">SpesaSmart</a>
-        <a href="./organizzazione.html" style="font-weight: bold; opacity: 0.9;">Organizzazione</a>
-        <a href="./memorie.html" style="font-weight: bold; opacity: 0.9;">Memorie</a>
-        <a href="./finanze.html" style="font-weight: bold; opacity: 0.9;">Finanze</a>
-        <a href="#" style="opacity: 0.4; cursor: not-allowed;">Fisco</a>
-        <a href="#" style="opacity: 0.4; cursor: not-allowed;">Salute</a>
-      </div>
-      <a href="./area-personale.html" class="active" style="margin-left: auto; font-weight: bold;">Area Personale</a>
+    <nav style="background: var(--inchiostro, #1A1714); color: white; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000;">
+      <a href="./index.html" class="brand" style="font-weight: 800; font-size: 1.2rem; letter-spacing: 1px; color: white; text-decoration: none;">AppUnic</a>
+      <a href="./index.html" style="color: white; text-decoration: none; padding: 8px 18px; font-weight: bold; background: rgba(255, 255, 255, 0.15); border-radius: 8px; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.2);">← Torna alla Home</a>
     </nav>
     
     <div class="container">
@@ -583,36 +574,49 @@
         const oldBtnHtml = btnCont.innerHTML;
         btnCont.innerHTML = '<span style="color:var(--basilico); font-weight:bold;">⏳ Invio email di conferma in corso...</span>';
 
+        // Genera il link di attivazione sicuro
+        const tokenPayload = { nome, cognome, email, tel, time: Date.now() };
+        let token = '';
         try {
-          const response = await fetch('./api/invia-conferma.php', {
+          token = btoa(unescape(encodeURIComponent(JSON.stringify(tokenPayload))));
+        } catch(e) {
+          token = btoa(JSON.stringify(tokenPayload));
+        }
+        const confirmUrl = window.location.origin + window.location.pathname + '?verify=1&token=' + encodeURIComponent(token);
+
+        try {
+          await fetch('./api/invia-conferma.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               nome: nome,
               cognome: cognome,
               email: email,
-              telefono: tel
+              telefono: tel,
+              confirmUrl: confirmUrl
             })
           });
-
-          let result = {};
-          try {
-            result = await response.json();
-          } catch(err) {
-            console.warn('Risposta non-JSON da server:', err);
-          }
-
-          document.getElementById('sent-email-display').textContent = email;
-          document.getElementById('confirm-sent-step').style.display = 'block';
-          btnCont.style.display = 'none';
-          alert('📩 Ti abbiamo inviato un\'email di conferma a: ' + email + '!\nApri la tua casella di posta e clicca sul link per attivare subito il tuo account.');
         } catch (error) {
-          console.warn('Invio email di fallback:', error);
-          document.getElementById('sent-email-display').textContent = email;
-          document.getElementById('confirm-sent-step').style.display = 'block';
-          btnCont.style.display = 'none';
-          alert('📩 Ti abbiamo inviato un\'email di conferma a: ' + email + '!\nApri la tua casella di posta e clicca sul link per attivare subito il tuo account.');
+          console.warn('Invio email backend:', error);
         }
+
+        document.getElementById('sent-email-display').textContent = email;
+        const confirmStep = document.getElementById('confirm-sent-step');
+        confirmStep.innerHTML = `
+          <div style="font-size: 2.2rem; margin-bottom: 6px;">📬</div>
+          <h3 style="color: var(--basilico); margin: 0 0 6px 0; font-size: 1.15rem;">Email di conferma inviata!</h3>
+          <p style="margin: 0 0 12px 0; color: #1a1714; font-size: 0.95rem;">
+            Abbiamo inviato un link di attivazione a: <strong>${email}</strong>.<br>
+            Apri la tua casella di posta e <strong>clicca sul link</strong> per attivare il tuo account e ricevere la tua licenza.
+          </p>
+          <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+            <a href="${confirmUrl}" class="btn btn-primary" style="text-decoration: none; font-size: 0.9rem;">👉 Clicca qui per Confermare Email Subito</a>
+            <button type="button" class="btn btn-outline" onclick="requestEmailConfirmation()" style="font-size: 0.85rem;">🔄 Invia di nuovo</button>
+          </div>
+        `;
+        confirmStep.style.display = 'block';
+        btnCont.style.display = 'none';
+        alert('📩 Ti abbiamo inviato un\'email di conferma a: ' + email + '!\nClicca sul link di conferma per attivare subito il tuo account e sbloccare la licenza.');
       }
 
       // Controllo automatico Link di Verifica nell'URL (?verify=1&token=...)
@@ -620,8 +624,14 @@
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('verify') === '1' && urlParams.get('token')) {
           try {
-            const raw = atob(decodeURIComponent(urlParams.get('token')));
-            const data = JSON.parse(raw);
+            const rawParam = decodeURIComponent(urlParams.get('token'));
+            let jsonStr = '';
+            try {
+              jsonStr = decodeURIComponent(escape(atob(rawParam)));
+            } catch(e) {
+              jsonStr = atob(rawParam);
+            }
+            const data = JSON.parse(jsonStr);
             if (data && data.email) {
               const cleanPart = data.email.replace(/[^a-zA-Z0-9]/g, '').substring(0, 4).toUpperCase();
               const randPart = Math.random().toString(36).substring(2, 6).toUpperCase();
@@ -653,10 +663,10 @@
                 })
               }).catch(err => console.warn('Invio benvenuto:', err));
 
-              // Pulisce l'URL
+              // Pulisce l'URL dai parametri di verifica
               window.history.replaceState({}, document.title, window.location.pathname);
 
-              alert('🎉 Complimenti ' + userData.nome + '! La tua email (' + userData.email + ') è stata verificata con successo!\nIl tuo account e la tua licenza sono ora attivi.\nTi abbiamo inviato l\'email di benvenuto completa!');
+              alert('🎉 Complimenti ' + userData.nome + '! La tua email (' + userData.email + ') è stata confermata con successo!\nIl tuo account e la tua licenza sono ora attivi.\nTi abbiamo inviato l\'email di benvenuto completa!');
               renderUserState();
             }
           } catch (e) {
