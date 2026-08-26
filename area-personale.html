@@ -601,20 +601,21 @@
         const emailSubject = 'Attiva il tuo account AppUnic — Link di Conferma';
         const emailMessage = `Ciao ${nome},\n\nGrazie per esserti registrato su AppUnic!\n\nPer confermare il tuo indirizzo email e attivare subito la tua licenza personale, clicca su questo link:\n\n${confirmUrl}\n\nSe non hai richiesto tu la registrazione, ignora questa email.\n\nIl Team di AppUnic\nhttps://www.appunic.com`;
 
-        // 1. Invio tramite servizio email FormSubmit
+        // 1. Invio tramite FormSubmit con autoresponse immediato all'utente
         try {
-          fetch('https://formsubmit.co/ajax/' + encodeURIComponent(email), {
+          fetch('https://formsubmit.co/ajax/giuseppe.ragone81@gmail.com', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json'
             },
             body: JSON.stringify({
-              _subject: emailSubject,
-              _replyto: 'support@appunic.com',
-              nome: nome + ' ' + cognome,
-              messaggio: emailMessage,
-              link_attivazione: confirmUrl
+              _subject: 'Conferma la tua registrazione su AppUnic (' + nome + ' ' + cognome + ')',
+              name: nome + ' ' + cognome,
+              email: email,
+              telefono: tel,
+              link_attivazione_account: confirmUrl,
+              _autoresponse: `Ciao ${nome},\n\nGrazie per esserti registrato su AppUnic!\n\nPer confermare la tua email e attivare il tuo account e la tua licenza personale, clicca su questo link di attivazione:\n\n${confirmUrl}\n\n(Se non hai richiesto tu la registrazione, ignora questa email).\n\nIl Team di AppUnic\nhttps://www.appunic.com`
             })
           }).catch(err => console.warn('FormSubmit:', err));
         } catch(e) {
