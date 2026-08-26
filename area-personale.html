@@ -597,42 +597,49 @@
         }
         const confirmUrl = window.location.origin + window.location.pathname + '?verify=1&token=' + encodeURIComponent(token);
 
-        // Invia l'email reale alla casella di posta dell'utente
-        const emailSubject = 'Attiva il tuo account AppUnic — Link di Conferma';
-        const emailMessage = `Ciao ${nome},\n\nGrazie per esserti registrato su AppUnic!\n\nPer confermare il tuo indirizzo email e attivare subito la tua licenza personale, clicca su questo link:\n\n${confirmUrl}\n\nSe non hai richiesto tu la registrazione, ignora questa email.\n\nIl Team di AppUnic\nhttps://www.appunic.com`;
+        // Invia l'email ufficiale AppUnic alla casella di posta dell'utente
+        const emailHtml = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+            <div style="background: #1A1714; color: #ffffff; padding: 24px; text-align: center;">
+              <h1 style="margin: 0; font-size: 24px; letter-spacing: 1px;">AppUnic</h1>
+              <p style="margin: 4px 0 0 0; font-size: 13px; opacity: 0.8;">L'Ecosistema Personale • Privacy Zero-Server</p>
+            </div>
+            <div style="padding: 28px 24px;">
+              <h2 style="margin: 0 0 14px 0; font-size: 18px; color: #1a1714;">Benvenuto in AppUnic, ${nome}!</h2>
+              <p style="color: #444444; font-size: 15px; line-height: 1.6;">
+                Grazie per esserti registrato. Con <strong>AppUnic</strong> gestisci bollette, scontrini, finanze e memorie con la certezza che <strong>nessun dato personale viene salvato sui nostri server</strong>.
+              </p>
+              <p style="color: #444444; font-size: 15px; line-height: 1.6;">
+                Per confermare il tuo indirizzo email e sbloccare la tua licenza personale, fai clic sul pulsante qui sotto:
+              </p>
+              <div style="text-align: center; margin: 28px 0;">
+                <a href="${confirmUrl}" style="display: inline-block; background: #2e7d32; color: #ffffff; text-decoration: none; padding: 14px 28px; font-size: 15px; font-weight: bold; border-radius: 8px; box-shadow: 0 4px 10px rgba(46,125,50,0.3);">👉 Conferma Email e Attiva Account</a>
+              </div>
+              <p style="font-size: 13px; color: #777777; line-height: 1.4;">
+                Se il pulsante non funziona, copia e incolla questo link nel tuo browser:<br>
+                <a href="${confirmUrl}" style="color: #2e7d32; word-break: break-all;">${confirmUrl}</a>
+              </p>
+            </div>
+            <div style="background: #f8f9fa; border-top: 1px solid #eeeeee; padding: 16px 24px; text-align: center; font-size: 12px; color: #888888;">
+              Ricevi questa email per attivare il tuo account su <strong>AppUnic</strong>.<br>
+              Se non hai effettuato tu questa richiesta, puoi ignorare questo messaggio.
+            </div>
+          </div>
+        `;
 
-        // 1. Invio tramite FormSubmit con autoresponse immediato all'utente
-        try {
-          fetch('https://formsubmit.co/ajax/giuseppe.ragone81@gmail.com', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-              _subject: 'Conferma la tua registrazione su AppUnic (' + nome + ' ' + cognome + ')',
-              name: nome + ' ' + cognome,
-              email: email,
-              telefono: tel,
-              link_attivazione_account: confirmUrl,
-              _autoresponse: `Ciao ${nome},\n\nGrazie per esserti registrato su AppUnic!\n\nPer confermare la tua email e attivare il tuo account e la tua licenza personale, clicca su questo link di attivazione:\n\n${confirmUrl}\n\n(Se non hai richiesto tu la registrazione, ignora questa email).\n\nIl Team di AppUnic\nhttps://www.appunic.com`
-            })
-          }).catch(err => console.warn('FormSubmit:', err));
-        } catch(e) {
-          console.warn('Err FormSubmit:', e);
-        }
-
-        // 2. Invio parallelo tramite backend PHP
+        // Dispatch API ufficiale AppUnic
         try {
           fetch('./api/invia-conferma.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+              from: 'AppUnic <noreply@appunic.com>',
               nome: nome,
               cognome: cognome,
               email: email,
               telefono: tel,
-              confirmUrl: confirmUrl
+              confirmUrl: confirmUrl,
+              html: emailHtml
             })
           }).catch(err => console.warn('PHP Mail:', err));
         } catch (error) {
