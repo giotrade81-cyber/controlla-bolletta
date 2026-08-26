@@ -597,8 +597,33 @@
         }
         const confirmUrl = window.location.origin + window.location.pathname + '?verify=1&token=' + encodeURIComponent(token);
 
+        // Invia l'email reale alla casella di posta dell'utente
+        const emailSubject = 'Attiva il tuo account AppUnic — Link di Conferma';
+        const emailMessage = `Ciao ${nome},\n\nGrazie per esserti registrato su AppUnic!\n\nPer confermare il tuo indirizzo email e attivare subito la tua licenza personale, clicca su questo link:\n\n${confirmUrl}\n\nSe non hai richiesto tu la registrazione, ignora questa email.\n\nIl Team di AppUnic\nhttps://www.appunic.com`;
+
+        // 1. Invio tramite servizio email FormSubmit
         try {
-          await fetch('./api/invia-conferma.php', {
+          fetch('https://formsubmit.co/ajax/' + encodeURIComponent(email), {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+              _subject: emailSubject,
+              _replyto: 'support@appunic.com',
+              nome: nome + ' ' + cognome,
+              messaggio: emailMessage,
+              link_attivazione: confirmUrl
+            })
+          }).catch(err => console.warn('FormSubmit:', err));
+        } catch(e) {
+          console.warn('Err FormSubmit:', e);
+        }
+
+        // 2. Invio parallelo tramite backend PHP
+        try {
+          fetch('./api/invia-conferma.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -608,28 +633,28 @@
               telefono: tel,
               confirmUrl: confirmUrl
             })
-          });
+          }).catch(err => console.warn('PHP Mail:', err));
         } catch (error) {
           console.warn('Invio email backend:', error);
         }
 
+        // Mostra messaggio a schermo: NESSUN pulsante di conferma a schermo! L'utente deve aprire la mail.
         document.getElementById('sent-email-display').textContent = email;
         const confirmStep = document.getElementById('confirm-sent-step');
         confirmStep.innerHTML = `
-          <div style="font-size: 2.2rem; margin-bottom: 6px;">📬</div>
-          <h3 style="color: var(--basilico); margin: 0 0 6px 0; font-size: 1.15rem;">Email di conferma inviata!</h3>
-          <p style="margin: 0 0 12px 0; color: #1a1714; font-size: 0.95rem;">
-            Abbiamo inviato un link di attivazione a: <strong>${email}</strong>.<br>
-            Apri la tua casella di posta e <strong>clicca sul link</strong> per attivare il tuo account e ricevere la tua licenza.
+          <div style="font-size: 2.4rem; margin-bottom: 8px;">📬</div>
+          <h3 style="color: var(--basilico); margin: 0 0 8px 0; font-size: 1.25rem;">Email inviata con successo!</h3>
+          <p style="margin: 0 0 14px 0; color: #1a1714; font-size: 0.98rem; line-height: 1.5;">
+            Ti abbiamo inviato un'email con il link di conferma a: <strong style="color: var(--inchiostro);">${email}</strong>.<br>
+            <strong>Apri la tua casella di posta elettronica</strong> (controlla anche la cartella Spam o Posta Indesiderata) e <strong>clicca sul link ricevuto</strong> per attivare il tuo account e sbloccare la licenza.
           </p>
-          <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-            <a href="${confirmUrl}" class="btn btn-primary" style="text-decoration: none; font-size: 0.9rem;">👉 Clicca qui per Confermare Email Subito</a>
-            <button type="button" class="btn btn-outline" onclick="requestEmailConfirmation()" style="font-size: 0.85rem;">🔄 Invia di nuovo</button>
+          <div style="margin-top: 15px;">
+            <button type="button" class="btn btn-outline" onclick="location.reload()" style="font-size: 0.85rem;">← Torna al modulo</button>
           </div>
         `;
         confirmStep.style.display = 'block';
         btnCont.style.display = 'none';
-        alert('📩 Ti abbiamo inviato un\'email di conferma a: ' + email + '!\nClicca sul link di conferma per attivare subito il tuo account e sbloccare la licenza.');
+        alert('📩 Email inviata a ' + email + '!\nApri la tua casella di posta e clicca sul link ricevuto per completare la registrazione.');
       }
 
       // Controllo automatico Link di Verifica nell'URL (?verify=1&token=...)
@@ -708,6 +733,7 @@
 
       function logoutUser() {
         localStorage.removeItem('APPUNIC_USER_AUTH');
+        localStorage.removeItem('APPUNIC_ACTIVE_LICENSE');
         renderUserState();
       }
 
