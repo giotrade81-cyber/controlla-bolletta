@@ -421,6 +421,47 @@
         font-size: 0.9rem;
       }
 
+      /* Registro di tutte le spese */
+      .registro-filtri {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+      .registro-filtri input, .registro-filtri select {
+        padding: 7px 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 0.88rem;
+        background: white;
+      }
+      .registro-filtri #registro-search { flex: 1; min-width: 160px; }
+      .registro-chips {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+      }
+      .registro-chip {
+        border: 1px solid #e8e2d8;
+        background: #faf8f5;
+        border-radius: 20px;
+        padding: 4px 10px;
+        font-size: 0.8rem;
+        cursor: pointer;
+      }
+      .registro-chip.attivo {
+        background: var(--inchiostro);
+        color: white;
+        border-color: var(--inchiostro);
+      }
+      .registro-mese-row td {
+        background: #faf8f5;
+        font-weight: 800;
+        font-size: 0.85rem;
+        color: var(--inchiostro);
+      }
+
       /* Modali */
       .modal-overlay {
         position: fixed;
@@ -702,7 +743,7 @@
             <!-- COLONNA 1: MOVIMENTI DELLA BUSTA -->
             <div class="sub-block">
               <div class="sub-block-title">
-                <span>📋 Spese & Movimenti</span>
+                <span>📋 Spese del Mese Corrente</span>
                 <button class="btn btn-outline" id="btn-add-quick-spesa">+ Aggiungi Spesa</button>
               </div>
 
@@ -735,6 +776,7 @@
                   <!-- Rendered by JS when group view is active -->
                 </div>
               </div>
+              <p style="font-size: 0.8rem; color: #888; margin: 10px 0 0 0;">Mesi precedenti e storico fino a 2 anni: vedi <a href="#registro-spese" style="color: var(--mandarino-scuro); font-weight: bold;">📒 Registro di Tutte le Spese</a>.</p>
             </div>
 
             <!-- COLONNA 2: BUDGET & SPESE FISSE DELLA BUSTA -->
@@ -769,6 +811,48 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- 5. REGISTRO DI TUTTE LE SPESE (INDIPENDENTE DALLA BUSTA) -->
+      <div class="sub-block" id="registro-spese" style="margin-top: 2rem;">
+        <div class="sub-block-title">
+          <span style="font-size: 1.2rem; font-weight: 800;">📒 Registro di Tutte le Spese</span>
+          <span id="registro-totale" style="font-weight: 800; color: var(--rosso);"></span>
+        </div>
+        <div class="registro-filtri">
+          <input type="text" id="registro-search" placeholder="🔍 Cerca descrizione..." oninput="renderRegistro()">
+          <select id="registro-cat" onchange="renderRegistro()">
+            <!-- Populated via JS -->
+          </select>
+          <select id="registro-periodo" onchange="renderRegistro()">
+            <option value="mese">Mese corrente</option>
+            <option value="mese-prec">Mese precedente</option>
+            <option value="3mesi">Ultimi 3 mesi</option>
+            <option value="anno">Anno in corso</option>
+            <option value="24mesi" selected>Ultimi 2 anni</option>
+            <option value="tutto">Tutte</option>
+            <option value="scegli">Scegli un mese...</option>
+          </select>
+          <input type="month" id="registro-mese" style="display: none;" onchange="renderRegistro()">
+        </div>
+        <div id="registro-chips" class="registro-chips"></div>
+        <div style="overflow-x: auto;">
+          <table class="table-movimenti">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Descrizione</th>
+                <th>Busta</th>
+                <th>Conto / Carta</th>
+                <th>Importo</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="registro-tbody">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -987,6 +1071,37 @@
       </div>
     </div>
 
+    <!-- Modale Pagamento Spesa Fissa -->
+    <div class="modal-overlay" id="modal-paga-fissa">
+      <div class="modal-content">
+        <h3 style="margin-top: 0;">✅ Registra Pagamento</h3>
+        <input type="hidden" id="paga-fissa-id">
+        <p id="paga-fissa-titolo" style="font-weight: 700; margin: 0 0 12px 0;"></p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-group">
+            <label>Data Pagamento</label>
+            <input type="date" id="paga-fissa-data">
+          </div>
+          <div class="form-group">
+            <label>Mese di Riferimento</label>
+            <input type="month" id="paga-fissa-mese">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Conto / Carta da cui Paghi</label>
+          <select id="paga-fissa-conto"></select>
+        </div>
+        <p style="font-size: 0.8rem; color: #666; line-height: 1.4; margin: 0;">
+          L'importo viene scalato dal conto e registrato tra le spese alla <strong>data di pagamento</strong>.
+          Il <strong>mese di riferimento</strong> indica quale scadenza stai saldando (es. bolletta di settembre pagata in ottobre).
+        </p>
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+          <button class="btn btn-outline" id="btn-close-paga-fissa">Annulla</button>
+          <button class="btn btn-primary" id="btn-save-paga-fissa">Conferma Pagamento</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Modale Entrata Ricorrente -->
     <div class="modal-overlay" id="modal-entrata">
       <div class="modal-content">
@@ -1052,6 +1167,7 @@
           { id: 'farmaci', nome: 'Farmaci & Terapie', icona: '💊', bg: 'immagini/bg_finanze_farmaci.jpg', budget: 0 },
           { id: 'salute', nome: 'Salute & Visite', icona: '⚕️', bg: 'immagini/bg_finanze_salute.jpg', budget: 0 },
           { id: 'svago', nome: 'Svago & Stile di Vita', icona: '🍿', bg: 'immagini/bg_finanze_svago.jpg', budget: 0 },
+          { id: 'animali', nome: 'Animali', icona: '🐕', bg: 'immagini/bg_finanze_svago.jpg', budget: 0 },
           { id: 'risparmio', nome: 'Risparmio & Fondo', icona: '🛡️', bg: 'immagini/bg_finanze_risparmio.jpg', budget: 0 }
         ],
         movimenti: [],
@@ -1075,8 +1191,62 @@
             } else {
               finanzeData.buste.splice(2, 0, { id: 'bambini', nome: 'Bambini & Figli', icona: '👶', bg: 'immagini/bg_finanze_bambini.svg', budget: 0 });
             }
+            // Busta Animali aggiunta una sola volta (se l'utente la elimina non viene ricreata)
+            if (!finanzeData.animaliAggiunta) {
+              if (!finanzeData.buste.some(b => b.id === 'animali' || /animal/i.test(b.nome))) {
+                const rIndex = finanzeData.buste.findIndex(b => b.id === 'risparmio');
+                const animali = { id: 'animali', nome: 'Animali', icona: '🐕', bg: 'immagini/bg_finanze_svago.jpg', budget: 0 };
+                if (rIndex > -1) finanzeData.buste.splice(rIndex, 0, animali); else finanzeData.buste.push(animali);
+              }
+              finanzeData.animaliAggiunta = true;
+            }
+            // Spese fisse: dal vecchio flag "pagata" (mai azzerato) allo storico pagamenti per mese
+            finanzeData.speseFisse.forEach(f => {
+              if (!f.pagamenti) {
+                f.pagamenti = {};
+                if (f.pagata) f.pagamenti[meseCorrente()] = null;
+              }
+              delete f.pagata;
+            });
           } catch(e) { console.error(e); }
         }
+        finanzeData.animaliAggiunta = true;
+      }
+
+      // UTILITY DATE (ora locale, formato YYYY-MM-DD / YYYY-MM)
+      function oggiISO() {
+        const d = new Date();
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      }
+      function meseCorrente() {
+        return oggiISO().slice(0, 7);
+      }
+      function spostaMese(mese, delta) {
+        const [y, m] = mese.split('-').map(Number);
+        const d = new Date(y, m - 1 + delta, 1);
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      }
+      function nomeMese(mese) {
+        const [y, m] = mese.split('-').map(Number);
+        const s = new Date(y, m - 1, 1).toLocaleDateString('it-IT', { month: 'long', year: 'numeric' });
+        return s.charAt(0).toUpperCase() + s.slice(1);
+      }
+      function dataIT(iso) {
+        if (!iso || !/^\d{4}-\d{2}-\d{2}/.test(iso)) return iso || '-';
+        const [y, m, d] = iso.slice(0, 10).split('-');
+        return `${d}/${m}/${y}`;
+      }
+      function euro(n) {
+        return (n || 0).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+      function esc(s) {
+        return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      }
+      function movimentiDelMese(mese) {
+        return finanzeData.movimenti.filter(m => (m.data || '').slice(0, 7) === mese);
+      }
+      function fissaPagata(f, mese = meseCorrente()) {
+        return !!f.pagamenti && Object.prototype.hasOwnProperty.call(f.pagamenti, mese);
       }
 
       function saveData() {
@@ -1144,9 +1314,9 @@
         // Calcola Saldo Totale dei conti
         saldoTotale = Math.round(saldoTotale * 100) / 100;
 
-        // Calcola Spese Fisse non ancora pagate
+        // Calcola Spese Fisse non ancora pagate nel mese corrente
         let speseFisseTot = 0;
-        finanzeData.speseFisse.filter(f => !f.pagata).forEach(f => {
+        finanzeData.speseFisse.filter(f => !fissaPagata(f)).forEach(f => {
           speseFisseTot += f.importo;
         });
         speseFisseTot = Math.round(speseFisseTot * 100) / 100;
@@ -1208,9 +1378,10 @@
         if (selectCat) selectCat.innerHTML = '';
         if (selectFissaCat) selectFissaCat.innerHTML = '';
 
+        const movMese = movimentiDelMese(meseCorrente());
         finanzeData.buste.forEach(b => {
           const budget = b.budget || 0;
-          const speso = finanzeData.movimenti
+          const speso = movMese
             .filter(m => m.cat === b.id)
             .reduce((sum, m) => sum + m.importo, 0);
 
@@ -1273,7 +1444,7 @@
 
         if (!tbody || !tableStandard || !groupedCont) return;
 
-        let movs = finanzeData.movimenti.filter(m => m.cat === activeBusta);
+        let movs = movimentiDelMese(meseCorrente()).filter(m => m.cat === activeBusta);
 
         if (query) {
           movs = movs.filter(m => m.desc.toLowerCase().includes(query));
@@ -1282,7 +1453,7 @@
         if (movs.length === 0) {
           tableStandard.style.display = 'table';
           groupedCont.style.display = 'none';
-          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#888; padding: 1.5rem;">${query ? 'Nessuna spesa trovata per "' + query + '"' : 'Nessun movimento in questa busta. Clicca "+ Aggiungi Spesa".'}</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#888; padding: 1.5rem;">${query ? 'Nessuna spesa trovata per "' + esc(query) + '" in questo mese' : 'Nessun movimento in questa busta nel mese corrente. Clicca "+ Aggiungi Spesa".'}</td></tr>`;
           return;
         }
 
@@ -1379,7 +1550,7 @@
         const currBudget = currBusta ? currBusta.budget : 0;
         if (inputBudget) inputBudget.value = currBudget;
 
-        const speso = finanzeData.movimenti
+        const speso = movimentiDelMese(meseCorrente())
           .filter(m => m.cat === activeBusta)
           .reduce((sum, m) => sum + m.importo, 0);
 
@@ -1387,7 +1558,7 @@
         const percent = currBudget > 0 ? Math.round((speso / currBudget) * 100) : 0;
 
         if (descText) {
-          descText.innerHTML = `Speso: <strong>€ ${speso.toFixed(2)}</strong> su budget previsto <strong>€ ${currBudget.toFixed(2)}</strong>. Disponibilità residua: <strong style="color:${rimanente >= 0 ? 'var(--basilico)' : 'var(--rosso)'}">€ ${rimanente.toFixed(2)}</strong>.`;
+          descText.innerHTML = `${nomeMese(meseCorrente())} — Speso: <strong>€ ${speso.toFixed(2)}</strong> su budget previsto <strong>€ ${currBudget.toFixed(2)}</strong>. Disponibilità residua: <strong style="color:${rimanente >= 0 ? 'var(--basilico)' : 'var(--rosso)'}">€ ${rimanente.toFixed(2)}</strong>.`;
         }
 
         // Spese fisse della categoria
@@ -1399,6 +1570,8 @@
             fisseCont.innerHTML = '<p style="color:#888; font-size:0.85rem; margin:0;">Nessuna spesa fissa ricorrente per questa categoria. Clicca "+ Aggiungi Spesa Fissa".</p>';
           } else {
             fisse.forEach(f => {
+              const pagata = fissaPagata(f);
+              const movPag = pagata ? finanzeData.movimenti.find(m => m.id === f.pagamenti[meseCorrente()]) : null;
               const div = document.createElement('div');
               div.style.display = 'flex';
               div.style.justifyContent = 'space-between';
@@ -1409,10 +1582,11 @@
                 <div>
                   <span style="font-weight:600; font-size:0.95rem;">${f.nome}</span>
                   <span style="font-size:0.9rem; color:var(--rosso); font-weight:bold; margin-left:8px;">€ ${f.importo.toFixed(2)}</span>
+                  ${movPag ? `<div style="font-size:0.75rem; color:#888;">Pagata il ${dataIT(movPag.data)}</div>` : ''}
                 </div>
                 <div style="display:flex; gap:6px; align-items:center;">
                   <button class="btn btn-outline" style="padding:3px 10px; font-size:0.8rem;" onclick="toggleSpesaFissa('${f.id}')">
-                    ${f.pagata ? '✅ Pagata' : '⏳ Da pagare'}
+                    ${pagata ? '✅ Pagata' : '⏳ Da pagare'}
                   </button>
                   <button class="btn-outline" style="padding:3px 7px; font-size:0.8rem; cursor:pointer;" onclick="openModalSpesaFissa('${f.id}')">✏️</button>
                   <button class="btn-danger" style="padding:3px 7px; font-size:0.8rem; cursor:pointer;" onclick="deleteSpesaFissa('${f.id}')">✕</button>
@@ -1442,18 +1616,79 @@
             conto.saldo = Math.round((conto.saldo + mov.importo) * 100) / 100;
           }
 
+          // Se era il pagamento di una spesa fissa, quel mese torna "da pagare"
+          if (mov.fissaId) {
+            const f = finanzeData.speseFisse.find(x => x.id === mov.fissaId);
+            if (f?.pagamenti) {
+              Object.keys(f.pagamenti).forEach(k => { if (f.pagamenti[k] === mov.id) delete f.pagamenti[k]; });
+            }
+          }
+
           finanzeData.movimenti.splice(movIndex, 1);
           saveData();
         }
       };
 
+      // PAGAMENTO SPESA FISSA: registra un movimento (scala il conto alla data di pagamento)
+      // e segna pagato il mese di competenza scelto.
+      const modalPagaFissa = document.getElementById('modal-paga-fissa');
       window.toggleSpesaFissa = (id) => {
         const f = finanzeData.speseFisse.find(x => x.id === id);
-        if (f) {
-          f.pagata = !f.pagata;
-          saveData();
+        if (!f) return;
+        const mese = meseCorrente();
+        if (fissaPagata(f, mese)) {
+          if (!confirm(`Annullare il pagamento di "${f.nome}" per ${nomeMese(mese)}?\nL'importo tornerà sul conto.`)) return;
+          const movId = f.pagamenti[mese];
+          delete f.pagamenti[mese];
+          if (movId && finanzeData.movimenti.some(m => m.id === movId)) {
+            deleteMovimento(movId);
+          } else {
+            saveData();
+          }
+          return;
         }
+        document.getElementById('paga-fissa-id').value = f.id;
+        document.getElementById('paga-fissa-titolo').textContent = `${f.nome} — € ${euro(f.importo)}`;
+        document.getElementById('paga-fissa-data').value = oggiISO();
+        document.getElementById('paga-fissa-mese').value = mese;
+        const sel = document.getElementById('paga-fissa-conto');
+        sel.innerHTML = finanzeData.conti.map(c => `<option value="${esc(c.id)}">${esc(c.icona)} ${esc(c.nome)}</option>`).join('');
+        if (f.contoId && finanzeData.conti.some(c => c.id === f.contoId)) sel.value = f.contoId;
+        modalPagaFissa.style.display = 'flex';
       };
+
+      document.getElementById('btn-close-paga-fissa')?.addEventListener('click', () => modalPagaFissa.style.display = 'none');
+      document.getElementById('btn-save-paga-fissa')?.addEventListener('click', () => {
+        const f = finanzeData.speseFisse.find(x => x.id === document.getElementById('paga-fissa-id').value);
+        if (!f) return;
+        const data = document.getElementById('paga-fissa-data').value || oggiISO();
+        const mese = document.getElementById('paga-fissa-mese').value || data.slice(0, 7);
+        const contoId = document.getElementById('paga-fissa-conto').value;
+        if (!f.pagamenti) f.pagamenti = {};
+        if (fissaPagata(f, mese)) {
+          alert(`"${f.nome}" risulta già pagata per ${nomeMese(mese)}.`);
+          return;
+        }
+
+        const conto = finanzeData.conti.find(c => c.id === contoId);
+        if (conto) conto.saldo = Math.round((conto.saldo - f.importo) * 100) / 100;
+
+        const movId = 'pag_' + Date.now();
+        finanzeData.movimenti.unshift({
+          id: movId,
+          data,
+          desc: mese === data.slice(0, 7) ? f.nome : `${f.nome} (rif. ${nomeMese(mese)})`,
+          cat: f.cat,
+          contoId,
+          importo: f.importo,
+          fissaId: f.id
+        });
+        f.pagamenti[mese] = movId;
+        f.contoId = contoId;
+
+        modalPagaFissa.style.display = 'none';
+        saveData();
+      });
 
       window.deleteSpesaFissa = (id) => {
         finanzeData.speseFisse = finanzeData.speseFisse.filter(x => x.id !== id);
@@ -1570,7 +1805,7 @@
             nome,
             importo,
             cat,
-            pagata: false
+            pagamenti: {}
           });
         }
         saveData();
@@ -1725,12 +1960,12 @@
       // MODALE SPESA REGISTRATA LOGIC
       const modalSpesa = document.getElementById('modal-spesa');
       document.getElementById('btn-open-modal-spesa')?.addEventListener('click', () => {
-        document.getElementById('spesa-data').value = new Date().toISOString().split('T')[0];
+        document.getElementById('spesa-data').value = oggiISO();
         document.getElementById('spesa-categoria').value = activeBusta;
         modalSpesa.style.display = 'flex';
       });
       document.getElementById('btn-add-quick-spesa')?.addEventListener('click', () => {
-        document.getElementById('spesa-data').value = new Date().toISOString().split('T')[0];
+        document.getElementById('spesa-data').value = oggiISO();
         document.getElementById('spesa-categoria').value = activeBusta;
         modalSpesa.style.display = 'flex';
       });
@@ -1741,7 +1976,7 @@
       document.getElementById('btn-save-spesa')?.addEventListener('click', () => {
         const desc = document.getElementById('spesa-desc').value.trim();
         const importo = parseFloat(document.getElementById('spesa-importo').value);
-        const data = document.getElementById('spesa-data').value || new Date().toISOString().split('T')[0];
+        const data = document.getElementById('spesa-data').value || oggiISO();
         const cat = document.getElementById('spesa-categoria').value;
         const contoId = document.getElementById('spesa-conto').value;
 
@@ -1823,18 +2058,118 @@
         reader.readAsText(file);
       });
 
+      // 6. REGISTRO DI TUTTE LE SPESE: cronologico, filtrabile per busta e periodo
+      function periodoRegistro() {
+        const periodo = document.getElementById('registro-periodo')?.value || '24mesi';
+        const meseInput = document.getElementById('registro-mese');
+        if (meseInput) meseInput.style.display = periodo === 'scegli' ? '' : 'none';
+        const corr = meseCorrente();
+        switch (periodo) {
+          case 'mese': return [corr, corr];
+          case 'mese-prec': return [spostaMese(corr, -1), spostaMese(corr, -1)];
+          case '3mesi': return [spostaMese(corr, -2), corr];
+          case 'anno': return [corr.slice(0, 4) + '-01', corr];
+          case '24mesi': return [spostaMese(corr, -23), corr];
+          case 'scegli': {
+            const m = meseInput?.value || corr;
+            return [m, m];
+          }
+          default: return ['0000-00', '9999-99'];
+        }
+      }
+
+      window.filtraRegistroCat = (catId) => {
+        const sel = document.getElementById('registro-cat');
+        if (sel) sel.value = sel.value === catId ? '' : catId;
+        renderRegistro();
+      };
+
+      function renderRegistro() {
+        const tbody = document.getElementById('registro-tbody');
+        const selCat = document.getElementById('registro-cat');
+        if (!tbody || !selCat) return;
+
+        // Opzioni busta (mantiene la selezione corrente)
+        const catSel = selCat.value;
+        selCat.innerHTML = '<option value="">Tutte le buste</option>' +
+          finanzeData.buste.map(b => `<option value="${esc(b.id)}">${esc(b.icona || '📦')} ${esc(b.nome)}</option>`).join('');
+        selCat.value = finanzeData.buste.some(b => b.id === catSel) ? catSel : '';
+
+        const [da, a] = periodoRegistro();
+        const query = (document.getElementById('registro-search')?.value || '').toLowerCase().trim();
+
+        const nelPeriodo = finanzeData.movimenti.filter(m => {
+          const mese = (m.data || '').slice(0, 7);
+          return mese >= da && mese <= a && (!query || (m.desc || '').toLowerCase().includes(query));
+        });
+
+        // Chip riepilogo per busta (totali del periodo, cliccabili per filtrare)
+        const perCat = {};
+        nelPeriodo.forEach(m => { perCat[m.cat] = (perCat[m.cat] || 0) + m.importo; });
+        const chips = document.getElementById('registro-chips');
+        if (chips) {
+          chips.innerHTML = Object.keys(perCat)
+            .sort((x, y) => perCat[y] - perCat[x])
+            .map(catId => {
+              const b = finanzeData.buste.find(x => x.id === catId);
+              const label = b ? `${b.icona || '📦'} ${b.nome}` : '🗂️ Busta eliminata';
+              return `<span class="registro-chip ${selCat.value === catId ? 'attivo' : ''}" onclick="filtraRegistroCat('${esc(catId)}')">${esc(label)}: € ${euro(perCat[catId])}</span>`;
+            }).join('');
+        }
+
+        const movs = nelPeriodo
+          .filter(m => !selCat.value || m.cat === selCat.value)
+          .sort((x, y) => (y.data || '').localeCompare(x.data || '') || String(y.id).localeCompare(String(x.id)));
+
+        const totale = movs.reduce((s, m) => s + m.importo, 0);
+        const totEl = document.getElementById('registro-totale');
+        if (totEl) totEl.textContent = `${movs.length} ${movs.length === 1 ? 'spesa' : 'spese'} · - € ${euro(totale)}`;
+
+        if (movs.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#888; padding: 1.5rem;">Nessuna spesa trovata con questi filtri.</td></tr>';
+          return;
+        }
+
+        // Totale per mese per le righe di intestazione
+        const totMese = {};
+        movs.forEach(m => { const k = (m.data || '').slice(0, 7); totMese[k] = (totMese[k] || 0) + m.importo; });
+
+        let html = '';
+        let meseAttuale = null;
+        movs.forEach(m => {
+          const mese = (m.data || '').slice(0, 7);
+          if (mese !== meseAttuale) {
+            meseAttuale = mese;
+            html += `<tr class="registro-mese-row"><td colspan="4">📅 ${/^\d{4}-\d{2}$/.test(mese) ? nomeMese(mese) : 'Senza data'}</td><td colspan="2" style="color:var(--rosso);">- € ${euro(totMese[mese])}</td></tr>`;
+          }
+          const b = finanzeData.buste.find(x => x.id === m.cat);
+          const conto = finanzeData.conti.find(c => c.id === m.contoId)?.nome || 'Conto';
+          html += `
+            <tr>
+              <td style="white-space:nowrap;">${dataIT(m.data)}</td>
+              <td style="font-weight:600;">${esc(m.desc)}</td>
+              <td style="white-space:nowrap;">${b ? esc(`${b.icona || '📦'} ${b.nome}`) : '🗂️ Busta eliminata'}</td>
+              <td><span style="font-size:0.8rem; background:#eee; padding:2px 6px; border-radius:4px;">${esc(conto)}</span></td>
+              <td style="font-weight:bold; color:var(--rosso); white-space:nowrap;">- € ${euro(m.importo)}</td>
+              <td><button class="btn btn-danger" onclick="if(confirm('Eliminare questa spesa? L\\'importo tornerà sul conto.')) deleteMovimento('${esc(m.id)}')">✕</button></td>
+            </tr>`;
+        });
+        tbody.innerHTML = html;
+      }
+
       function renderAll() {
         renderConti();
         renderEntrate();
         renderBuste();
         renderMovimenti();
         renderBudgetSection();
+        renderRegistro();
       }
 
       document.addEventListener('DOMContentLoaded', () => {
         loadData();
         renderAll();
       });
-    </script>
+    </script>
   </body>
 </html>

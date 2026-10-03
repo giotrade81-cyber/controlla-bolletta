@@ -183,6 +183,73 @@
         background: #faf8f5;
       }
 
+      /* Allegati foto (scontrini, fatture, documenti) */
+      .allegati-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 6px;
+      }
+      .allegato-thumb {
+        position: relative;
+        width: 84px;
+        height: 84px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        background-size: cover;
+        background-position: center;
+        cursor: zoom-in;
+      }
+      .allegato-thumb button {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        border: none;
+        background: var(--rosso);
+        color: white;
+        font-size: 0.7rem;
+        cursor: pointer;
+      }
+      .allegato-add {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 84px;
+        height: 84px;
+        border: 2px dashed #ccc;
+        border-radius: 8px;
+        color: #888;
+        font-size: 0.75rem;
+        text-align: center;
+        cursor: pointer;
+        background: white;
+      }
+      .badge-garanzia {
+        display: inline-block;
+        font-size: 0.75rem;
+        font-weight: bold;
+        padding: 3px 8px;
+        border-radius: 10px;
+      }
+      #lightbox {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.85);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 3000;
+        cursor: zoom-out;
+      }
+      #lightbox img {
+        max-width: 95vw;
+        max-height: 92vh;
+        border-radius: 6px;
+      }
+
       /* Layout a 2 Colonne */
       .two-columns-grid {
         display: grid;
@@ -578,6 +645,26 @@
             <span class="pulsantone-badge" style="background: rgba(243, 156, 18, 0.15); color: #d35400;">🟡 ATTIVO</span>
           </div>
         </div>
+
+        <div class="pulsantone-card" id="btn-tab-garanzie" onclick="switchSection('garanzie')">
+          <div class="pulsantone-thumb" style="background-image: url('immagini/bg_finanze_tecnologia.jpg');"></div>
+          <div class="pulsantone-body">
+            <div class="pulsantone-icon">🧾</div>
+            <h3 class="pulsantone-title">Garanzie Prodotti</h3>
+            <p class="pulsantone-desc">Scontrini e fatture con la scadenza della garanzia.</p>
+            <span class="pulsantone-badge" style="background: rgba(41, 128, 185, 0.15); color: var(--blu);">🔵 ATTIVO</span>
+          </div>
+        </div>
+
+        <div class="pulsantone-card" id="btn-tab-varie" onclick="switchSection('varie')">
+          <div class="pulsantone-thumb" style="background-image: url('immagini/bg_finanze_risparmio.jpg');"></div>
+          <div class="pulsantone-body">
+            <div class="pulsantone-icon">📌</div>
+            <h3 class="pulsantone-title">Varie da Tenere in Memoria</h3>
+            <p class="pulsantone-desc">Codici, appunti, documenti e tutto ciò da non dimenticare.</p>
+            <span class="pulsantone-badge" style="background: rgba(39, 174, 96, 0.15); color: var(--basilico);">🟢 ATTIVO</span>
+          </div>
+        </div>
       </div>
 
       <!-- CONTENITORE ESPANSO CON HERO GRAFICO E 2 COLONNE -->
@@ -705,6 +792,24 @@
             <div class="two-columns-grid" id="amicizie-container"></div>
           </div>
 
+          <!-- SEZIONE 6: GARANZIE PRODOTTI (SCONTRINI & FATTURE) -->
+          <div id="section-garanzie" class="content-section" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 1.5rem;">
+              <p style="margin: 0; color: #666; font-size: 0.95rem;">Fotografa scontrino o fattura di elettrodomestici, telefoni e acquisti importanti: la scadenza della garanzia si calcola da sola.</p>
+              <button class="btn btn-primary" id="btn-add-garanzia">+ Aggiungi Garanzia</button>
+            </div>
+            <div class="two-columns-grid" id="garanzie-container"></div>
+          </div>
+
+          <!-- SEZIONE 7: VARIE DA TENERE IN MEMORIA -->
+          <div id="section-varie" class="content-section" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 1.5rem;">
+              <p style="margin: 0; color: #666; font-size: 0.95rem;">Tutto quello che non sai dove mettere: codici, misure, appunti, foto di documenti.</p>
+              <button class="btn btn-primary" id="btn-add-varia">+ Aggiungi Promemoria</button>
+            </div>
+            <div class="two-columns-grid" id="varie-container"></div>
+          </div>
+
           <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px; border-top: 1px solid rgba(0,0,0,0.08); padding-top: 15px;">
             <span id="save-status" style="font-size: 0.9rem; color: var(--basilico); font-weight: bold;">✅ Dati salvati in locale</span>
             <button class="btn btn-primary" id="btn-force-save">Salva Tutto</button>
@@ -713,6 +818,10 @@
         </div>
       </div>
     </div>
+
+    <!-- Visualizzatore foto a schermo intero -->
+    <div id="lightbox" onclick="this.style.display='none'"><img alt="Allegato"></div>
+    <input type="file" id="file-allegato" accept="image/*" multiple style="display: none;">
 
     <!-- Script di gestione e navigazione a sezioni -->
     <script>
@@ -730,7 +839,9 @@
         musica: [],
         luoghi: [],
         ristoranti: [],
-        amicizie: []
+        amicizie: [],
+        garanzie: [],
+        varie: []
       };
 
       const bgImages = {
@@ -738,7 +849,9 @@
         musica: 'immagini/bg_musica.jpg',
         luoghi: 'immagini/bg_luoghi.jpg',
         ristoranti: 'immagini/bg_ristoranti.jpg',
-        amicizie: 'immagini/bg_amicizie.jpg'
+        amicizie: 'immagini/bg_amicizie.jpg',
+        garanzie: 'immagini/bg_finanze_tecnologia.jpg',
+        varie: 'immagini/bg_finanze_risparmio.jpg'
       };
 
       const sectionTitles = {
@@ -746,8 +859,14 @@
         musica: '🎵 La Mia Musica & Playlist',
         luoghi: '🌍 I Miei Luoghi & Viaggi',
         ristoranti: '🍝 Ristoranti & Esperienze Gastronomiche',
-        amicizie: '👥 Amicizie & Nuovi Incontri'
+        amicizie: '👥 Amicizie & Nuovi Incontri',
+        garanzie: '🧾 Garanzie Prodotti: Scontrini & Fatture',
+        varie: '📌 Varie da Tenere in Memoria'
       };
+
+      function esc(s) {
+        return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      }
 
       // Utility estrazione ID YouTube
       function getYouTubeVideoId(url) {
@@ -758,7 +877,7 @@
       }
 
       window.switchSection = (section) => {
-        ['salute', 'musica', 'luoghi', 'ristoranti', 'amicizie'].forEach(s => {
+        ['salute', 'musica', 'luoghi', 'ristoranti', 'amicizie', 'garanzie', 'varie'].forEach(s => {
           document.getElementById(`btn-tab-${s}`)?.classList.remove('active');
           const sec = document.getElementById(`section-${s}`);
           if (sec) sec.style.display = 'none';
@@ -788,8 +907,15 @@
       }
 
       function saveData() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(memorieData));
         const status = document.getElementById('save-status');
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(memorieData));
+        } catch (e) {
+          console.error(e);
+          if (status) status.textContent = '⚠️ Memoria del browser piena: elimina qualche foto e riprova.';
+          alert('⚠️ Spazio esaurito: le foto occupano troppo. Elimina qualche allegato e riprova.');
+          return false;
+        }
         if (status) {
           status.textContent = '✅ Dati salvati in locale!';
           status.style.opacity = '1';
@@ -1068,6 +1194,149 @@
         });
       }
 
+      // ALLEGATI FOTO: compressione locale (nessun upload) per non saturare la memoria del browser
+      let allegatoTarget = null;
+
+      function comprimiFoto(file, maxLato = 1400, qualita = 0.72) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onerror = reject;
+          reader.onload = () => {
+            const img = new Image();
+            img.onerror = reject;
+            img.onload = () => {
+              const scala = Math.min(1, maxLato / Math.max(img.width, img.height));
+              const canvas = document.createElement('canvas');
+              canvas.width = Math.round(img.width * scala);
+              canvas.height = Math.round(img.height * scala);
+              canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+              resolve(canvas.toDataURL('image/jpeg', qualita));
+            };
+            img.src = reader.result;
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      window.allegaFoto = (lista, idx) => {
+        allegatoTarget = { lista, idx };
+        const input = document.getElementById('file-allegato');
+        input.value = '';
+        input.click();
+      };
+
+      document.getElementById('file-allegato')?.addEventListener('change', async (e) => {
+        const files = Array.from(e.target.files || []);
+        if (!allegatoTarget || files.length === 0) return;
+        const item = memorieData[allegatoTarget.lista][allegatoTarget.idx];
+        if (!item) return;
+        if (!item.foto) item.foto = [];
+        const aggiunte = [];
+        for (const f of files) {
+          try { aggiunte.push(await comprimiFoto(f)); } catch (err) { console.error(err); }
+        }
+        item.foto.push(...aggiunte);
+        if (saveData() === false) item.foto.splice(item.foto.length - aggiunte.length, aggiunte.length);
+        renderAllegatiSezione(allegatoTarget.lista);
+      });
+
+      window.rimuoviFoto = (lista, idx, fIdx) => {
+        if (!confirm('Eliminare questa foto?')) return;
+        memorieData[lista][idx].foto.splice(fIdx, 1);
+        saveData();
+        renderAllegatiSezione(lista);
+      };
+
+      window.apriFoto = (lista, idx, fIdx) => {
+        const lb = document.getElementById('lightbox');
+        lb.querySelector('img').src = memorieData[lista][idx].foto[fIdx];
+        lb.style.display = 'flex';
+      };
+
+      function renderAllegatiSezione(lista) {
+        if (lista === 'garanzie') renderGaranzie();
+        if (lista === 'varie') renderVarie();
+      }
+
+      function allegatiHtml(lista, idx, foto, etichetta) {
+        return `
+          <div class="allegati-grid">
+            ${(foto || []).map((src, fIdx) => `
+              <div class="allegato-thumb" style="background-image:url('${src}')" onclick="apriFoto('${lista}', ${idx}, ${fIdx})">
+                <button onclick="event.stopPropagation(); rimuoviFoto('${lista}', ${idx}, ${fIdx})" title="Elimina foto">✕</button>
+              </div>`).join('')}
+            <div class="allegato-add" onclick="allegaFoto('${lista}', ${idx})">📷<br>${etichetta}</div>
+          </div>`;
+      }
+
+      // 6. RENDER GARANZIE PRODOTTI
+      function statoGaranzia(g) {
+        if (!g.dataAcquisto) return { testo: 'Inserisci la data di acquisto', bg: '#eee', col: '#666' };
+        const scad = new Date(g.dataAcquisto + 'T00:00:00');
+        scad.setMonth(scad.getMonth() + (parseInt(g.mesi) || 24));
+        const giorni = Math.ceil((scad - new Date()) / 86400000);
+        const scadIT = scad.toLocaleDateString('it-IT');
+        if (giorni < 0) return { testo: `⛔ Scaduta il ${scadIT}`, bg: 'rgba(231,76,60,0.15)', col: 'var(--rosso)' };
+        if (giorni <= 60) return { testo: `⚠️ Scade il ${scadIT} (tra ${giorni} gg)`, bg: 'rgba(243,156,18,0.18)', col: '#d35400' };
+        return { testo: `✅ Valida fino al ${scadIT}`, bg: 'rgba(39,174,96,0.15)', col: 'var(--basilico)' };
+      }
+
+      function renderGaranzie() {
+        const cont = document.getElementById('garanzie-container');
+        if (!cont) return;
+        cont.innerHTML = '';
+        if (memorieData.garanzie.length === 0) {
+          cont.innerHTML = '<div style="grid-column: 1 / -1; padding: 2rem; text-align: center; color: #888; background: rgba(255,255,255,0.7); border-radius: 12px; border: 1px dashed #ddd;">Nessuna garanzia salvata. Clicca <strong>+ Aggiungi Garanzia</strong> e fotografa lo scontrino o la fattura.</div>';
+          return;
+        }
+        memorieData.garanzie.forEach((g, idx) => {
+          const stato = statoGaranzia(g);
+          const d = document.createElement('div');
+          d.className = 'entry-card';
+          d.style.borderLeft = '4px solid var(--blu)';
+          d.innerHTML = `
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+              <input type="text" value="${esc(g.prodotto)}" placeholder="Prodotto (es: Lavatrice Samsung)" style="font-weight:bold; font-size:1.1rem; border:1px solid #ddd; border-radius:4px; padding:4px 8px; width:70%;" oninput="memorieData.garanzie[${idx}].prodotto=this.value;saveData()">
+              <button class="btn btn-danger" onclick="if(confirm('Eliminare questa garanzia e le sue foto?')){memorieData.garanzie.splice(${idx},1);renderGaranzie();saveData()}">✕</button>
+            </div>
+            <span class="badge-garanzia" style="background:${stato.bg}; color:${stato.col};">${stato.testo}</span>
+            <div class="contact-field" style="margin-top:8px;"><label>Negozio / Venditore</label><input type="text" value="${esc(g.negozio)}" placeholder="Es: MediaWorld, Amazon" oninput="memorieData.garanzie[${idx}].negozio=this.value;saveData()"></div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+              <div class="contact-field"><label>Data Acquisto</label><input type="date" value="${esc(g.dataAcquisto)}" onchange="memorieData.garanzie[${idx}].dataAcquisto=this.value;saveData();renderGaranzie()"></div>
+              <div class="contact-field"><label>Garanzia (mesi)</label><input type="number" min="1" value="${esc(g.mesi || 24)}" onchange="memorieData.garanzie[${idx}].mesi=parseInt(this.value)||24;saveData();renderGaranzie()"></div>
+            </div>
+            <div class="contact-field"><label>Prezzo / N° Seriale / Note</label><textarea class="notes-box" oninput="memorieData.garanzie[${idx}].note=this.value;saveData()">${esc(g.note)}</textarea></div>
+            <div class="contact-field"><label>Scontrino / Fattura</label>${allegatiHtml('garanzie', idx, g.foto, 'Foto scontrino')}</div>
+          `;
+          cont.appendChild(d);
+        });
+      }
+
+      // 7. RENDER VARIE DA TENERE IN MEMORIA
+      function renderVarie() {
+        const cont = document.getElementById('varie-container');
+        if (!cont) return;
+        cont.innerHTML = '';
+        if (memorieData.varie.length === 0) {
+          cont.innerHTML = '<div style="grid-column: 1 / -1; padding: 2rem; text-align: center; color: #888; background: rgba(255,255,255,0.7); border-radius: 12px; border: 1px dashed #ddd;">Niente salvato per ora. Clicca <strong>+ Aggiungi Promemoria</strong> per iniziare.</div>';
+          return;
+        }
+        memorieData.varie.forEach((v, idx) => {
+          const d = document.createElement('div');
+          d.className = 'entry-card';
+          d.style.borderLeft = '4px solid var(--basilico)';
+          d.innerHTML = `
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+              <input type="text" value="${esc(v.titolo)}" placeholder="Titolo (es: Misure finestre, Codice cancello)" style="font-weight:bold; font-size:1.1rem; border:1px solid #ddd; border-radius:4px; padding:4px 8px; width:70%;" oninput="memorieData.varie[${idx}].titolo=this.value;saveData()">
+              <button class="btn btn-danger" onclick="if(confirm('Eliminare questo promemoria?')){memorieData.varie.splice(${idx},1);renderVarie();saveData()}">✕</button>
+            </div>
+            <div class="contact-field"><label>Dettagli</label><textarea class="notes-box" oninput="memorieData.varie[${idx}].testo=this.value;saveData()">${esc(v.testo)}</textarea></div>
+            <div class="contact-field"><label>Foto / Documenti</label>${allegatiHtml('varie', idx, v.foto, 'Aggiungi foto')}</div>
+          `;
+          cont.appendChild(d);
+        });
+      }
+
       // Add Buttons Listeners
       document.getElementById('btn-add-farmaco')?.addEventListener('click', () => { memorieData.salute.farmaci.push({ id: Date.now().toString(), nome:'', dosaggio:'', orari:'', note:'' }); renderSalute(); saveData(); });
       document.getElementById('btn-add-ice')?.addEventListener('click', () => { memorieData.salute.emergenze.push({ id: Date.now().toString(), titolo:'🚨 Contatto ICE', nome:'', tel:'', note:'' }); renderSalute(); saveData(); });
@@ -1081,6 +1350,9 @@
       document.getElementById('btn-add-ristorante')?.addEventListener('click', () => { memorieData.ristoranti.push({ id: Date.now().toString(), nome:'', citta:'', piatti:'', voto:'⭐⭐⭐⭐⭐', note:'' }); renderRistoranti(); saveData(); });
       document.getElementById('btn-add-amicizia')?.addEventListener('click', () => { memorieData.amicizie.push({ id: Date.now().toString(), nome:'', incontro:'', interessi:'', note:'' }); renderAmicizie(); saveData(); });
 
+      document.getElementById('btn-add-garanzia')?.addEventListener('click', () => { memorieData.garanzie.unshift({ id: Date.now().toString(), prodotto:'', negozio:'', dataAcquisto:'', mesi:24, note:'', foto:[] }); renderGaranzie(); saveData(); });
+      document.getElementById('btn-add-varia')?.addEventListener('click', () => { memorieData.varie.unshift({ id: Date.now().toString(), titolo:'', testo:'', foto:[] }); renderVarie(); saveData(); });
+
       document.getElementById('btn-force-save')?.addEventListener('click', () => saveData());
 
       document.addEventListener('DOMContentLoaded', () => {
@@ -1090,7 +1362,9 @@
         renderLuoghi();
         renderRistoranti();
         renderAmicizie();
+        renderGaranzie();
+        renderVarie();
       });
-    </script>
+    </script>
   </body>
 </html>
